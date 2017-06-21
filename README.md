@@ -3,7 +3,7 @@
 
 Version: 1.0.0
 
-API Scaladoc: [GeoBase](http://todo)
+API Scaladoc: [GeoBase](http://xavierguihot.github.io/geobase)
 
 Scala wrapper around opentraveldata (geo/travel data).
 
@@ -30,7 +30,8 @@ Geo/Travel facilities:
 ## Using geobase:
 
 
-The full list of methods is available at [GeoBase doc](http://todo)
+The full list of methods is available at
+[GeoBase doc](http://xavierguihot.github.io/geobase)
 
 	import com.geobase.GeoBase
 
@@ -44,4 +45,4 @@ The full list of methods is available at [GeoBase doc](http://todo)
 
 With sbt, just add this line to your build.sbt:
 
-	libraryDependencies += "geobase" % "geobase" % "1.0.0" from "http://todo/geobase/1.0.0/geobase-1.0.0.jar"
+	libraryDependencies += "geobase" % "geobase" % "1.0.0" from "https://github.com/xavierguihot/geobase/releases/download/v1.0.0/geobase-1.0.0.jar"

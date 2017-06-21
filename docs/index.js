@@ -1,0 +1,1 @@
+Index.PACKAGES = {"com" : [], "com.geobase" : [{"class" : "com\/geobase\/GeoBase.html", "name" : "com.geobase.GeoBase"}, {"object" : "com\/geobase\/GeoType$.html", "name" : "com.geobase.GeoType"}], "com.geobase.error" : [{"case class" : "com\/geobase\/error\/GeoBaseException.html", "name" : "com.geobase.error.GeoBaseException"}]};

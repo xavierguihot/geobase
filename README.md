@@ -26,6 +26,8 @@ Geo/Travel facilities:
 * A Segment EFT getter for local dates (without needing to know the GMT offset)
 * A way to retrieve nearby airports within a defined radius
 
+Inspired by [neobase](https://github.com/alexprengere/neobase) for python users.
+
 
 ## Using geobase:
 
@@ -43,6 +45,16 @@ The full list of methods is available at
 ## Including geobase to your dependencies:
 
 
-With sbt, just add this line to your build.sbt:
+With sbt, just add this one line to your build.sbt:
 
 	libraryDependencies += "geobase" % "geobase" % "1.0.0" from "https://github.com/xavierguihot/geobase/releases/download/v1.0.0/geobase-1.0.0.jar"
+
+
+## Building the project:
+
+
+First import data from opentraveldata with the update_data.sh script. You can
+then build the project with sbt:
+
+	./update_data.sh
+	sbt assembly

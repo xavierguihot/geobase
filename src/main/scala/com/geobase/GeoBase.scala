@@ -38,7 +38,7 @@ import math.{asin, cos, pow, round, sin, sqrt}
   * file: <a href="https://github.com/opentraveldata/opentraveldata/tree/master/opentraveldata/optd_por_public.csv">
   * optd_por_public.csv</a>.
   *
-  * Source <a href="https://github.com/opentraveldata/opentraveldata/tree/master/src/main/scala/com/geobase/GeoBase.scala">
+  * Source <a href="https://github.com/XavierGuihot/geobase/blob/master/src/main/scala/com/geobase/GeoBase.scala">
   * GeoBase</a>
   *
   * @todo Switch to JodaTime

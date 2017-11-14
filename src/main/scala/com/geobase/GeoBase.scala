@@ -5,9 +5,12 @@ import com.geobase.error.GeoBaseException
 import com.geobase.model.{Airline, AirportOrCity, Country}
 
 import java.text.SimpleDateFormat
-
-import java.util.concurrent.TimeUnit
 import java.util.TimeZone
+
+import org.joda.time.DateTime
+import org.joda.time.DateTimeZone
+import org.joda.time.format.DateTimeFormat
+import org.joda.time.Minutes
 
 import java.security.InvalidParameterException
 
@@ -40,8 +43,6 @@ import math.{asin, cos, pow, round, sin, sqrt}
   *
   * Source <a href="https://github.com/XavierGuihot/geobase/blob/master/src/main/scala/com/geobase/GeoBase.scala">
   * GeoBase</a>
-  *
-  * @todo Switch to JodaTime
   *
   * @author Xavier Guihot
   * @since 2016-05
@@ -582,16 +583,10 @@ class GeoBase() extends Serializable {
 		// We retrieve the time zone associated to this geo. point:
 		val timeZone = airportsAndCities(localAirportOrCity).timeZone
 
-		val inputLocalDateParser = new SimpleDateFormat(format)
-		inputLocalDateParser.setTimeZone(TimeZone.getTimeZone(timeZone))
-
-		// The formatter to GMT (we check if we already have an instance of one
-		// since it's faster not to create objects over and over):
-		val outputGMTDateFormatter = new SimpleDateFormat(format)
-		outputGMTDateFormatter.setTimeZone(TimeZone.getTimeZone("GMT"))
-
-		outputGMTDateFormatter.format(
-			inputLocalDateParser.parse(localDate)
+		DateTimeFormat.forPattern(format).withZone(DateTimeZone.UTC).print(
+			DateTimeFormat.forPattern(format)
+				.withZone(DateTimeZone.forID(timeZone))
+				.parseDateTime(localDate)
 		)
 	}
 
@@ -666,16 +661,10 @@ class GeoBase() extends Serializable {
 		// We retrieve the time zone associated to this geo. point:
 		val timeZone = airportsAndCities(localAirportOrCity).timeZone
 
-		// The formatter to GMT (we check if we already have an instance of one
-		// since it's faster not to create objects over and over):
-		val inputGMTDateParser = new SimpleDateFormat(format)
-		inputGMTDateParser.setTimeZone(TimeZone.getTimeZone("GMT"))
-
-		val outputLocalDateFormatter = new SimpleDateFormat(format)
-		outputLocalDateFormatter.setTimeZone(TimeZone.getTimeZone(timeZone))
-
-		outputLocalDateFormatter.format(
-			inputGMTDateParser.parse(gmtDate)
+		DateTimeFormat.forPattern(format).withZone(DateTimeZone.forID(timeZone)).print(
+			DateTimeFormat.forPattern(format)
+				.withZone(DateTimeZone.UTC)
+				.parseDateTime(gmtDate)
 		)
 	}
 
@@ -723,37 +712,33 @@ class GeoBase() extends Serializable {
 				"\"minutes\" but not \"" + unit + "\""
 			)
 
-		// We retrieve GMT dates in order to be able to do a real duration
-		// computation:
-		val gmtDepartureDate = localDateToGMT(
-			localDepartureDate, originAirportOrCity, format
-		)
-		val gmtArrivalDate = localDateToGMT(
-			localArrivalDate, destinationAirportOrCity, format
-		)
+		checkExistence(originAirportOrCity, airportsAndCities)
+		checkExistence(destinationAirportOrCity, airportsAndCities)
 
-		val formatter = new SimpleDateFormat(format)
+		val originTimeZone = airportsAndCities(originAirportOrCity).timeZone
+		val destinationTimeZone = airportsAndCities(destinationAirportOrCity).timeZone
 
-		val departureDate = formatter.parse(gmtDepartureDate)
-		val arrivalDate = formatter.parse(gmtArrivalDate)
-
-		val tripDurationinMilliseconds = arrivalDate.getTime() - departureDate.getTime()
+		val tripDurationInMinutes =
+			Minutes.minutesBetween(
+				DateTimeFormat.forPattern(format)
+					.withZone(DateTimeZone.forID(originTimeZone))
+					.parseDateTime(localDepartureDate),
+				DateTimeFormat.forPattern(format)
+					.withZone(DateTimeZone.forID(destinationTimeZone))
+					.parseDateTime(localArrivalDate)
+			).getMinutes()
 
 		// We throw an exception if the trip duration is negative:
-		if (tripDurationinMilliseconds < 0)
+		if (tripDurationInMinutes < 0)
 			throw GeoBaseException(
 				"The trip duration computed is negative (maybe you've " +
 				"inverted departure/origin and arrival/destination)"
 			)
 
-		val tripDurationinMinutes = TimeUnit.MINUTES.convert(
-			tripDurationinMilliseconds, TimeUnit.MILLISECONDS
-		)
-
 		if (unit == "minutes")
-			tripDurationinMinutes
+			tripDurationInMinutes
 		else
-			tripDurationinMinutes / 60f
+			tripDurationInMinutes / 60f
 	}
 
 	/** Returns the day of week for a date under the given format.
@@ -768,9 +753,7 @@ class GeoBase() extends Serializable {
 	  * @return the associated day of week, such as 2 for Tuesday
 	  */
 	def getDayOfWeek(date: String, format: String = "yyyyMMdd"): String = {
-		val parser = new SimpleDateFormat(format)
-		val formatter = new SimpleDateFormat("u")
-		formatter.format(parser.parse(date))
+		DateTimeFormat.forPattern(format).parseDateTime(date).getDayOfWeek().toString
 	}
 
 	/** Returns the geo type of a trip (domestic, continental or inter continental).
@@ -1284,7 +1267,7 @@ class GeoBase() extends Serializable {
 	  * @param mapping the mapping for which we check the itemCode key existence
 	  * @throws (classOf[GeoBaseException])
 	  */
-	private def checkExistence(itemCode: String, mapping: Map[String, Any]) = {
+	private def checkExistence(itemCode: String, mapping: Map[String, Any]): Unit = {
 		if (!mapping.contains(itemCode))
 			throw GeoBaseException("No entry in GeoBase for \"" + itemCode + "\"")
 	}

@@ -1,6 +1,6 @@
 name := "geobase"
 
-version := "1.0.1"
+version := "1.0.2"
 
 scalaVersion := "2.10.4"
 
@@ -12,6 +12,6 @@ assemblyOutputPath in assembly := file("./" + name.value + "-" + version.value +
 
 libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.1" % "test"
 
-libraryDependencies += "joda-time" % "joda-time" % "2.9.4"
+libraryDependencies += "joda-time" % "joda-time" % "2.9.9"
 
-libraryDependencies += "org.joda" % "joda-convert" % "1.2"
+libraryDependencies += "org.joda" % "joda-convert" % "1.9.2"

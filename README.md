@@ -5,7 +5,7 @@
 ## Overview
 
 
-Version: 1.0.2
+Version: 1.0.3
 
 API Scaladoc: [GeoBase](http://xavierguihot.github.io/geobase)
 
@@ -51,7 +51,7 @@ The full list of methods is available at
 
 With sbt, just add this one line to your build.sbt:
 
-	libraryDependencies += "geobase" % "geobase" % "1.0.2" from "https://github.com/xavierguihot/geobase/releases/download/v1.0.2/geobase-1.0.2.jar"
+	libraryDependencies += "geobase" % "geobase" % "1.0.3" from "https://github.com/xavierguihot/geobase/releases/download/v1.0.3/geobase-1.0.3.jar"
 
 
 ## Building the project:

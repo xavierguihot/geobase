@@ -1,5 +1,4 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<!DOCTYPE html >
 <html>
         <head>
           <title>geobase - com.geobase</title>
@@ -9,6 +8,11 @@
           
       <link href="../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
       <link href="../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript" src="../../lib/jquery.js" id="jquery-js"></script>
+      <script type="text/javascript" src="../../lib/jquery-ui.js"></script>
+      <script type="text/javascript" src="../../lib/template.js"></script>
+      <script type="text/javascript" src="../../lib/tools.tooltip.js"></script>
+      
       <script type="text/javascript">
          if(top === self) {
             var url = '../../index.html';
@@ -24,9 +28,13 @@
         </head>
         <body class="value">
       <div id="definition">
-        <img src="../../lib/package_big.png" />
+        <img alt="Package" src="../../lib/package_big.png" />
         <p id="owner"><a href="../package.html" class="extype" name="com">com</a></p>
-        <h1>geobase</h1>
+        <h1>geobase</h1><span class="permalink">
+      <a href="../../index.html#com.geobase.package" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       </div>
 
       <h4 id="signature" class="signature">
@@ -58,7 +66,7 @@
 
         <div id="types" class="types members">
               <h3>Type Members</h3>
-              <ol><li name="com.geobase.GeoBase" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+              <ol><li name="com.geobase.GeoBase" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="GeoBaseextendsSerializable"></a>
       <a id="GeoBase:GeoBase"></a>
       <h4 class="signature">
@@ -69,8 +77,32 @@
       <span class="symbol">
         <a href="GeoBase.html"><span class="name">GeoBase</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
-      </h4>
-      <p class="comment cmt">A facility to <b>deal with travel/geographical data</b>.</p>
+      </h4><span class="permalink">
+      <a href="../../index.html#com.geobase.package@GeoBaseextendsSerializable" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">A facility to <b>deal with travel/geographical data</b>.</p><div class="fullcomment"><div class="comment cmt"><p>A facility to <b>deal with travel/geographical data</b>.</p><p>Provides <b>geographical mappings</b> at airport/city/country level mainly
+based on <a href="https://github.com/opentraveldata/opentraveldata">
+opentraveldata</a> as well as other mappings (airlines, currencies, ...).
+This tool also provides classic time-oriented methods such as the
+computation of a trip duration.</p><p>Here are a few exemples:</p><pre><span class="kw">import</span> com.geobase.GeoBase
+
+<span class="kw">val</span> geoBase = <span class="kw">new</span> GeoBase()
+
+assert(geoBase.getCityForAirport(<span class="lit">"CDG"</span>) == <span class="lit">"PAR"</span>)
+assert(geoBase.getCountryForAirline(<span class="lit">"AF"</span>) == <span class="lit">"FR"</span>)
+assert(geoBase.getCountryForAirport(<span class="lit">"CDG"</span>) == <span class="lit">"FR"</span>)
+assert(geoBase.getCurrencyForCity(<span class="lit">"NYC"</span>) == <span class="lit">"USD"</span>)
+assert(geoBase.getDistanceBetween(<span class="lit">"PAR"</span>, <span class="lit">"NCE"</span>) == <span class="num">686</span>)
+assert(geoBase.getTripDurationFromLocalDates(<span class="lit">"20160606_1627"</span>, <span class="lit">"CDG"</span>, <span class="lit">"20160606_1757"</span>, <span class="lit">"JFK"</span>) == <span class="num">7.5</span>d)
+assert(geoBase.getNearbyAirportsWithDetails(<span class="lit">"CDG"</span>, <span class="num">50</span>) == <span class="std">List</span>(<span class="lit">"LBG"</span>, <span class="lit">"ORY"</span>, <span class="lit">"VIY"</span>, <span class="lit">"POX"</span>))</pre><p>The GeoBase object can be used within Spark jobs (in this case, don't forget
+to <b>broadcast GeoBase</b>).</p><p>Opentraveldata is an accurate and maintained source of various travel
+mappings. This scala wrapper around opentraveldata mostly uses this
+file: <a href="https://github.com/opentraveldata/opentraveldata/tree/master/opentraveldata/optd_por_public.csv">
+optd_por_public.csv</a>.</p><p>Source <a href="https://github.com/XavierGuihot/geobase/blob/master/src/main/scala/com/geobase/GeoBase.scala">
+GeoBase</a>
+</p></div><dl class="attributes block"> <dt>Since</dt><dd><p>2016-05</p></dd><dt>To do</dt><dd><span class="cmt"><p>use memoization?</p></span></dd></dl></div>
     </li></ol>
             </div>
 
@@ -89,8 +121,12 @@
       <span class="symbol">
         <a href="GeoType$.html"><span class="name">GeoType</span></a><span class="result"> extends <span class="extype" name="scala.Enumeration">Enumeration</span></span>
       </span>
-      </h4>
-      <p class="comment cmt">An enumeration which represents the possible geograpic types of a trip</p>
+      </h4><span class="permalink">
+      <a href="../../index.html#com.geobase.package@GeoType" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">An enumeration which represents the possible geograpic types of a trip</p>
     </li><li name="com.geobase.error" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="error"></a>
       <a id="error:error"></a>
@@ -102,7 +138,11 @@
       <span class="symbol">
         <a href="error/package.html"><span class="name">error</span></a>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../index.html#com.geobase.package@error" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       
     </li></ol>
             </div>
@@ -129,6 +169,7 @@
       <div id="tooltip"></div>
 
       <div id="footer">  </div>
-      <script defer="defer" type="text/javascript" id="jquery-js" src="../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../lib/template.js"></script>
+
+
     </body>
       </html>

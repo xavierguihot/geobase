@@ -1,5 +1,4 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<!DOCTYPE html >
 <html>
         <head>
           <title>GeoBase - com.geobase.GeoBase</title>
@@ -9,6 +8,11 @@
           
       <link href="../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
       <link href="../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript" src="../../lib/jquery.js" id="jquery-js"></script>
+      <script type="text/javascript" src="../../lib/jquery-ui.js"></script>
+      <script type="text/javascript" src="../../lib/template.js"></script>
+      <script type="text/javascript" src="../../lib/tools.tooltip.js"></script>
+      
       <script type="text/javascript">
          if(top === self) {
             var url = '../../index.html';
@@ -24,9 +28,15 @@
         </head>
         <body class="type">
       <div id="definition">
-        <img src="../../lib/class_big.png" />
+        <img alt="Class" src="../../lib/class_big.png" />
         <p id="owner"><a href="../package.html" class="extype" name="com">com</a>.<a href="package.html" class="extype" name="com.geobase">geobase</a></p>
-        <h1>GeoBase</h1>
+        <h1>GeoBase</h1><h3><span class="morelinks"><div>Related Doc:
+            <a href="package.html" class="extype" name="com.geobase">package geobase</a>
+          </div></span></h3><span class="permalink">
+      <a href="../../index.html#com.geobase.GeoBase" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       </div>
 
       <h4 id="signature" class="signature">
@@ -41,20 +51,25 @@
       
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>A facility to <b>deal with travel/geographical data</b>.</p><p>Provides <b>geographical mappings</b> at airport/city/country level mainly
 based on <a href="https://github.com/opentraveldata/opentraveldata">
-opentraveldata</a> as well as other mappings such as airlines or currencies.
-This facility also provides classic time-oriented methods such as trip
-duration computation.</p><p>Here are a few exemples:</p><pre><span class="kw">val</span> geoBase = <span class="kw">new</span> GeoBase()
+opentraveldata</a> as well as other mappings (airlines, currencies, ...).
+This tool also provides classic time-oriented methods such as the
+computation of a trip duration.</p><p>Here are a few exemples:</p><pre><span class="kw">import</span> com.geobase.GeoBase
+
+<span class="kw">val</span> geoBase = <span class="kw">new</span> GeoBase()
+
 assert(geoBase.getCityForAirport(<span class="lit">"CDG"</span>) == <span class="lit">"PAR"</span>)
-assert(geoBase.getTripDurationFromLocalDates(<span class="lit">"20160606_1627"</span>, <span class="lit">"CDG"</span>, <span class="lit">"20160606_1757"</span>, <span class="lit">"JFK"</span>) == <span class="num">7.5</span>f)
-assert(geoBase.getCurrencyForCountry(<span class="lit">"FR"</span>) == <span class="lit">"EUR"</span>)</pre><p>The GeoBase object can be used within Spark jobs (in this case, don't forget
+assert(geoBase.getCountryForAirline(<span class="lit">"AF"</span>) == <span class="lit">"FR"</span>)
+assert(geoBase.getCountryForAirport(<span class="lit">"CDG"</span>) == <span class="lit">"FR"</span>)
+assert(geoBase.getCurrencyForCity(<span class="lit">"NYC"</span>) == <span class="lit">"USD"</span>)
+assert(geoBase.getDistanceBetween(<span class="lit">"PAR"</span>, <span class="lit">"NCE"</span>) == <span class="num">686</span>)
+assert(geoBase.getTripDurationFromLocalDates(<span class="lit">"20160606_1627"</span>, <span class="lit">"CDG"</span>, <span class="lit">"20160606_1757"</span>, <span class="lit">"JFK"</span>) == <span class="num">7.5</span>d)
+assert(geoBase.getNearbyAirportsWithDetails(<span class="lit">"CDG"</span>, <span class="num">50</span>) == <span class="std">List</span>(<span class="lit">"LBG"</span>, <span class="lit">"ORY"</span>, <span class="lit">"VIY"</span>, <span class="lit">"POX"</span>))</pre><p>The GeoBase object can be used within Spark jobs (in this case, don't forget
 to <b>broadcast GeoBase</b>).</p><p>Opentraveldata is an accurate and maintained source of various travel
-mappings. This scala wrapper around opentraveldata mostly uses this very
+mappings. This scala wrapper around opentraveldata mostly uses this
 file: <a href="https://github.com/opentraveldata/opentraveldata/tree/master/opentraveldata/optd_por_public.csv">
-optd_por_public.csv</a>.</p><p>Source <a href="https://github.com/opentraveldata/opentraveldata/tree/master/src/main/scala/com/geobase/GeoBase.scala">
+optd_por_public.csv</a>.</p><p>Source <a href="https://github.com/XavierGuihot/geobase/blob/master/src/main/scala/com/geobase/GeoBase.scala">
 GeoBase</a>
-</p></div><dl class="attributes block"> <dt>Since</dt><dd><p>2016-05
-</p></dd><dt>To do</dt><dd><span class="cmt"><p>Switch to JodaTime
-</p></span></dd></dl><div class="toggleContainer block">
+</p></div><dl class="attributes block"> <dt>Since</dt><dd><p>2016-05</p></dd><dt>To do</dt><dd><span class="cmt"><p>use memoization?</p></span></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
@@ -67,7 +82,7 @@ GeoBase</a>
               <ol>
                 
                 <li class="alpha in"><span>Alphabetic</span></li>
-                <li class="inherit out"><span>By inheritance</span></li>
+                <li class="inherit out"><span>By Inheritance</span></li>
               </ol>
             </div>
         <div id="ancestors">
@@ -80,9 +95,8 @@ GeoBase</a>
             <span class="filtertype"></span>
             <ol>
               <li class="hideall out"><span>Hide All</span></li>
-              <li class="showall in"><span>Show all</span></li>
+              <li class="showall in"><span>Show All</span></li>
             </ol>
-            <a href="http://docs.scala-lang.org/overviews/scaladoc/usage.html#members" target="_blank">Learn more about member selection</a>
           </div>
         <div id="visbl">
             <span class="filtertype">Visibility</span>
@@ -105,7 +119,11 @@ GeoBase</a>
       <span class="symbol">
         <span class="name">GeoBase</span><span class="params">()</span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../index.html#com.geobase.GeoBase@&lt;init&gt;():com.geobase.GeoBase" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       <p class="shortcomment cmt">Creates a GeoBase object.</p>
     </li></ol>
             </div>
@@ -117,19 +135,6 @@ GeoBase</a>
         <div id="values" class="values members">
               <h3>Value Members</h3>
               <ol><li name="scala.AnyRef#!=" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="!=(x$1:AnyRef):Boolean"></a>
-      <a id="!=(AnyRef):Boolean"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">final </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="scala.Any#!=" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="!=(x$1:Any):Boolean"></a>
       <a id="!=(Any):Boolean"></a>
       <h4 class="signature">
@@ -140,8 +145,12 @@ GeoBase</a>
       <span class="symbol">
         <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+      </h4><span class="permalink">
+      <a href="../../index.html#com.geobase.GeoBase@!=(x$1:Any):Boolean" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scala.AnyRef###" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="##():Int"></a>
       <a id="##():Int"></a>
@@ -153,22 +162,13 @@ GeoBase</a>
       <span class="symbol">
         <span title="gt4s: $hash$hash" class="name">##</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../index.html#com.geobase.GeoBase@##():Int" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scala.AnyRef#==" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="==(x$1:AnyRef):Boolean"></a>
-      <a id="==(AnyRef):Boolean"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">final </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
-      </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="scala.Any#==" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="==(x$1:Any):Boolean"></a>
       <a id="==(Any):Boolean"></a>
       <h4 class="signature">
@@ -179,8 +179,12 @@ GeoBase</a>
       <span class="symbol">
         <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
-      </h4>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+      </h4><span class="permalink">
+      <a href="../../index.html#com.geobase.GeoBase@==(x$1:Any):Boolean" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <a id="asInstanceOf[T0]:T0"></a>
@@ -192,7 +196,11 @@ GeoBase</a>
       <span class="symbol">
         <span class="name">asInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <span class="extype" name="scala.Any.asInstanceOf.T0">T0</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../index.html#com.geobase.GeoBase@asInstanceOf[T0]:T0" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
     </li><li name="scala.AnyRef#clone" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a>
@@ -205,7 +213,11 @@ GeoBase</a>
       <span class="symbol">
         <span class="name">clone</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.AnyRef">AnyRef</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../index.html#com.geobase.GeoBase@clone():Object" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
@@ -224,7 +236,11 @@ GeoBase</a>
       <span class="symbol">
         <span class="name">eq</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../index.html#com.geobase.GeoBase@eq(x$1:AnyRef):Boolean" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
     </li><li name="scala.AnyRef#equals" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="equals(x$1:Any):Boolean"></a>
@@ -237,7 +253,11 @@ GeoBase</a>
       <span class="symbol">
         <span class="name">equals</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../index.html#com.geobase.GeoBase@equals(x$1:Any):Boolean" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scala.AnyRef#finalize" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="finalize():Unit"></a>
@@ -250,7 +270,11 @@ GeoBase</a>
       <span class="symbol">
         <span class="name">finalize</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../index.html#com.geobase.GeoBase@finalize():Unit" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected[<a href="../../java$lang.html" class="extype" name="java.lang">java.lang</a>] </dd><dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
@@ -269,7 +293,11 @@ GeoBase</a>
       <span class="symbol">
         <span class="name">getCitiesForAirport</span><span class="params">(<span name="airport">airport: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.List">List</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../index.html#com.geobase.GeoBase@getCitiesForAirport(airport:String):List[String]" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       <p class="shortcomment cmt">Returns the cities associated to the given airport.</p><div class="fullcomment"><div class="comment cmt"><p>Returns the cities associated to the given airport.</p><p>It sometimes happens that an airport is shared between cities. This
 method, returns this list of cities (usually the list wil only contains
 one city).</p><p>The method getCityForAirport returns the first city corresponding to the
@@ -277,8 +305,13 @@ given airport, which is by assumption the biggest corresponding city.</p><pre>as
 assert(geoBase.getCitiesForAirport(<span class="lit">"AZA"</span>) == <span class="std">List</span>(<span class="lit">"PHX"</span>, <span class="lit">"MSC"</span>))</pre><p>Throws a GeoBaseException if GeoBase can't find corresponding cities.
 </p></div><dl class="paramcmts block"><dt class="param">airport</dt><dd class="cmt"><p>the airport IATA code (for instance AZA) for which to get
 the associated cities.</p></dd><dt>returns</dt><dd class="cmt"><p>the list of city codes corresponding to the given airport (for
-instance List(&quot;PHX&quot;, &quot;MSC&quot;)).</p></dd></dl><dl class="attributes block"> <dt>Exceptions thrown</dt><dd><span class="cmt">classOf[GeoBaseException]<p>
-</p></span></dd></dl></div>
+instance List(&quot;PHX&quot;, &quot;MSC&quot;)).</p></dd></dl><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="symbol">classOf[GeoBaseException]</span>
+    </span>)</span>
+              
+        </dd></dl></div>
     </li><li name="com.geobase.GeoBase#getCitiesForAirportOrElse" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getCitiesForAirportOrElse(airport:String,orElse:List[String]):List[String]"></a>
       <a id="getCitiesForAirportOrElse(String,List[String]):List[String]"></a>
@@ -290,7 +323,11 @@ instance List(&quot;PHX&quot;, &quot;MSC&quot;)).</p></dd></dl><dl class="attrib
       <span class="symbol">
         <span class="name">getCitiesForAirportOrElse</span><span class="params">(<span name="airport">airport: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="orElse">orElse: <span class="extype" name="scala.List">List</span>[<span class="extype" name="scala.Predef.String">String</span>] = <span class="symbol">List()</span></span>)</span><span class="result">: <span class="extype" name="scala.List">List</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../index.html#com.geobase.GeoBase@getCitiesForAirportOrElse(airport:String,orElse:List[String]):List[String]" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       <p class="shortcomment cmt">Returns the cities associated to the given airport.</p><div class="fullcomment"><div class="comment cmt"><p>Returns the cities associated to the given airport.</p><p>It sometimes happens that an airport is shared between cities. This
 method, returns this list of cities (usually the list wil only contains
 one city).</p><p>The method getCityForAirport returns the first city corresponding to the
@@ -299,8 +336,7 @@ assert(geoBase.getCitiesForAirportOrElse(<span class="lit">"AZA"</span>, <span c
 assert(geoBase.getCitiesForAirportOrElse(<span class="lit">"?*#"</span>, <span class="std">List</span>()) == <span class="std">List</span>())</pre></div><dl class="paramcmts block"><dt class="param">airport</dt><dd class="cmt"><p>the airport IATA code (for instance AZA) for which to get
 the associated cities.</p></dd><dt class="param">orElse</dt><dd class="cmt"><p>the value to return if no city could be associated to the
 requested airport (for instance List()).</p></dd><dt>returns</dt><dd class="cmt"><p>the list of city codes corresponding to the given airport (for
-instance List(&quot;PHX&quot;, &quot;MSC&quot;)).
-</p></dd></dl></div>
+instance List(&quot;PHX&quot;, &quot;MSC&quot;)).</p></dd></dl></div>
     </li><li name="com.geobase.GeoBase#getCityForAirport" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getCityForAirport(airport:String):String"></a>
       <a id="getCityForAirport(String):String"></a>
@@ -312,12 +348,21 @@ instance List(&quot;PHX&quot;, &quot;MSC&quot;)).
       <span class="symbol">
         <span class="name">getCityForAirport</span><span class="params">(<span name="airport">airport: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../index.html#com.geobase.GeoBase@getCityForAirport(airport:String):String" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       <p class="shortcomment cmt">Returns the city associated to the given airport.</p><div class="fullcomment"><div class="comment cmt"><p>Returns the city associated to the given airport.</p><pre>assert(geoBase.getCityForAirport(<span class="lit">"CDG"</span>) == <span class="lit">"PAR"</span>)</pre><p>Throws a GeoBaseException if GeoBase can't find a corresponding city.
 </p></div><dl class="paramcmts block"><dt class="param">airport</dt><dd class="cmt"><p>the airport IATA code (for instance CDG) for which to get
 the associated city.</p></dd><dt>returns</dt><dd class="cmt"><p>the city code corresponding to the given airport (for instance
-PAR).</p></dd></dl><dl class="attributes block"> <dt>Exceptions thrown</dt><dd><span class="cmt">classOf[GeoBaseException]<p>
-</p></span></dd></dl></div>
+PAR).</p></dd></dl><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="symbol">classOf[GeoBaseException]</span>
+    </span>)</span>
+              
+        </dd></dl></div>
     </li><li name="com.geobase.GeoBase#getCityForAirportOrElse" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getCityForAirportOrElse(airport:String,orElse:String):String"></a>
       <a id="getCityForAirportOrElse(String,String):String"></a>
@@ -329,13 +374,16 @@ PAR).</p></dd></dl><dl class="attributes block"> <dt>Exceptions thrown</dt><dd><
       <span class="symbol">
         <span class="name">getCityForAirportOrElse</span><span class="params">(<span name="airport">airport: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="orElse">orElse: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../index.html#com.geobase.GeoBase@getCityForAirportOrElse(airport:String,orElse:String):String" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       <p class="shortcomment cmt">Returns the city associated to the given airport.</p><div class="fullcomment"><div class="comment cmt"><p>Returns the city associated to the given airport.</p><pre>assert(geoBase.getCityForAirportOrElse(<span class="lit">"CDG"</span>, <span class="lit">""</span>) == <span class="lit">"PAR"</span>)
 assert(geoBase.getCityForAirportOrElse(<span class="lit">"?*#"</span>, <span class="lit">""</span>) == <span class="lit">""</span>)</pre></div><dl class="paramcmts block"><dt class="param">airport</dt><dd class="cmt"><p>the airport IATA code (for instance CDG) for which to get
 the associated city.</p></dd><dt class="param">orElse</dt><dd class="cmt"><p>the value to return if no city could be associated to the
 requested airport.</p></dd><dt>returns</dt><dd class="cmt"><p>the city code corresponding to the given airport (for instance
-PAR).
-</p></dd></dl></div>
+PAR).</p></dd></dl></div>
     </li><li name="scala.AnyRef#getClass" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getClass():Class[_]"></a>
       <a id="getClass():Class[_]"></a>
@@ -347,7 +395,11 @@ PAR).
       <span class="symbol">
         <span class="name">getClass</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.Class">Class</span>[_]</span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../index.html#com.geobase.GeoBase@getClass():Class[_]" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="com.geobase.GeoBase#getContinentForAirport" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getContinentForAirport(airport:String):String"></a>
@@ -360,14 +412,23 @@ PAR).
       <span class="symbol">
         <span class="name">getContinentForAirport</span><span class="params">(<span name="airport">airport: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../index.html#com.geobase.GeoBase@getContinentForAirport(airport:String):String" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       <p class="shortcomment cmt">Returns the continent associated to the given airport.</p><div class="fullcomment"><div class="comment cmt"><p>Returns the continent associated to the given airport.</p><p>Possible values: EU (Eurrope) - NA (North America) - SA (South Africa) -
 AF (Africa) - AS (Asia) - AN (Antarctica) - OC (Oceania).</p><pre>assert(geoBase.getContinentForAirport(<span class="lit">"CDG"</span>) == <span class="lit">"EU"</span>)</pre><p>Throws a GeoBaseException if GeoBase can't find a corresponding
 continent.
 </p></div><dl class="paramcmts block"><dt class="param">airport</dt><dd class="cmt"><p>the airport IATA code (for instance CDG) for which to get
 the associated continent.</p></dd><dt>returns</dt><dd class="cmt"><p>the continent code corresponding to the given airport (for
-instance EU).</p></dd></dl><dl class="attributes block"> <dt>Exceptions thrown</dt><dd><span class="cmt">classOf[GeoBaseException]<p>
-</p></span></dd></dl></div>
+instance EU).</p></dd></dl><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="symbol">classOf[GeoBaseException]</span>
+    </span>)</span>
+              
+        </dd></dl></div>
     </li><li name="com.geobase.GeoBase#getContinentForAirportOrElse" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getContinentForAirportOrElse(airport:String,orElse:String):String"></a>
       <a id="getContinentForAirportOrElse(String,String):String"></a>
@@ -379,14 +440,17 @@ instance EU).</p></dd></dl><dl class="attributes block"> <dt>Exceptions thrown</
       <span class="symbol">
         <span class="name">getContinentForAirportOrElse</span><span class="params">(<span name="airport">airport: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="orElse">orElse: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../index.html#com.geobase.GeoBase@getContinentForAirportOrElse(airport:String,orElse:String):String" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       <p class="shortcomment cmt">Returns the continent associated to the given airport.</p><div class="fullcomment"><div class="comment cmt"><p>Returns the continent associated to the given airport.</p><p>Possible values: EU (Eurrope) - NA (North America) - SA (South Africa) -
 AF (Africa) - AS (Asia) - AN (Antarctica) - OC (Oceania).</p><pre>assert(geoBase.getContinentForAirportOrElse(<span class="lit">"CDG"</span>) == <span class="lit">"EU"</span>)
 assert(geoBase.getContinentForAirportOrElse(<span class="lit">"?*#"</span>, <span class="lit">""</span>) == <span class="lit">""</span>)</pre></div><dl class="paramcmts block"><dt class="param">airport</dt><dd class="cmt"><p>the airport IATA code (for instance PAR) for which to get
 the associated continent.</p></dd><dt class="param">orElse</dt><dd class="cmt"><p>the value to return if no continent could be associated to
 the requested airport.</p></dd><dt>returns</dt><dd class="cmt"><p>the continent code corresponding to the given airport (for
-instance EU).
-</p></dd></dl></div>
+instance EU).</p></dd></dl></div>
     </li><li name="com.geobase.GeoBase#getContinentForCity" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getContinentForCity(city:String):String"></a>
       <a id="getContinentForCity(String):String"></a>
@@ -398,14 +462,23 @@ instance EU).
       <span class="symbol">
         <span class="name">getContinentForCity</span><span class="params">(<span name="city">city: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../index.html#com.geobase.GeoBase@getContinentForCity(city:String):String" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       <p class="shortcomment cmt">Returns the continent associated to the given city.</p><div class="fullcomment"><div class="comment cmt"><p>Returns the continent associated to the given city.</p><p>Possible values: EU (Eurrope) - NA (North America) - SA (South Africa) -
 AF (Africa) - AS (Asia) - AN (Antarctica) - OC (Oceania).</p><pre>assert(geoBase.getContinentForCity(<span class="lit">"PAR"</span>) == <span class="lit">"EU"</span>)</pre><p>Throws a GeoBaseException if GeoBase can't find a corresponding
 continent.
 </p></div><dl class="paramcmts block"><dt class="param">city</dt><dd class="cmt"><p>the city IATA code (for instance CDG) for which to get
 the associated continent.</p></dd><dt>returns</dt><dd class="cmt"><p>the continent code corresponding to the given city (for
-instance EU).</p></dd></dl><dl class="attributes block"> <dt>Exceptions thrown</dt><dd><span class="cmt">classOf[GeoBaseException]<p>
-</p></span></dd></dl></div>
+instance EU).</p></dd></dl><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="symbol">classOf[GeoBaseException]</span>
+    </span>)</span>
+              
+        </dd></dl></div>
     </li><li name="com.geobase.GeoBase#getContinentForCityOrElse" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getContinentForCityOrElse(city:String,orElse:String):String"></a>
       <a id="getContinentForCityOrElse(String,String):String"></a>
@@ -417,14 +490,17 @@ instance EU).</p></dd></dl><dl class="attributes block"> <dt>Exceptions thrown</
       <span class="symbol">
         <span class="name">getContinentForCityOrElse</span><span class="params">(<span name="city">city: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="orElse">orElse: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../index.html#com.geobase.GeoBase@getContinentForCityOrElse(city:String,orElse:String):String" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       <p class="shortcomment cmt">Returns the continent associated to the given city.</p><div class="fullcomment"><div class="comment cmt"><p>Returns the continent associated to the given city.</p><p>Possible values: EU (Eurrope) - NA (North America) - SA (South Africa) -
 AF (Africa) - AS (Asia) - AN (Antarctica) - OC (Oceania).</p><pre>assert(geoBase.getContinentForCityOrElse(<span class="lit">"NYC"</span>) == <span class="lit">"NA"</span>)
 assert(geoBase.getContinentForCityOrElse(<span class="lit">"?*#"</span>, <span class="lit">""</span>) == <span class="lit">""</span>)</pre></div><dl class="paramcmts block"><dt class="param">city</dt><dd class="cmt"><p>the city IATA code (for instance NYC) for which to get the
 associated continent.</p></dd><dt class="param">orElse</dt><dd class="cmt"><p>the value to return if no continent could be associated to
 the requested city.</p></dd><dt>returns</dt><dd class="cmt"><p>the continent code corresponding to the given city (for
-instance EU).
-</p></dd></dl></div>
+instance EU).</p></dd></dl></div>
     </li><li name="com.geobase.GeoBase#getContinentForCountry" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getContinentForCountry(country:String):String"></a>
       <a id="getContinentForCountry(String):String"></a>
@@ -436,14 +512,23 @@ instance EU).
       <span class="symbol">
         <span class="name">getContinentForCountry</span><span class="params">(<span name="country">country: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../index.html#com.geobase.GeoBase@getContinentForCountry(country:String):String" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       <p class="shortcomment cmt">Returns the continent associated to the given country.</p><div class="fullcomment"><div class="comment cmt"><p>Returns the continent associated to the given country.</p><p>Possible values: EU (Eurrope) - NA (North America) - SA (South Africa) -
 AF (Africa) - AS (Asia) - AN (Antarctica) - OC (Oceania).</p><pre>assert(geoBase.getContinentForCountry(<span class="lit">"FR"</span>) == <span class="lit">"EU"</span>)</pre><p>Throws a GeoBaseException if GeoBase can't find a corresponding
 continent.
 </p></div><dl class="paramcmts block"><dt class="param">country</dt><dd class="cmt"><p>the country IATA code (for instance FR) for which to get
 the associated continent.</p></dd><dt>returns</dt><dd class="cmt"><p>the continent code corresponding to the given country (for
-instance EU).</p></dd></dl><dl class="attributes block"> <dt>Exceptions thrown</dt><dd><span class="cmt">classOf[GeoBaseException]<p>
-</p></span></dd></dl></div>
+instance EU).</p></dd></dl><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="symbol">classOf[GeoBaseException]</span>
+    </span>)</span>
+              
+        </dd></dl></div>
     </li><li name="com.geobase.GeoBase#getContinentForCountryOrElse" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getContinentForCountryOrElse(country:String,orElse:String):String"></a>
       <a id="getContinentForCountryOrElse(String,String):String"></a>
@@ -455,14 +540,17 @@ instance EU).</p></dd></dl><dl class="attributes block"> <dt>Exceptions thrown</
       <span class="symbol">
         <span class="name">getContinentForCountryOrElse</span><span class="params">(<span name="country">country: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="orElse">orElse: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../index.html#com.geobase.GeoBase@getContinentForCountryOrElse(country:String,orElse:String):String" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       <p class="shortcomment cmt">Returns the continent associated to the given country.</p><div class="fullcomment"><div class="comment cmt"><p>Returns the continent associated to the given country.</p><p>Possible values: EU (Eurrope) - NA (North America) - SA (South Africa) -
 AF (Africa) - AS (Asia) - AN (Antarctica) - OC (Oceania).</p><pre>assert(geoBase.getContinentForCountryOrElse(<span class="lit">"CN"</span>) == <span class="lit">"AS"</span>)
 assert(geoBase.getContinentForCountryOrElse(<span class="lit">"?*#"</span>, <span class="lit">""</span>) == <span class="lit">""</span>)</pre></div><dl class="paramcmts block"><dt class="param">country</dt><dd class="cmt"><p>the country IATA code (for instance US) for which to get
 the associated continent.</p></dd><dt class="param">orElse</dt><dd class="cmt"><p>the value to return if no continent could be associated to
 the requested country.</p></dd><dt>returns</dt><dd class="cmt"><p>the continent code corresponding to the given country (for
-instance NA).
-</p></dd></dl></div>
+instance NA).</p></dd></dl></div>
     </li><li name="com.geobase.GeoBase#getContinentForLocation" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getContinentForLocation(location:String):String"></a>
       <a id="getContinentForLocation(String):String"></a>
@@ -474,7 +562,11 @@ instance NA).
       <span class="symbol">
         <span class="name">getContinentForLocation</span><span class="params">(<span name="location">location: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../index.html#com.geobase.GeoBase@getContinentForLocation(location:String):String" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       <p class="shortcomment cmt">Returns the continent associated to the given airport, city or country.</p><div class="fullcomment"><div class="comment cmt"><p>Returns the continent associated to the given airport, city or country.</p><p>Possible values: EU (Eurrope) - NA (North America) - SA (South Africa) -
 AF (Africa) - AS (Asia) - AN (Antarctica) - OC (Oceania).</p><pre>assert(geoBase.getContinentForLocation(<span class="lit">"CDG"</span>) == <span class="lit">"EU"</span>)
 assert(geoBase.getContinentForLocation(<span class="lit">"NYC"</span>) == <span class="lit">"NA"</span>)
@@ -482,8 +574,13 @@ assert(geoBase.getContinentForLocation(<span class="lit">"CN"</span>) == <span c
 continent.
 </p></div><dl class="paramcmts block"><dt class="param">location</dt><dd class="cmt"><p>the country, city or airport IATA code (for instance
 PAR) for which to get the associated continent.</p></dd><dt>returns</dt><dd class="cmt"><p>the continent code corresponding to the given location (for
-instance EU).</p></dd></dl><dl class="attributes block"> <dt>Exceptions thrown</dt><dd><span class="cmt">classOf[GeoBaseException]<p>
-</p></span></dd></dl></div>
+instance EU).</p></dd></dl><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="symbol">classOf[GeoBaseException]</span>
+    </span>)</span>
+              
+        </dd></dl></div>
     </li><li name="com.geobase.GeoBase#getContinentForLocationOrElse" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getContinentForLocationOrElse(location:String,orElse:String):String"></a>
       <a id="getContinentForLocationOrElse(String,String):String"></a>
@@ -495,7 +592,11 @@ instance EU).</p></dd></dl><dl class="attributes block"> <dt>Exceptions thrown</
       <span class="symbol">
         <span class="name">getContinentForLocationOrElse</span><span class="params">(<span name="location">location: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="orElse">orElse: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../index.html#com.geobase.GeoBase@getContinentForLocationOrElse(location:String,orElse:String):String" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       <p class="shortcomment cmt">Returns the continent associated to the given airport, city or country.</p><div class="fullcomment"><div class="comment cmt"><p>Returns the continent associated to the given airport, city or country.</p><p>Possible values: EU (Eurrope) - NA (North America) - SA (South Africa) -
 AF (Africa) - AS (Asia) - AN (Antarctica) - OC (Oceania).</p><pre>assert(geoBase.getContinentForLocationOrElse(<span class="lit">"CDG"</span>) == <span class="lit">"EU"</span>)
 assert(geoBase.getContinentForLocationOrElse(<span class="lit">"NYC"</span>) == <span class="lit">"NA"</span>)
@@ -503,8 +604,7 @@ assert(geoBase.getContinentForLocationOrElse(<span class="lit">"CN"</span>) == <
 assert(geoBase.getContinentForLocationOrElse(<span class="lit">"?*#"</span>, <span class="lit">""</span>) == <span class="lit">""</span>)</pre></div><dl class="paramcmts block"><dt class="param">location</dt><dd class="cmt"><p>the country, city or airport IATA code (for instance
 PAR) for which to get the associated continent.</p></dd><dt class="param">orElse</dt><dd class="cmt"><p>the value to return if no continent could be associated to
 the requested location.</p></dd><dt>returns</dt><dd class="cmt"><p>the continent code corresponding to the given location (for
-instance EU).
-</p></dd></dl></div>
+instance EU).</p></dd></dl></div>
     </li><li name="com.geobase.GeoBase#getCountryForAirline" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getCountryForAirline(airline:String):String"></a>
       <a id="getCountryForAirline(String):String"></a>
@@ -516,12 +616,21 @@ instance EU).
       <span class="symbol">
         <span class="name">getCountryForAirline</span><span class="params">(<span name="airline">airline: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../index.html#com.geobase.GeoBase@getCountryForAirline(airline:String):String" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       <p class="shortcomment cmt">Returns the country associated to the given airline.</p><div class="fullcomment"><div class="comment cmt"><p>Returns the country associated to the given airline.</p><pre>assert(geoBase.getCountryForAirline(<span class="lit">"AF"</span>) == <span class="lit">"FR"</span>)</pre><p>Throws a GeoBaseException if GeoBase can't find a corresponding country.
 </p></div><dl class="paramcmts block"><dt class="param">airline</dt><dd class="cmt"><p>the airline IATA code (for instance AF) for which to get
 the associated country.</p></dd><dt>returns</dt><dd class="cmt"><p>the country code corresponding to the given airline (for
-instance FR).</p></dd></dl><dl class="attributes block"> <dt>Exceptions thrown</dt><dd><span class="cmt">classOf[GeoBaseException]<p>
-</p></span></dd></dl></div>
+instance FR).</p></dd></dl><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="symbol">classOf[GeoBaseException]</span>
+    </span>)</span>
+              
+        </dd></dl></div>
     </li><li name="com.geobase.GeoBase#getCountryForAirlineOrElse" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getCountryForAirlineOrElse(airline:String,orElse:String):String"></a>
       <a id="getCountryForAirlineOrElse(String,String):String"></a>
@@ -533,13 +642,16 @@ instance FR).</p></dd></dl><dl class="attributes block"> <dt>Exceptions thrown</
       <span class="symbol">
         <span class="name">getCountryForAirlineOrElse</span><span class="params">(<span name="airline">airline: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="orElse">orElse: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../index.html#com.geobase.GeoBase@getCountryForAirlineOrElse(airline:String,orElse:String):String" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       <p class="shortcomment cmt">Returns the country associated to the given airline.</p><div class="fullcomment"><div class="comment cmt"><p>Returns the country associated to the given airline.</p><pre>assert(geoBase.getCountryForAirlineOrElse(<span class="lit">"AF"</span>, <span class="lit">""</span>) == <span class="lit">"FR"</span>)
 assert(geoBase.getCountryForAirlineOrElse(<span class="lit">"#?"</span>, <span class="lit">""</span>) == <span class="lit">""</span>)</pre></div><dl class="paramcmts block"><dt class="param">airline</dt><dd class="cmt"><p>the airline IATA code (for instance AF) for which to get
 the associated country.</p></dd><dt class="param">orElse</dt><dd class="cmt"><p>the value to return if no country could be associated to
 the requested airline.</p></dd><dt>returns</dt><dd class="cmt"><p>the country code corresponding to the given airline (for
-instance FR).
-</p></dd></dl></div>
+instance FR).</p></dd></dl></div>
     </li><li name="com.geobase.GeoBase#getCountryForAirport" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getCountryForAirport(airport:String):String"></a>
       <a id="getCountryForAirport(String):String"></a>
@@ -551,12 +663,21 @@ instance FR).
       <span class="symbol">
         <span class="name">getCountryForAirport</span><span class="params">(<span name="airport">airport: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../index.html#com.geobase.GeoBase@getCountryForAirport(airport:String):String" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       <p class="shortcomment cmt">Returns the country associated to the given airport.</p><div class="fullcomment"><div class="comment cmt"><p>Returns the country associated to the given airport.</p><pre>assert(geoBase.getCountryForAirport(<span class="lit">"CDG"</span>) == <span class="lit">"FR"</span>)</pre><p>Throws a GeoBaseException if GeoBase can't find a corresponding country.
 </p></div><dl class="paramcmts block"><dt class="param">airport</dt><dd class="cmt"><p>the airport IATA code (for instance CDG) for which to get
 the associated country.</p></dd><dt>returns</dt><dd class="cmt"><p>the country code corresponding to the given airport (for
-instance FR).</p></dd></dl><dl class="attributes block"> <dt>Exceptions thrown</dt><dd><span class="cmt">classOf[GeoBaseException]<p>
-</p></span></dd></dl></div>
+instance FR).</p></dd></dl><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="symbol">classOf[GeoBaseException]</span>
+    </span>)</span>
+              
+        </dd></dl></div>
     </li><li name="com.geobase.GeoBase#getCountryForAirportOrElse" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getCountryForAirportOrElse(airport:String,orElse:String):String"></a>
       <a id="getCountryForAirportOrElse(String,String):String"></a>
@@ -568,14 +689,16 @@ instance FR).</p></dd></dl><dl class="attributes block"> <dt>Exceptions thrown</
       <span class="symbol">
         <span class="name">getCountryForAirportOrElse</span><span class="params">(<span name="airport">airport: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="orElse">orElse: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../index.html#com.geobase.GeoBase@getCountryForAirportOrElse(airport:String,orElse:String):String" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       <p class="shortcomment cmt">Returns the country associated to the given airport.</p><div class="fullcomment"><div class="comment cmt"><p>Returns the country associated to the given airport.</p><pre>assert(geoBase.getCountryForAirportOrElse(<span class="lit">"CDG"</span>) == <span class="lit">"FR"</span>)
-assert(geoBase.getCountryForAirportOrElse(<span class="lit">"?*#"</span>, <span class="lit">""</span>) == <span class="lit">""</span>)</pre><p>Throws a GeoBaseException if GeoBase can't find a corresponding country.
-</p></div><dl class="paramcmts block"><dt class="param">airport</dt><dd class="cmt"><p>the airport IATA code (for instance CDG) for which to get
+assert(geoBase.getCountryForAirportOrElse(<span class="lit">"?*#"</span>, <span class="lit">""</span>) == <span class="lit">""</span>)</pre></div><dl class="paramcmts block"><dt class="param">airport</dt><dd class="cmt"><p>the airport IATA code (for instance CDG) for which to get
 the associated country.</p></dd><dt class="param">orElse</dt><dd class="cmt"><p>the value to return if no country could be associated to
 the requested airport.</p></dd><dt>returns</dt><dd class="cmt"><p>the country code corresponding to the given airport (for
-instance FR).
-</p></dd></dl></div>
+instance FR).</p></dd></dl></div>
     </li><li name="com.geobase.GeoBase#getCountryForCity" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getCountryForCity(city:String):String"></a>
       <a id="getCountryForCity(String):String"></a>
@@ -587,12 +710,21 @@ instance FR).
       <span class="symbol">
         <span class="name">getCountryForCity</span><span class="params">(<span name="city">city: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../index.html#com.geobase.GeoBase@getCountryForCity(city:String):String" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       <p class="shortcomment cmt">Returns the country associated to the given city.</p><div class="fullcomment"><div class="comment cmt"><p>Returns the country associated to the given city.</p><pre>assert(geoBase.getCountryForCity(<span class="lit">"PAR"</span>) == <span class="lit">"FR"</span>)</pre><p>Throws a GeoBaseException if GeoBase can't find a corresponding country.
 </p></div><dl class="paramcmts block"><dt class="param">city</dt><dd class="cmt"><p>the city IATA code (for instance PAR) for which to get
 the associated country.</p></dd><dt>returns</dt><dd class="cmt"><p>the country code corresponding to the given city (for instance
-FR).</p></dd></dl><dl class="attributes block"> <dt>Exceptions thrown</dt><dd><span class="cmt">classOf[GeoBaseException]<p>
-</p></span></dd></dl></div>
+FR).</p></dd></dl><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="symbol">classOf[GeoBaseException]</span>
+    </span>)</span>
+              
+        </dd></dl></div>
     </li><li name="com.geobase.GeoBase#getCountryForCityOrElse" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getCountryForCityOrElse(city:String,orElse:String):String"></a>
       <a id="getCountryForCityOrElse(String,String):String"></a>
@@ -604,14 +736,16 @@ FR).</p></dd></dl><dl class="attributes block"> <dt>Exceptions thrown</dt><dd><s
       <span class="symbol">
         <span class="name">getCountryForCityOrElse</span><span class="params">(<span name="city">city: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="orElse">orElse: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../index.html#com.geobase.GeoBase@getCountryForCityOrElse(city:String,orElse:String):String" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       <p class="shortcomment cmt">Returns the country associated to the given city.</p><div class="fullcomment"><div class="comment cmt"><p>Returns the country associated to the given city.</p><pre>assert(geoBase.getCountryForCityOrElse(<span class="lit">"PAR"</span>) == <span class="lit">"FR"</span>)
-assert(geoBase.getCountryForCityOrElse(<span class="lit">"?*#"</span>, <span class="lit">""</span>) == <span class="lit">""</span>)</pre><p>Throws a GeoBaseException if GeoBase can't find a corresponding country.
-</p></div><dl class="paramcmts block"><dt class="param">city</dt><dd class="cmt"><p>the city IATA code (for instance PAR) for which to get
+assert(geoBase.getCountryForCityOrElse(<span class="lit">"?*#"</span>, <span class="lit">""</span>) == <span class="lit">""</span>)</pre></div><dl class="paramcmts block"><dt class="param">city</dt><dd class="cmt"><p>the city IATA code (for instance PAR) for which to get
 the associated country.</p></dd><dt class="param">orElse</dt><dd class="cmt"><p>the value to return if no country could be associated to
 the requested city.</p></dd><dt>returns</dt><dd class="cmt"><p>the country code corresponding to the given city (for instance
-FR).
-</p></dd></dl></div>
+FR).</p></dd></dl></div>
     </li><li name="com.geobase.GeoBase#getCurrencyForCity" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getCurrencyForCity(city:String):String"></a>
       <a id="getCurrencyForCity(String):String"></a>
@@ -623,12 +757,21 @@ FR).
       <span class="symbol">
         <span class="name">getCurrencyForCity</span><span class="params">(<span name="city">city: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../index.html#com.geobase.GeoBase@getCurrencyForCity(city:String):String" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       <p class="shortcomment cmt">Returns the currency associated to the given city.</p><div class="fullcomment"><div class="comment cmt"><p>Returns the currency associated to the given city.</p><pre>assert(geoBase.getCurrencyForCity(<span class="lit">"NYC"</span>) == <span class="lit">"USD"</span>)</pre><p>Throws a GeoBaseException if GeoBase can't find a corresponding currency.
 </p></div><dl class="paramcmts block"><dt class="param">city</dt><dd class="cmt"><p>the city IATA code (for instance NYC) for which to get
 the associated currency.</p></dd><dt>returns</dt><dd class="cmt"><p>the currency code corresponding to the given city (for instance
-USD).</p></dd></dl><dl class="attributes block"> <dt>Exceptions thrown</dt><dd><span class="cmt">classOf[GeoBaseException]<p>
-</p></span></dd></dl></div>
+USD).</p></dd></dl><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="symbol">classOf[GeoBaseException]</span>
+    </span>)</span>
+              
+        </dd></dl></div>
     </li><li name="com.geobase.GeoBase#getCurrencyForCityOrElse" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getCurrencyForCityOrElse(city:String,orElse:String):String"></a>
       <a id="getCurrencyForCityOrElse(String,String):String"></a>
@@ -640,14 +783,17 @@ USD).</p></dd></dl><dl class="attributes block"> <dt>Exceptions thrown</dt><dd><
       <span class="symbol">
         <span class="name">getCurrencyForCityOrElse</span><span class="params">(<span name="city">city: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="orElse">orElse: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../index.html#com.geobase.GeoBase@getCurrencyForCityOrElse(city:String,orElse:String):String" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       <p class="shortcomment cmt">Returns the currency associated to the given city.</p><div class="fullcomment"><div class="comment cmt"><p>Returns the currency associated to the given city.</p><pre>assert(geoBase.getCurrencyForCityOrElse(<span class="lit">"PAR"</span>, <span class="lit">""</span>) == <span class="lit">"EUR"</span>)
 assert(geoBase.getCurrencyForCityOrElse(<span class="lit">"?#"</span>, <span class="lit">""</span>) == <span class="lit">""</span>)
 assert(geoBase.getCurrencyForCityOrElse(<span class="lit">"?#"</span>, <span class="lit">"USD"</span>) == <span class="lit">"USD"</span>)</pre></div><dl class="paramcmts block"><dt class="param">city</dt><dd class="cmt"><p>the city IATA code (for instance PAR) for which to get
 the associated currency.</p></dd><dt class="param">orElse</dt><dd class="cmt"><p>the value to return if no currency could be associated to
 the requested city.</p></dd><dt>returns</dt><dd class="cmt"><p>the currency code corresponding to the given city (for
-instance EUR).
-</p></dd></dl></div>
+instance EUR).</p></dd></dl></div>
     </li><li name="com.geobase.GeoBase#getCurrencyForCountry" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getCurrencyForCountry(country:String):String"></a>
       <a id="getCurrencyForCountry(String):String"></a>
@@ -659,12 +805,21 @@ instance EUR).
       <span class="symbol">
         <span class="name">getCurrencyForCountry</span><span class="params">(<span name="country">country: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../index.html#com.geobase.GeoBase@getCurrencyForCountry(country:String):String" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       <p class="shortcomment cmt">Returns the currency associated to the given country.</p><div class="fullcomment"><div class="comment cmt"><p>Returns the currency associated to the given country.</p><pre>assert(geoBase.getCurrencyForCountry(<span class="lit">"FR"</span>) == <span class="lit">"EUR"</span>)</pre><p>Throws a GeoBaseException if GeoBase can't find a corresponding currency.
 </p></div><dl class="paramcmts block"><dt class="param">country</dt><dd class="cmt"><p>the country IATA code (for instance FR) for which to get
 the associated currency.</p></dd><dt>returns</dt><dd class="cmt"><p>the currency code corresponding to the given country (for
-instance EUR).</p></dd></dl><dl class="attributes block"> <dt>Exceptions thrown</dt><dd><span class="cmt">classOf[GeoBaseException]<p>
-</p></span></dd></dl></div>
+instance EUR).</p></dd></dl><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="symbol">classOf[GeoBaseException]</span>
+    </span>)</span>
+              
+        </dd></dl></div>
     </li><li name="com.geobase.GeoBase#getCurrencyForCountryOrElse" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getCurrencyForCountryOrElse(country:String,orElse:String):String"></a>
       <a id="getCurrencyForCountryOrElse(String,String):String"></a>
@@ -676,14 +831,17 @@ instance EUR).</p></dd></dl><dl class="attributes block"> <dt>Exceptions thrown<
       <span class="symbol">
         <span class="name">getCurrencyForCountryOrElse</span><span class="params">(<span name="country">country: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="orElse">orElse: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../index.html#com.geobase.GeoBase@getCurrencyForCountryOrElse(country:String,orElse:String):String" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       <p class="shortcomment cmt">Returns the currency associated to the given country.</p><div class="fullcomment"><div class="comment cmt"><p>Returns the currency associated to the given country.</p><pre>assert(geoBase.getCurrencyForCountryOrElse(<span class="lit">"FR"</span>, <span class="lit">""</span>) == <span class="lit">"EUR"</span>)
 assert(geoBase.getCurrencyForCountryOrElse(<span class="lit">"?#"</span>, <span class="lit">""</span>) == <span class="lit">""</span>)
 assert(geoBase.getCurrencyForCountryOrElse(<span class="lit">"?#"</span>, <span class="lit">"USD"</span>) == <span class="lit">"USD"</span>)</pre></div><dl class="paramcmts block"><dt class="param">country</dt><dd class="cmt"><p>the country IATA code (for instance FR) for which to get
 the associated currency.</p></dd><dt class="param">orElse</dt><dd class="cmt"><p>the value to return if no currency could be associated to
 the requested country.</p></dd><dt>returns</dt><dd class="cmt"><p>the currency code corresponding to the given country (for
-instance EUR).
-</p></dd></dl></div>
+instance EUR).</p></dd></dl></div>
     </li><li name="com.geobase.GeoBase#getDayOfWeek" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getDayOfWeek(date:String,format:String):String"></a>
       <a id="getDayOfWeek(String,String):String"></a>
@@ -695,10 +853,13 @@ instance EUR).
       <span class="symbol">
         <span class="name">getDayOfWeek</span><span class="params">(<span name="date">date: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="format">format: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;yyyyMMdd&quot;</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../index.html#com.geobase.GeoBase@getDayOfWeek(date:String,format:String):String" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       <p class="shortcomment cmt">Returns the day of week for a date under the given format.</p><div class="fullcomment"><div class="comment cmt"><p>Returns the day of week for a date under the given format.</p><p>A Monday is &quot;1&quot; and a Sunday is &quot;7&quot;.</p><pre>assert(geoBase.getDayOfWeek(<span class="lit">"20160614"</span>) == <span class="lit">"2"</span>)</pre></div><dl class="paramcmts block"><dt class="param">date</dt><dd class="cmt"><p>the date for which to get the day of week</p></dd><dt class="param">format</dt><dd class="cmt"><p>(default = &quot;yyyyMMdd&quot;) the format under which the date is
-provided.</p></dd><dt>returns</dt><dd class="cmt"><p>the associated day of week, such as 2 for Tuesday
-</p></dd></dl></div>
+provided.</p></dd><dt>returns</dt><dd class="cmt"><p>the associated day of week, such as 2 for Tuesday</p></dd></dl></div>
     </li><li name="com.geobase.GeoBase#getDistanceBetween" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getDistanceBetween(airportOrCityA:String,airportOrCityB:String):Int"></a>
       <a id="getDistanceBetween(String,String):Int"></a>
@@ -710,15 +871,24 @@ provided.</p></dd><dt>returns</dt><dd class="cmt"><p>the associated day of week,
       <span class="symbol">
         <span class="name">getDistanceBetween</span><span class="params">(<span name="airportOrCityA">airportOrCityA: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="airportOrCityB">airportOrCityB: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../index.html#com.geobase.GeoBase@getDistanceBetween(airportOrCityA:String,airportOrCityB:String):Int" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       <p class="shortcomment cmt">Returns the distance between two locations (airports/cities).</p><div class="fullcomment"><div class="comment cmt"><p>Returns the distance between two locations (airports/cities).</p><pre>assert(geoBase.getDistanceBetween(<span class="lit">"ORY"</span>, <span class="lit">"NCE"</span>) == <span class="num">674</span>)
 assert(geoBase.getDistanceBetween(<span class="lit">"PAR"</span>, <span class="lit">"NCE"</span>) == <span class="num">686</span>)</pre><p>Throws a GeoBaseException if GeoBase doesn't have an entry for the
 requested airports/cities.
 </p></div><dl class="paramcmts block"><dt class="param">airportOrCityA</dt><dd class="cmt"><p>an airport or city IATA code (for instance ORY)
 for which to get the distance with airportOrCityB.</p></dd><dt class="param">airportOrCityB</dt><dd class="cmt"><p>an airport or city IATA code (for instance NCE)
 for which to get the distance with airportOrCityA.</p></dd><dt>returns</dt><dd class="cmt"><p>the distance rounded in km between airportOrCityA and
-airportOrCityB (for instance 674).</p></dd></dl><dl class="attributes block"> <dt>Exceptions thrown</dt><dd><span class="cmt">classOf[GeoBaseException]<p>
-</p></span></dd></dl></div>
+airportOrCityB (for instance 674).</p></dd></dl><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="symbol">classOf[GeoBaseException]</span>
+    </span>)</span>
+              
+        </dd></dl></div>
     </li><li name="com.geobase.GeoBase#getDistanceBetweenOrElse" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getDistanceBetweenOrElse(airportOrCityA:String,airportOrCityB:String,orElse:Int):Int"></a>
       <a id="getDistanceBetweenOrElse(String,String,Int):Int"></a>
@@ -730,41 +900,53 @@ airportOrCityB (for instance 674).</p></dd></dl><dl class="attributes block"> <d
       <span class="symbol">
         <span class="name">getDistanceBetweenOrElse</span><span class="params">(<span name="airportOrCityA">airportOrCityA: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="airportOrCityB">airportOrCityB: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="orElse">orElse: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">1</span></span>)</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../index.html#com.geobase.GeoBase@getDistanceBetweenOrElse(airportOrCityA:String,airportOrCityB:String,orElse:Int):Int" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       <p class="shortcomment cmt">Returns the distance between two locations (airports/cities).</p><div class="fullcomment"><div class="comment cmt"><p>Returns the distance between two locations (airports/cities).</p><pre>assert(geoBase.getDistanceBetweenOrElse(<span class="lit">"ORY"</span>, <span class="lit">"NCE"</span>, -<span class="num">1</span>) == <span class="num">674</span>)
 assert(geoBase.getDistanceBetweenOrElse(<span class="lit">"PAR"</span>, <span class="lit">"NCE"</span>, -<span class="num">1</span>) == <span class="num">686</span>)
 assert(geoBase.getDistanceBetweenOrElse(<span class="lit">"PAR"</span>, <span class="lit">"~#?"</span>, -<span class="num">1</span>) == -<span class="num">1</span>)</pre></div><dl class="paramcmts block"><dt class="param">airportOrCityA</dt><dd class="cmt"><p>an airport or city IATA code (for instance ORY)
 for which to get the distance with airportOrCityB.</p></dd><dt class="param">airportOrCityB</dt><dd class="cmt"><p>an airport or city IATA code (for instance NCE)
 for which to get the distance with airportOrCityA.</p></dd><dt class="param">orElse</dt><dd class="cmt"><p>the value to return if GeoBase doesn't have data for
 airportOrCityA or airportOrCityB.</p></dd><dt>returns</dt><dd class="cmt"><p>the distance rounded in km between airportOrCityA and
-airportOrCityB (for instance 674).
-</p></dd></dl></div>
+airportOrCityB (for instance 674).</p></dd></dl></div>
     </li><li name="com.geobase.GeoBase#getEFTfromLocalDates" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="getEFTfromLocalDates(localDepartureDate:String,originAirportOrCity:String,localArrivalDate:String,destinationAirportOrCity:String,unit:String,format:String):Float"></a>
-      <a id="getEFTfromLocalDates(String,String,String,String,String,String):Float"></a>
+      <a id="getEFTfromLocalDates(localDepartureDate:String,originAirportOrCity:String,localArrivalDate:String,destinationAirportOrCity:String,unit:String,format:String):Double"></a>
+      <a id="getEFTfromLocalDates(String,String,String,String,String,String):Double"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">getEFTfromLocalDates</span><span class="params">(<span name="localDepartureDate">localDepartureDate: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="originAirportOrCity">originAirportOrCity: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="localArrivalDate">localArrivalDate: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="destinationAirportOrCity">destinationAirportOrCity: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="unit">unit: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;hours&quot;</span></span>, <span name="format">format: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;yyyyMMdd_HHmm&quot;</span></span>)</span><span class="result">: <span class="extype" name="scala.Float">Float</span></span>
+        <span class="name">getEFTfromLocalDates</span><span class="params">(<span name="localDepartureDate">localDepartureDate: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="originAirportOrCity">originAirportOrCity: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="localArrivalDate">localArrivalDate: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="destinationAirportOrCity">destinationAirportOrCity: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="unit">unit: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;hours&quot;</span></span>, <span name="format">format: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;yyyyMMdd_HHmm&quot;</span></span>)</span><span class="result">: <span class="extype" name="scala.Double">Double</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../index.html#com.geobase.GeoBase@getEFTfromLocalDates(localDepartureDate:String,originAirportOrCity:String,localArrivalDate:String,destinationAirportOrCity:String,unit:String,format:String):Double" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       <p class="shortcomment cmt">Returns the elapsed flying time between two locations (airport or city).</p><div class="fullcomment"><div class="comment cmt"><p>Returns the elapsed flying time between two locations (airport or city).</p><p>Trip duration is a synonym of elapsed flying time (EFT).</p><p>This is meant to be used to compute the trip duration for a
 segment/bound for which we know the origin/destination airports/cities
-and the local time. i.e. when we don't have gmt times.</p><pre>assert(geoBase.getEFTfromLocalDates(<span class="lit">"20160606_1627"</span>, <span class="lit">"CDG"</span>, <span class="lit">"20160606_1757"</span>, <span class="lit">"JFK"</span>) == <span class="num">7.5</span>f)
+and the local time. i.e. when we don't have gmt times.</p><pre>assert(geoBase.getEFTfromLocalDates(<span class="lit">"20160606_1627"</span>, <span class="lit">"CDG"</span>, <span class="lit">"20160606_1757"</span>, <span class="lit">"JFK"</span>) == <span class="num">7.5</span>d)
 
 <span class="kw">val</span> computedTripDuration = geoBase.getEFTfromLocalDates(
 	<span class="lit">"2016-06-06T16:27"</span>, <span class="lit">"CDG"</span>, <span class="lit">"2016-06-06T17:57"</span>, <span class="lit">"JFK"</span>,
 	format = <span class="lit">"yyyy-MM-dd'T'HH:mm"</span>, unit = <span class="lit">"minutes"</span>
 )
-assert(computedTripDuration == <span class="num">450</span>f)</pre><p>Throws a GeoBaseException if GeoBase doesn't have an entry for the
+assert(computedTripDuration == <span class="num">450</span>d)</pre><p>Throws a GeoBaseException if GeoBase doesn't have an entry for the
 requested airports/cities.
 </p></div><dl class="paramcmts block"><dt class="param">localDepartureDate</dt><dd class="cmt"><p>the departure local date</p></dd><dt class="param">originAirportOrCity</dt><dd class="cmt"><p>the origin airport or city</p></dd><dt class="param">localArrivalDate</dt><dd class="cmt"><p>the arrival local date</p></dd><dt class="param">destinationAirportOrCity</dt><dd class="cmt"><p>the destination airport or city</p></dd><dt class="param">unit</dt><dd class="cmt"><p>(default = &quot;hours&quot;) either &quot;hours&quot; or &quot;minutes&quot;</p></dd><dt class="param">format</dt><dd class="cmt"><p>(default = &quot;yyyyMMdd_HHmm&quot;) the format under which local
 departure and arrival dates are provided.</p></dd><dt>returns</dt><dd class="cmt"><p>the trip duration in the chosen unit (in hours by default) and
-format.</p></dd></dl><dl class="attributes block"> <dt>Exceptions thrown</dt><dd><span class="cmt">classOf[GeoBaseException]<p>
-</p></span></dd></dl></div>
+format.</p></dd></dl><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="symbol">classOf[GeoBaseException]</span>
+    </span>)</span>
+              
+        </dd></dl></div>
     </li><li name="com.geobase.GeoBase#getGeoType" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getGeoType(locations:List[String]):com.geobase.GeoType.GeoType"></a>
       <a id="getGeoType(List[String]):GeoType"></a>
@@ -776,7 +958,11 @@ format.</p></dd></dl><dl class="attributes block"> <dt>Exceptions thrown</dt><dd
       <span class="symbol">
         <span class="name">getGeoType</span><span class="params">(<span name="locations">locations: <span class="extype" name="scala.List">List</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result">: <a href="GeoType$.html#GeoType=com.geobase.GeoType.Value" class="extmbr" name="com.geobase.GeoType.GeoType">GeoType</a></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../index.html#com.geobase.GeoBase@getGeoType(locations:List[String]):com.geobase.GeoType.GeoType" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       <p class="shortcomment cmt">Returns the geo type of a trip (domestic, continental or inter continental).</p><div class="fullcomment"><div class="comment cmt"><p>Returns the geo type of a trip (domestic, continental or inter continental).</p><p>Return an enum value: GeoType.DOMESTIC, GeoType.CONTINENTAL or
 GeoType.INTER_CONTINENTAL.</p><pre>assert(geoBase.getGeoType(<span class="std">List</span>(<span class="lit">"CDG"</span>, <span class="lit">"ORY"</span>)) == GeoType.DOMESTIC)
 assert(geoBase.getGeoType(<span class="std">List</span>(<span class="lit">"FR"</span>, <span class="lit">"FR"</span>)) == GeoType.DOMESTIC)
@@ -785,8 +971,13 @@ assert(geoBase.getGeoType(<span class="std">List</span>(<span class="lit">"CDG"<
 the requested airports/cities.
 </p></div><dl class="paramcmts block"><dt class="param">locations</dt><dd class="cmt"><p>a list of cities/ariports/countries representing the
 trip.</p></dd><dt>returns</dt><dd class="cmt"><p>the type of the trip (a GeoType enum value, such as
-GeoType.DOMESTIC).</p></dd></dl><dl class="attributes block"> <dt>Exceptions thrown</dt><dd><span class="cmt">classOf[GeoBaseException]<p>
-</p></span></dd></dl></div>
+GeoType.DOMESTIC).</p></dd></dl><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="symbol">classOf[GeoBaseException]</span>
+    </span>)</span>
+              
+        </dd></dl></div>
     </li><li name="com.geobase.GeoBase#getIataZoneForAirport" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getIataZoneForAirport(airport:String):String"></a>
       <a id="getIataZoneForAirport(String):String"></a>
@@ -798,13 +989,22 @@ GeoType.DOMESTIC).</p></dd></dl><dl class="attributes block"> <dt>Exceptions thr
       <span class="symbol">
         <span class="name">getIataZoneForAirport</span><span class="params">(<span name="airport">airport: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../index.html#com.geobase.GeoBase@getIataZoneForAirport(airport:String):String" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       <p class="shortcomment cmt">Returns the IATA zone associated to the given airport.</p><div class="fullcomment"><div class="comment cmt"><p>Returns the IATA zone associated to the given airport.</p><p>Possible values are 11, 12, 13, 21, 22, 23, 31, 32 or 33.</p><pre>assert(geoBase.getIataZoneForAirport(<span class="lit">"CDG"</span>) == <span class="lit">"21"</span>)</pre><p>Throws a GeoBaseException if GeoBase can't find a corresponding IATA
 zone.
 </p></div><dl class="paramcmts block"><dt class="param">airport</dt><dd class="cmt"><p>the airport IATA code (for instance CDG) for which to get
 the associated IATA zone.</p></dd><dt>returns</dt><dd class="cmt"><p>the IATA zone code corresponding to the given airport (for
-instance 21).</p></dd></dl><dl class="attributes block"> <dt>Exceptions thrown</dt><dd><span class="cmt">classOf[GeoBaseException]<p>
-</p></span></dd></dl></div>
+instance 21).</p></dd></dl><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="symbol">classOf[GeoBaseException]</span>
+    </span>)</span>
+              
+        </dd></dl></div>
     </li><li name="com.geobase.GeoBase#getIataZoneForAirportOrElse" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getIataZoneForAirportOrElse(airport:String,orElse:String):String"></a>
       <a id="getIataZoneForAirportOrElse(String,String):String"></a>
@@ -816,13 +1016,16 @@ instance 21).</p></dd></dl><dl class="attributes block"> <dt>Exceptions thrown</
       <span class="symbol">
         <span class="name">getIataZoneForAirportOrElse</span><span class="params">(<span name="airport">airport: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="orElse">orElse: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../index.html#com.geobase.GeoBase@getIataZoneForAirportOrElse(airport:String,orElse:String):String" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       <p class="shortcomment cmt">Returns the IATA zone associated to the given airport.</p><div class="fullcomment"><div class="comment cmt"><p>Returns the IATA zone associated to the given airport.</p><p>Possible values are 11, 12, 13, 21, 22, 23, 31, 32 or 33.</p><pre>assert(geoBase.getIataZoneForAirportOrElse(<span class="lit">"CDG"</span>, <span class="lit">""</span>) == <span class="lit">"21"</span>)
 assert(geoBase.getIataZoneForAirportOrElse(<span class="lit">"?*#"</span>, <span class="lit">""</span>) == <span class="lit">""</span>)</pre></div><dl class="paramcmts block"><dt class="param">airport</dt><dd class="cmt"><p>the airport IATA code (for instance CDG) for which to get
 the associated IATA zone.</p></dd><dt class="param">orElse</dt><dd class="cmt"><p>the value to return if no continent could be associated to
 the requested airport.</p></dd><dt>returns</dt><dd class="cmt"><p>the IATA zone code corresponding to the given airport (for
-instance 21).
-</p></dd></dl></div>
+instance 21).</p></dd></dl></div>
     </li><li name="com.geobase.GeoBase#getIataZoneForCity" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getIataZoneForCity(city:String):String"></a>
       <a id="getIataZoneForCity(String):String"></a>
@@ -834,13 +1037,22 @@ instance 21).
       <span class="symbol">
         <span class="name">getIataZoneForCity</span><span class="params">(<span name="city">city: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../index.html#com.geobase.GeoBase@getIataZoneForCity(city:String):String" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       <p class="shortcomment cmt">Returns the IATA zone associated to the given city.</p><div class="fullcomment"><div class="comment cmt"><p>Returns the IATA zone associated to the given city.</p><p>Possible values are 11, 12, 13, 21, 22, 23, 31, 32 or 33.</p><pre>assert(geoBase.getIataZoneForCity(<span class="lit">"NYC"</span>) == <span class="lit">"11"</span>)</pre><p>Throws a GeoBaseException if GeoBase can't find a corresponding IATA
 zone.
 </p></div><dl class="paramcmts block"><dt class="param">city</dt><dd class="cmt"><p>the city IATA code (for instance NYC) for which to get the
 associated IATA zone.</p></dd><dt>returns</dt><dd class="cmt"><p>the IATA zone code corresponding to the given city (for
-instance 11).</p></dd></dl><dl class="attributes block"> <dt>Exceptions thrown</dt><dd><span class="cmt">classOf[GeoBaseException]<p>
-</p></span></dd></dl></div>
+instance 11).</p></dd></dl><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="symbol">classOf[GeoBaseException]</span>
+    </span>)</span>
+              
+        </dd></dl></div>
     </li><li name="com.geobase.GeoBase#getIataZoneForCityOrElse" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getIataZoneForCityOrElse(city:String,orElse:String):String"></a>
       <a id="getIataZoneForCityOrElse(String,String):String"></a>
@@ -852,13 +1064,16 @@ instance 11).</p></dd></dl><dl class="attributes block"> <dt>Exceptions thrown</
       <span class="symbol">
         <span class="name">getIataZoneForCityOrElse</span><span class="params">(<span name="city">city: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="orElse">orElse: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../index.html#com.geobase.GeoBase@getIataZoneForCityOrElse(city:String,orElse:String):String" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       <p class="shortcomment cmt">Returns the IATA zone associated to the given city.</p><div class="fullcomment"><div class="comment cmt"><p>Returns the IATA zone associated to the given city.</p><p>Possible values are 11, 12, 13, 21, 22, 23, 31, 32 or 33.</p><pre>assert(geoBase.getIataZoneForCityOrElse(<span class="lit">"NYC"</span>, <span class="lit">""</span>) == <span class="lit">"11"</span>)
 assert(geoBase.getIataZoneForCityOrElse(<span class="lit">"?*#"</span>, <span class="lit">""</span>) == <span class="lit">""</span>)</pre></div><dl class="paramcmts block"><dt class="param">city</dt><dd class="cmt"><p>the city IATA code (for instance NYC) for which to get the
 associated IATA zone.</p></dd><dt class="param">orElse</dt><dd class="cmt"><p>the value to return if no continent could be associated to
 the requested city.</p></dd><dt>returns</dt><dd class="cmt"><p>the IATA zone code corresponding to the given city (for
-instance 11).
-</p></dd></dl></div>
+instance 11).</p></dd></dl></div>
     </li><li name="com.geobase.GeoBase#getIataZoneForCountry" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getIataZoneForCountry(country:String):String"></a>
       <a id="getIataZoneForCountry(String):String"></a>
@@ -870,13 +1085,22 @@ instance 11).
       <span class="symbol">
         <span class="name">getIataZoneForCountry</span><span class="params">(<span name="country">country: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../index.html#com.geobase.GeoBase@getIataZoneForCountry(country:String):String" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       <p class="shortcomment cmt">Returns the IATA zone associated to the given country.</p><div class="fullcomment"><div class="comment cmt"><p>Returns the IATA zone associated to the given country.</p><p>Possible values are 11, 12, 13, 21, 22, 23, 31, 32 or 33.</p><pre>assert(geoBase.getIataZoneForCountry(<span class="lit">"ZA"</span>) == <span class="lit">"23"</span>)</pre><p>Throws a GeoBaseException if GeoBase can't find a corresponding IATA
 zone.
 </p></div><dl class="paramcmts block"><dt class="param">country</dt><dd class="cmt"><p>the country IATA code (for instance ZA) for which to get
 the associated IATA zone.</p></dd><dt>returns</dt><dd class="cmt"><p>the IATA zone code corresponding to the given country (for
-instance 23).</p></dd></dl><dl class="attributes block"> <dt>Exceptions thrown</dt><dd><span class="cmt">classOf[GeoBaseException]<p>
-</p></span></dd></dl></div>
+instance 23).</p></dd></dl><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="symbol">classOf[GeoBaseException]</span>
+    </span>)</span>
+              
+        </dd></dl></div>
     </li><li name="com.geobase.GeoBase#getIataZoneForCountryOrElse" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getIataZoneForCountryOrElse(country:String,orElse:String):String"></a>
       <a id="getIataZoneForCountryOrElse(String,String):String"></a>
@@ -888,13 +1112,16 @@ instance 23).</p></dd></dl><dl class="attributes block"> <dt>Exceptions thrown</
       <span class="symbol">
         <span class="name">getIataZoneForCountryOrElse</span><span class="params">(<span name="country">country: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="orElse">orElse: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../index.html#com.geobase.GeoBase@getIataZoneForCountryOrElse(country:String,orElse:String):String" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       <p class="shortcomment cmt">Returns the IATA zone associated to the given country.</p><div class="fullcomment"><div class="comment cmt"><p>Returns the IATA zone associated to the given country.</p><p>Possible values are 11, 12, 13, 21, 22, 23, 31, 32 or 33.</p><pre>assert(geoBase.getIataZoneForCountryOrElse(<span class="lit">"ZA"</span>, <span class="lit">""</span>) == <span class="lit">"23"</span>)
 assert(geoBase.getIataZoneForCountryOrElse(<span class="lit">"?*#"</span>, <span class="lit">""</span>) == <span class="lit">""</span>)</pre></div><dl class="paramcmts block"><dt class="param">country</dt><dd class="cmt"><p>the country IATA code (for instance ZA) for which to get
 the associated IATA zone.</p></dd><dt class="param">orElse</dt><dd class="cmt"><p>the value to return if no continent could be associated to
 the requested country.</p></dd><dt>returns</dt><dd class="cmt"><p>the IATA zone code corresponding to the given country (for
-instance 23).
-</p></dd></dl></div>
+instance 23).</p></dd></dl></div>
     </li><li name="com.geobase.GeoBase#getIataZoneForLocation" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getIataZoneForLocation(location:String):String"></a>
       <a id="getIataZoneForLocation(String):String"></a>
@@ -906,15 +1133,24 @@ instance 23).
       <span class="symbol">
         <span class="name">getIataZoneForLocation</span><span class="params">(<span name="location">location: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../index.html#com.geobase.GeoBase@getIataZoneForLocation(location:String):String" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       <p class="shortcomment cmt">Returns the IATA zone associated to the given airport, city or country.</p><div class="fullcomment"><div class="comment cmt"><p>Returns the IATA zone associated to the given airport, city or country.</p><p>Possible values are 11, 12, 13, 21, 22, 23, 31, 32 or 33.</p><pre>assert(geoBase.getIataZoneForLocation(<span class="lit">"CDG"</span>) == <span class="lit">"21"</span>)
 assert(geoBase.getIataZoneForLocation(<span class="lit">"NYC"</span>) == <span class="lit">"11"</span>)
 assert(geoBase.getIataZoneForLocation(<span class="lit">"ZA"</span>) == <span class="lit">"23"</span>)</pre><p>Throws a GeoBaseException if GeoBase can't find a corresponding IATA
 zone.
 </p></div><dl class="paramcmts block"><dt class="param">location</dt><dd class="cmt"><p>the country, city or airport IATA code (for instance
 PAR) for which to get the associated IATA zone.</p></dd><dt>returns</dt><dd class="cmt"><p>the IATA zone code corresponding to the given location (for
-instance 21).</p></dd></dl><dl class="attributes block"> <dt>Exceptions thrown</dt><dd><span class="cmt">classOf[GeoBaseException]<p>
-</p></span></dd></dl></div>
+instance 21).</p></dd></dl><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="symbol">classOf[GeoBaseException]</span>
+    </span>)</span>
+              
+        </dd></dl></div>
     </li><li name="com.geobase.GeoBase#getIataZoneForLocationOrElse" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getIataZoneForLocationOrElse(location:String,orElse:String):String"></a>
       <a id="getIataZoneForLocationOrElse(String,String):String"></a>
@@ -926,15 +1162,18 @@ instance 21).</p></dd></dl><dl class="attributes block"> <dt>Exceptions thrown</
       <span class="symbol">
         <span class="name">getIataZoneForLocationOrElse</span><span class="params">(<span name="location">location: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="orElse">orElse: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../index.html#com.geobase.GeoBase@getIataZoneForLocationOrElse(location:String,orElse:String):String" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       <p class="shortcomment cmt">Returns the IATA zone associated to the given airport, city or country.</p><div class="fullcomment"><div class="comment cmt"><p>Returns the IATA zone associated to the given airport, city or country.</p><p>Possible values are 11, 12, 13, 21, 22, 23, 31, 32 or 33.</p><pre>assert(geoBase.getIataZoneForLocationOrElse(<span class="lit">"CDG"</span>, <span class="lit">""</span>) == <span class="lit">"21"</span>)
 assert(geoBase.getIataZoneForLocationOrElse(<span class="lit">"NYC"</span>, <span class="lit">""</span>) == <span class="lit">"11"</span>)
 assert(geoBase.getIataZoneForLocationOrElse(<span class="lit">"ZA"</span>, <span class="lit">""</span>) == <span class="lit">"23"</span>)
 assert(geoBase.getIataZoneForLocationOrElse(<span class="lit">"?*#"</span>, <span class="lit">""</span>) == <span class="lit">""</span>)</pre></div><dl class="paramcmts block"><dt class="param">location</dt><dd class="cmt"><p>the country, city or airport IATA code (for instance
 PAR) for which to get the associated IATA zone.</p></dd><dt class="param">orElse</dt><dd class="cmt"><p>the value to return if no continent could be associated to
 the requested location.</p></dd><dt>returns</dt><dd class="cmt"><p>the IATA zone code corresponding to the given location (for
-instance 21).
-</p></dd></dl></div>
+instance 21).</p></dd></dl></div>
     </li><li name="com.geobase.GeoBase#getNearbyAirports" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getNearbyAirports(airportOrCity:String,radius:Int):List[String]"></a>
       <a id="getNearbyAirports(String,Int):List[String]"></a>
@@ -946,18 +1185,25 @@ instance 21).
       <span class="symbol">
         <span class="name">getNearbyAirports</span><span class="params">(<span name="airportOrCity">airportOrCity: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="radius">radius: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.List">List</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../index.html#com.geobase.GeoBase@getNearbyAirports(airportOrCity:String,radius:Int):List[String]" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       <p class="shortcomment cmt">Returns the list of nearby airports (within the radius) for the given airport or city.</p><div class="fullcomment"><div class="comment cmt"><p>Returns the list of nearby airports (within the radius) for the given airport or city.</p><p>Find the list of nearby airports, within the requested radius. The list
-is sorted starting from the closest airport.</p><pre>assert(geoBase.getNearbyAirportsWithDetails(<span class="lit">"CDG"</span>, <span class="num">50</span>) == <span class="std">List</span>(<span class="lit">"LBG"</span>, <span class="lit">"ORY"</span>, <span class="lit">"VIY"</span>, <span class="lit">"POX"</span>))
-assert(geoBase.getNearbyAirportsWithDetails(<span class="lit">"CDG"</span>, <span class="num">36</span>) == <span class="std">List</span>(<span class="lit">"LBG"</span>, <span class="lit">"ORY"</span>))</pre><p>Throws a GeoBaseException if GeoBase doesn't have an entry for the
+is sorted starting from the closest airport.</p><pre>assert(geoBase.getNearbyAirports(<span class="lit">"CDG"</span>, <span class="num">50</span>) == <span class="std">List</span>(<span class="lit">"LBG"</span>, <span class="lit">"ORY"</span>, <span class="lit">"VIY"</span>, <span class="lit">"POX"</span>))
+assert(geoBase.getNearbyAirports(<span class="lit">"CDG"</span>, <span class="num">36</span>) == <span class="std">List</span>(<span class="lit">"LBG"</span>, <span class="lit">"ORY"</span>))</pre><p>Throws a GeoBaseException if GeoBase doesn't have an entry for the
 requested location.
 </p></div><dl class="paramcmts block"><dt class="param">airportOrCity</dt><dd class="cmt"><p>the airport or city for which to find nearby
 airports.</p></dd><dt class="param">radius</dt><dd class="cmt"><p>the maximum distance (in km) for which an airport is
 considered close.</p></dd><dt>returns</dt><dd class="cmt"><p>the sorted per incresaing distance list of tuples (airport,
-distance).</p></dd></dl><dl class="attributes block"> <dt>Exceptions thrown</dt><dd><span class="cmt">classOf[GeoBaseException]<p>
-</p></span></dd><dt>To do</dt><dd><span class="cmt"><p>Include an internal cache in order to make it faster to do twice
-the same query?
-</p></span></dd></dl></div>
+distance).</p></dd></dl><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="symbol">classOf[GeoBaseException]</span>
+    </span>)</span>
+              
+        </dd></dl></div>
     </li><li name="com.geobase.GeoBase#getNearbyAirportsWithDetails" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getNearbyAirportsWithDetails(airportOrCity:String,radius:Int):List[(String,Int)]"></a>
       <a id="getNearbyAirportsWithDetails(String,Int):List[(String,Int)]"></a>
@@ -969,7 +1215,11 @@ the same query?
       <span class="symbol">
         <span class="name">getNearbyAirportsWithDetails</span><span class="params">(<span name="airportOrCity">airportOrCity: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="radius">radius: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.List">List</span>[(<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Int">Int</span>)]</span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../index.html#com.geobase.GeoBase@getNearbyAirportsWithDetails(airportOrCity:String,radius:Int):List[(String,Int)]" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       <p class="shortcomment cmt">Returns the list of nearby airports (within the radius) for the given airport or city.</p><div class="fullcomment"><div class="comment cmt"><p>Returns the list of nearby airports (within the radius) for the given airport or city.</p><p>Find the list of nearby airports, within the requested radius. The list
 is sorted starting from the closest airport. This list is a tuple of
 (airport/distance).</p><pre>assert(geoBase.getNearbyAirportsWithDetails(<span class="lit">"CDG"</span>, <span class="num">50</span>) == <span class="std">List</span>((<span class="lit">"LBG"</span>, <span class="num">9</span>), (<span class="lit">"ORY"</span>, <span class="num">35</span>), (<span class="lit">"VIY"</span>, <span class="num">37</span>), (<span class="lit">"POX"</span>, <span class="num">38</span>)))
@@ -978,10 +1228,13 @@ requested location.
 </p></div><dl class="paramcmts block"><dt class="param">airportOrCity</dt><dd class="cmt"><p>the airport or city for which to find nearby
 airports.</p></dd><dt class="param">radius</dt><dd class="cmt"><p>the maximum distance (in km) for which an airport is
 considered close.</p></dd><dt>returns</dt><dd class="cmt"><p>the sorted per incresaing distance list of tuples (airport,
-distance).</p></dd></dl><dl class="attributes block"> <dt>Exceptions thrown</dt><dd><span class="cmt">classOf[GeoBaseException]<p>
-</p></span></dd><dt>To do</dt><dd><span class="cmt"><p>Include an internal cache in order to make it faster to do twice
-the same query?
-</p></span></dd></dl></div>
+distance).</p></dd></dl><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="symbol">classOf[GeoBaseException]</span>
+    </span>)</span>
+              
+        </dd></dl></div>
     </li><li name="com.geobase.GeoBase#getOffsetForLocalDate" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getOffsetForLocalDate(localDate:String,localAirportOrCity:String,format:String):Int"></a>
       <a id="getOffsetForLocalDate(String,String,String):Int"></a>
@@ -993,7 +1246,11 @@ the same query?
       <span class="symbol">
         <span class="name">getOffsetForLocalDate</span><span class="params">(<span name="localDate">localDate: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="localAirportOrCity">localAirportOrCity: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="format">format: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;yyyyMMdd&quot;</span></span>)</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../index.html#com.geobase.GeoBase@getOffsetForLocalDate(localDate:String,localAirportOrCity:String,format:String):Int" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       <p class="shortcomment cmt">Returns the offset in minutes for the given date at the given city/airport.</p><div class="fullcomment"><div class="comment cmt"><p>Returns the offset in minutes for the given date at the given city/airport.</p><pre>assert(geoBase.getOffsetForLocalDate(<span class="lit">"20170712"</span>, <span class="lit">"NCE"</span>) == <span class="num">120</span>)
 assert(geoBase.getOffsetForLocalDate(<span class="lit">"20170712"</span>, <span class="lit">"NCE"</span>, <span class="lit">"yyyyMMdd"</span>) == <span class="num">120</span>)
 assert(geoBase.getOffsetForLocalDate(<span class="lit">"20171224"</span>, <span class="lit">"NCE"</span>) == <span class="num">60</span>)
@@ -1002,34 +1259,48 @@ requested airports/cities.
 </p></div><dl class="paramcmts block"><dt class="param">localDate</dt><dd class="cmt"><p>the local date</p></dd><dt class="param">localAirportOrCity</dt><dd class="cmt"><p>the airport or the city where this local date
 applies.</p></dd><dt class="param">format</dt><dd class="cmt"><p>(default = &quot;yyyyMMdd&quot;) the format under which
 localDate is provided.</p></dd><dt>returns</dt><dd class="cmt"><p>the the offset in minutes for the given date at the given
-city/airport (can be negative).</p></dd></dl><dl class="attributes block"> <dt>Exceptions thrown</dt><dd><span class="cmt">classOf[GeoBaseException]<p>
-</p></span></dd></dl></div>
+city/airport (can be negative).</p></dd></dl><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="symbol">classOf[GeoBaseException]</span>
+    </span>)</span>
+              
+        </dd></dl></div>
     </li><li name="com.geobase.GeoBase#getTripDurationFromLocalDates" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="getTripDurationFromLocalDates(localDepartureDate:String,originAirportOrCity:String,localArrivalDate:String,destinationAirportOrCity:String,unit:String,format:String):Float"></a>
-      <a id="getTripDurationFromLocalDates(String,String,String,String,String,String):Float"></a>
+      <a id="getTripDurationFromLocalDates(localDepartureDate:String,originAirportOrCity:String,localArrivalDate:String,destinationAirportOrCity:String,unit:String,format:String):Double"></a>
+      <a id="getTripDurationFromLocalDates(String,String,String,String,String,String):Double"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">getTripDurationFromLocalDates</span><span class="params">(<span name="localDepartureDate">localDepartureDate: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="originAirportOrCity">originAirportOrCity: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="localArrivalDate">localArrivalDate: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="destinationAirportOrCity">destinationAirportOrCity: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="unit">unit: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;hours&quot;</span></span>, <span name="format">format: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;yyyyMMdd_HHmm&quot;</span></span>)</span><span class="result">: <span class="extype" name="scala.Float">Float</span></span>
+        <span class="name">getTripDurationFromLocalDates</span><span class="params">(<span name="localDepartureDate">localDepartureDate: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="originAirportOrCity">originAirportOrCity: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="localArrivalDate">localArrivalDate: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="destinationAirportOrCity">destinationAirportOrCity: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="unit">unit: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;hours&quot;</span></span>, <span name="format">format: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;yyyyMMdd_HHmm&quot;</span></span>)</span><span class="result">: <span class="extype" name="scala.Double">Double</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../index.html#com.geobase.GeoBase@getTripDurationFromLocalDates(localDepartureDate:String,originAirportOrCity:String,localArrivalDate:String,destinationAirportOrCity:String,unit:String,format:String):Double" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       <p class="shortcomment cmt">Returns the trip duration between two locations (airport or city).</p><div class="fullcomment"><div class="comment cmt"><p>Returns the trip duration between two locations (airport or city).</p><p>Trip duration is a synonym of elapsed flying time (EFT).</p><p>This is meant to be used to compute the trip duration for a
 segment/bound for which we know the origin/destination airports/cities
-and the local time. i.e. when we don't have gmt times.</p><pre>assert(geoBase.getTripDurationFromLocalDates(<span class="lit">"20160606_1627"</span>, <span class="lit">"CDG"</span>, <span class="lit">"20160606_1757"</span>, <span class="lit">"JFK"</span>) == <span class="num">7.5</span>f)
+and the local time. i.e. when we don't have gmt times.</p><pre>assert(geoBase.getTripDurationFromLocalDates(<span class="lit">"20160606_1627"</span>, <span class="lit">"CDG"</span>, <span class="lit">"20160606_1757"</span>, <span class="lit">"JFK"</span>) == <span class="num">7.5</span>d)
 
 <span class="kw">val</span> computedTripDuration = geoBase.getTripDurationFromLocalDates(
 	<span class="lit">"2016-06-06T16:27"</span>, <span class="lit">"CDG"</span>, <span class="lit">"2016-06-06T17:57"</span>, <span class="lit">"JFK"</span>,
 	format = <span class="lit">"yyyy-MM-dd'T'HH:mm"</span>, unit = <span class="lit">"minutes"</span>
 )
-assert(computedTripDuration == <span class="num">450</span>f)</pre><p>Throws a GeoBaseException if GeoBase doesn't have an entry for the
+assert(computedTripDuration == <span class="num">450</span>d)</pre><p>Throws a GeoBaseException if GeoBase doesn't have an entry for the
 requested airports/cities.
 </p></div><dl class="paramcmts block"><dt class="param">localDepartureDate</dt><dd class="cmt"><p>the departure local date</p></dd><dt class="param">originAirportOrCity</dt><dd class="cmt"><p>the origin airport or city</p></dd><dt class="param">localArrivalDate</dt><dd class="cmt"><p>the arrival local date</p></dd><dt class="param">destinationAirportOrCity</dt><dd class="cmt"><p>the destination airport or city</p></dd><dt class="param">unit</dt><dd class="cmt"><p>(default = &quot;hours&quot;) either &quot;hours&quot; or &quot;minutes&quot;</p></dd><dt class="param">format</dt><dd class="cmt"><p>(default = &quot;yyyyMMdd_HHmm&quot;) the format under which local
 departure and arrival dates are provided.</p></dd><dt>returns</dt><dd class="cmt"><p>the trip duration in the chosen unit (in hours by default) and
-format.</p></dd></dl><dl class="attributes block"> <dt>Exceptions thrown</dt><dd><span class="cmt">classOf[GeoBaseException]<p>
-</p></span></dd></dl></div>
+format.</p></dd></dl><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="symbol">classOf[GeoBaseException]</span>
+    </span>)</span>
+              
+        </dd></dl></div>
     </li><li name="com.geobase.GeoBase#gmtDateToLocal" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="gmtDateToLocal(gmtDate:String,localAirportOrCity:String,format:String):String"></a>
       <a id="gmtDateToLocal(String,String,String):String"></a>
@@ -1041,7 +1312,11 @@ format.</p></dd></dl><dl class="attributes block"> <dt>Exceptions thrown</dt><dd
       <span class="symbol">
         <span class="name">gmtDateToLocal</span><span class="params">(<span name="gmtDate">gmtDate: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="localAirportOrCity">localAirportOrCity: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="format">format: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;yyyyMMdd_HHmm&quot;</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../index.html#com.geobase.GeoBase@gmtDateToLocal(gmtDate:String,localAirportOrCity:String,format:String):String" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       <p class="shortcomment cmt">Transforms a GMT date in a local date for the given airport or city.</p><div class="fullcomment"><div class="comment cmt"><p>Transforms a GMT date in a local date for the given airport or city.</p><p>Here we bring more than just converting the GMT time to local. The
 additional value is on the knowledge of the time zone thanks to
 opentraveldata. You don't need to know the time zone, just enter the
@@ -1051,8 +1326,13 @@ requested airports/cities.
 </p></div><dl class="paramcmts block"><dt class="param">gmtDate</dt><dd class="cmt"><p>the GMT date</p></dd><dt class="param">localAirportOrCity</dt><dd class="cmt"><p>the airport or the city where this GMT date
 is to be localized.</p></dd><dt class="param">format</dt><dd class="cmt"><p>(default = &quot;yyyyMMdd_HHmm&quot;) the format under which gmtDate
 is provided and the local date is returned.</p></dd><dt>returns</dt><dd class="cmt"><p>the local date associated to the GMT date under the requested
-format.</p></dd></dl><dl class="attributes block"> <dt>Exceptions thrown</dt><dd><span class="cmt">classOf[GeoBaseException]<p>
-</p></span></dd></dl></div>
+format.</p></dd></dl><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="symbol">classOf[GeoBaseException]</span>
+    </span>)</span>
+              
+        </dd></dl></div>
     </li><li name="scala.AnyRef#hashCode" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="hashCode():Int"></a>
       <a id="hashCode():Int"></a>
@@ -1064,7 +1344,11 @@ format.</p></dd></dl><dl class="attributes block"> <dt>Exceptions thrown</dt><dd
       <span class="symbol">
         <span class="name">hashCode</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../index.html#com.geobase.GeoBase@hashCode():Int" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scala.Any#isInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isInstanceOf[T0]:Boolean"></a>
@@ -1077,7 +1361,11 @@ format.</p></dd></dl><dl class="attributes block"> <dt>Exceptions thrown</dt><dd
       <span class="symbol">
         <span class="name">isInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../index.html#com.geobase.GeoBase@isInstanceOf[T0]:Boolean" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
     </li><li name="com.geobase.GeoBase#localDateToGMT" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="localDateToGMT(localDate:String,localAirportOrCity:String,format:String):String"></a>
@@ -1090,7 +1378,11 @@ format.</p></dd></dl><dl class="attributes block"> <dt>Exceptions thrown</dt><dd
       <span class="symbol">
         <span class="name">localDateToGMT</span><span class="params">(<span name="localDate">localDate: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="localAirportOrCity">localAirportOrCity: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="format">format: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;yyyyMMdd_HHmm&quot;</span></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../index.html#com.geobase.GeoBase@localDateToGMT(localDate:String,localAirportOrCity:String,format:String):String" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       <p class="shortcomment cmt">Transforms a local date in a GMT date.</p><div class="fullcomment"><div class="comment cmt"><p>Transforms a local date in a GMT date.</p><p>Here we bring more than just converting the local time to GMT. The
 additional value is on the knowledge of the time zone thanks to
 opentraveldata. You don't need to know the time zone, just enter the
@@ -1100,8 +1392,13 @@ requested airports/cities.
 </p></div><dl class="paramcmts block"><dt class="param">localDate</dt><dd class="cmt"><p>the local date</p></dd><dt class="param">localAirportOrCity</dt><dd class="cmt"><p>the airport or the city where this local date
 applies.</p></dd><dt class="param">format</dt><dd class="cmt"><p>(default = &quot;yyyyMMdd_HHmm&quot;) the format under which
 localDate is provided and the GMT date is returned.</p></dd><dt>returns</dt><dd class="cmt"><p>the GMT date associated to the local date under the requested
-format.</p></dd></dl><dl class="attributes block"> <dt>Exceptions thrown</dt><dd><span class="cmt">classOf[GeoBaseException]<p>
-</p></span></dd></dl></div>
+format.</p></dd></dl><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="symbol">classOf[GeoBaseException]</span>
+    </span>)</span>
+              
+        </dd></dl></div>
     </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a>
       <a id="ne(AnyRef):Boolean"></a>
@@ -1113,7 +1410,11 @@ format.</p></dd></dl><dl class="attributes block"> <dt>Exceptions thrown</dt><dd
       <span class="symbol">
         <span class="name">ne</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../index.html#com.geobase.GeoBase@ne(x$1:AnyRef):Boolean" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
     </li><li name="scala.AnyRef#notify" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="notify():Unit"></a>
@@ -1126,7 +1427,11 @@ format.</p></dd></dl><dl class="attributes block"> <dt>Exceptions thrown</dt><dd
       <span class="symbol">
         <span class="name">notify</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../index.html#com.geobase.GeoBase@notify():Unit" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
     </li><li name="scala.AnyRef#notifyAll" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="notifyAll():Unit"></a>
@@ -1139,7 +1444,11 @@ format.</p></dd></dl><dl class="attributes block"> <dt>Exceptions thrown</dt><dd
       <span class="symbol">
         <span class="name">notifyAll</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../index.html#com.geobase.GeoBase@notifyAll():Unit" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
@@ -1152,7 +1461,11 @@ format.</p></dd></dl><dl class="attributes block"> <dt>Exceptions thrown</dt><dd
       <span class="symbol">
         <span class="name">synchronized</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="params">(<span name="arg0">arg0: ⇒ <span class="extype" name="java.lang.AnyRef.synchronized.T0">T0</span></span>)</span><span class="result">: <span class="extype" name="java.lang.AnyRef.synchronized.T0">T0</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../index.html#com.geobase.GeoBase@synchronized[T0](x$1:=&gt;T0):T0" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
     </li><li name="scala.AnyRef#toString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="toString():String"></a>
@@ -1165,7 +1478,11 @@ format.</p></dd></dl><dl class="attributes block"> <dt>Exceptions thrown</dt><dd
       <span class="symbol">
         <span class="name">toString</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../index.html#com.geobase.GeoBase@toString():String" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
@@ -1178,7 +1495,11 @@ format.</p></dd></dl><dl class="attributes block"> <dt>Exceptions thrown</dt><dd
       <span class="symbol">
         <span class="name">wait</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../index.html#com.geobase.GeoBase@wait():Unit" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
@@ -1197,7 +1518,11 @@ format.</p></dd></dl><dl class="attributes block"> <dt>Exceptions thrown</dt><dd
       <span class="symbol">
         <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Long">Long</span></span>, <span name="arg1">arg1: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../index.html#com.geobase.GeoBase@wait(x$1:Long,x$2:Int):Unit" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
@@ -1216,7 +1541,11 @@ format.</p></dd></dl><dl class="attributes block"> <dt>Exceptions thrown</dt><dd
       <span class="symbol">
         <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
-      </h4>
+      </h4><span class="permalink">
+      <a href="../../index.html#com.geobase.GeoBase@wait(x$1:Long):Unit" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd><dt>Annotations</dt><dd>
                 <span class="name">@throws</span><span class="args">(<span>
       
@@ -1257,6 +1586,7 @@ format.</p></dd></dl><dl class="attributes block"> <dt>Exceptions thrown</dt><dd
       <div id="tooltip"></div>
 
       <div id="footer">  </div>
-      <script defer="defer" type="text/javascript" id="jquery-js" src="../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../lib/template.js"></script>
+
+
     </body>
       </html>

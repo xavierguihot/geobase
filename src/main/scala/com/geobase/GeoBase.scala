@@ -17,24 +17,31 @@ import math.{asin, cos, pow, round, sin, sqrt}
   *
   * Provides '''geographical mappings''' at airport/city/country level mainly
   * based on <a href="https://github.com/opentraveldata/opentraveldata">
-  * opentraveldata</a> as well as other mappings such as airlines or currencies.
-  * This facility also provides classic time-oriented methods such as trip
-  * duration computation.
+  * opentraveldata</a> as well as other mappings (airlines, currencies, ...).
+  * This tool also provides classic time-oriented methods such as the
+  * computation of a trip duration.
   *
   * Here are a few exemples:
   *
   * {{{
+  * import com.geobase.GeoBase
+  *
   * val geoBase = new GeoBase()
+  *
   * assert(geoBase.getCityForAirport("CDG") == "PAR")
-  * assert(geoBase.getTripDurationFromLocalDates("20160606_1627", "CDG", "20160606_1757", "JFK") == 7.5f)
-  * assert(geoBase.getCurrencyForCountry("FR") == "EUR")
+  * assert(geoBase.getCountryForAirline("AF") == "FR")
+  * assert(geoBase.getCountryForAirport("CDG") == "FR")
+  * assert(geoBase.getCurrencyForCity("NYC") == "USD")
+  * assert(geoBase.getDistanceBetween("PAR", "NCE") == 686)
+  * assert(geoBase.getTripDurationFromLocalDates("20160606_1627", "CDG", "20160606_1757", "JFK") == 7.5d)
+  * assert(geoBase.getNearbyAirportsWithDetails("CDG", 50) == List("LBG", "ORY", "VIY", "POX"))
   * }}}
   *
   * The GeoBase object can be used within Spark jobs (in this case, don't forget
   * to '''broadcast GeoBase''').
   *
   * Opentraveldata is an accurate and maintained source of various travel
-  * mappings. This scala wrapper around opentraveldata mostly uses this very
+  * mappings. This scala wrapper around opentraveldata mostly uses this
   * file: <a href="https://github.com/opentraveldata/opentraveldata/tree/master/opentraveldata/optd_por_public.csv">
   * optd_por_public.csv</a>.
   *
@@ -43,6 +50,8 @@ import math.{asin, cos, pow, round, sin, sqrt}
   *
   * @author Xavier Guihot
   * @since 2016-05
+  *
+  * @todo use memoization?
   *
   * @constructor Creates a GeoBase object.
   */
@@ -89,8 +98,8 @@ class GeoBase() extends Serializable {
 	  * the associated city.
 	  * @return the city code corresponding to the given airport (for instance
 	  * PAR).
-	  * @throws classOf[GeoBaseException]
 	  */
+	@throws(classOf[GeoBaseException])
 	def getCityForAirport(airport: String): String = {
 
 		val cityCode = getCityForAirportOrElse(airport, "")
@@ -156,8 +165,8 @@ class GeoBase() extends Serializable {
 	  * the associated cities.
 	  * @return the list of city codes corresponding to the given airport (for
 	  * instance List("PHX", "MSC")).
-	  * @throws classOf[GeoBaseException]
 	  */
+	@throws(classOf[GeoBaseException])
 	def getCitiesForAirport(airport: String): List[String] = {
 
 		val cityCodes = getCitiesForAirportOrElse(airport, List())
@@ -174,8 +183,6 @@ class GeoBase() extends Serializable {
 	  * assert(geoBase.getCountryForCityOrElse("PAR") == "FR")
 	  * assert(geoBase.getCountryForCityOrElse("?*#", "") == "")
 	  * }}}
-	  *
-	  * Throws a GeoBaseException if GeoBase can't find a corresponding country.
 	  *
 	  * @param city the city IATA code (for instance PAR) for which to get
 	  * the associated country.
@@ -201,8 +208,8 @@ class GeoBase() extends Serializable {
 	  * the associated country.
 	  * @return the country code corresponding to the given city (for instance
 	  * FR).
-	  * @throws classOf[GeoBaseException]
 	  */
+	@throws(classOf[GeoBaseException])
 	def getCountryForCity(city: String): String = {
 
 		val countryCode = getCountryForCityOrElse(city, "")
@@ -273,8 +280,8 @@ class GeoBase() extends Serializable {
 	  * PAR) for which to get the associated continent.
 	  * @return the continent code corresponding to the given location (for
 	  * instance EU).
-	  * @throws classOf[GeoBaseException]
 	  */
+	@throws(classOf[GeoBaseException])
 	def getContinentForLocation(location: String): String = {
 
 		val continentCode = getContinentForLocationOrElse(location, "")
@@ -343,8 +350,8 @@ class GeoBase() extends Serializable {
 	  * PAR) for which to get the associated IATA zone.
 	  * @return the IATA zone code corresponding to the given location (for
 	  * instance 21).
-	  * @throws classOf[GeoBaseException]
 	  */
+	@throws(classOf[GeoBaseException])
 	def getIataZoneForLocation(location: String): String = {
 
 		val iataZone = getIataZoneForLocationOrElse(location, "")
@@ -406,8 +413,8 @@ class GeoBase() extends Serializable {
 	  * the associated currency.
 	  * @return the currency code corresponding to the given country (for
 	  * instance EUR).
-	  * @throws classOf[GeoBaseException]
 	  */
+	@throws(classOf[GeoBaseException])
 	def getCurrencyForCountry(country: String): String = {
 
 		val currencyCode = getCurrencyForCountryOrElse(country, "")
@@ -453,8 +460,8 @@ class GeoBase() extends Serializable {
 	  * the associated country.
 	  * @return the country code corresponding to the given airline (for
 	  * instance FR).
-	  * @throws classOf[GeoBaseException]
 	  */
+	@throws(classOf[GeoBaseException])
 	def getCountryForAirline(airline: String): String = {
 
 		val countryCode = getCountryForAirlineOrElse(airline, "")
@@ -530,8 +537,8 @@ class GeoBase() extends Serializable {
 	  * for which to get the distance with airportOrCityA.
 	  * @return the distance rounded in km between airportOrCityA and
 	  * airportOrCityB (for instance 674).
-	  * @throws classOf[GeoBaseException]
 	  */
+	@throws(classOf[GeoBaseException])
 	def getDistanceBetween(airportOrCityA: String, airportOrCityB: String): Int = {
 
 		val distance = getDistanceBetweenOrElse(airportOrCityA, airportOrCityB, -1)
@@ -568,8 +575,8 @@ class GeoBase() extends Serializable {
 	  * localDate is provided and the GMT date is returned.
 	  * @return the GMT date associated to the local date under the requested
 	  * format.
-	  * @throws classOf[GeoBaseException]
 	  */
+	@throws(classOf[GeoBaseException])
 	def localDateToGMT(
 		localDate: String, localAirportOrCity: String,
 		format: String = "yyyyMMdd_HHmm"
@@ -612,8 +619,8 @@ class GeoBase() extends Serializable {
 	  * localDate is provided.
 	  * @return the the offset in minutes for the given date at the given
 	  * city/airport (can be negative).
-	  * @throws classOf[GeoBaseException]
 	  */
+	@throws(classOf[GeoBaseException])
 	def getOffsetForLocalDate(
 		localDate: String, localAirportOrCity: String, format: String = "yyyyMMdd"
 	): Int = {
@@ -652,8 +659,8 @@ class GeoBase() extends Serializable {
 	  * is provided and the local date is returned.
 	  * @return the local date associated to the GMT date under the requested
 	  * format.
-	  * @throws classOf[GeoBaseException]
 	  */
+	@throws(classOf[GeoBaseException])
 	def gmtDateToLocal(
 		gmtDate: String, localAirportOrCity: String,
 		format: String = "yyyyMMdd_HHmm"
@@ -686,13 +693,13 @@ class GeoBase() extends Serializable {
 	  * and the local time. i.e. when we don't have gmt times.
 	  *
 	  * {{{
-	  * assert(geoBase.getTripDurationFromLocalDates("20160606_1627", "CDG", "20160606_1757", "JFK") == 7.5f)
+	  * assert(geoBase.getTripDurationFromLocalDates("20160606_1627", "CDG", "20160606_1757", "JFK") == 7.5d)
 	  *
 	  * val computedTripDuration = geoBase.getTripDurationFromLocalDates(
 	  * 	"2016-06-06T16:27", "CDG", "2016-06-06T17:57", "JFK",
 	  * 	format = "yyyy-MM-dd'T'HH:mm", unit = "minutes"
 	  * )
-	  * assert(computedTripDuration == 450f)
+	  * assert(computedTripDuration == 450d)
 	  * }}}
 	  *
 	  * Throws a GeoBaseException if GeoBase doesn't have an entry for the
@@ -707,13 +714,13 @@ class GeoBase() extends Serializable {
 	  * departure and arrival dates are provided.
 	  * @return the trip duration in the chosen unit (in hours by default) and
 	  * format.
-	  * @throws classOf[GeoBaseException]
 	  */
+	@throws(classOf[GeoBaseException])
 	def getTripDurationFromLocalDates(
 		localDepartureDate: String, originAirportOrCity: String,
 		localArrivalDate: String, destinationAirportOrCity: String,
 		unit: String = "hours", format: String = "yyyyMMdd_HHmm"
-	): Float = {
+	): Double = {
 
 		if (!List("hours", "minutes").contains(unit))
 			throw new InvalidParameterException(
@@ -751,7 +758,7 @@ class GeoBase() extends Serializable {
 		if (unit == "minutes")
 			tripDurationInMinutes
 		else
-			tripDurationInMinutes / 60f
+			tripDurationInMinutes / 60d
 	}
 
 	/** Returns the day of week for a date under the given format.
@@ -790,8 +797,8 @@ class GeoBase() extends Serializable {
 	  * trip.
 	  * @return the type of the trip (a GeoType enum value, such as
 	  * GeoType.DOMESTIC).
-	  * @throws classOf[GeoBaseException]
 	  */
+	@throws(classOf[GeoBaseException])
 	def getGeoType(locations: List[String]): GeoType = {
 
 		// What would it mean to return a geo type if we have 0 or 1 locations?:
@@ -808,20 +815,7 @@ class GeoBase() extends Serializable {
 
 		// We transform all locations in countries:
 		val distinctCountries = locations.map(
-			item => {
-				if (item.length == 2)
-					item
-				else
-					getCountryForCity(item)
-			}
-		).distinct
-
-		// And all countries in iata zones:
-		val distinctIataZones = distinctCountries.map(
-			country => {
-				checkExistence(country, countries)
-				countries(country).iataZone
-			}
+			item => if (item.length == 2) item else getCountryForCity(item)
 		).distinct
 
 		// If the list of distinct countries is reduced to one element, then
@@ -829,13 +823,24 @@ class GeoBase() extends Serializable {
 		if (distinctCountries.length == 1)
 			GeoType.DOMESTIC
 
-		// If we only have one iata zone, then it's a continental trip:
-		else if (distinctIataZones.length == 1)
-			GeoType.CONTINENTAL
+		else {
 
-		// Otherwise, it's an intercontinental trip:
-		else
-			GeoType.INTER_CONTINENTAL
+			// If it's not domestic, we transform all countries in iata zones:
+			val distinctIataZones = distinctCountries.map(
+				country => {
+					checkExistence(country, countries)
+					countries(country).iataZone
+				}
+			).distinct
+
+			// If we only have one iata zone, then it's a continental trip:
+			if (distinctIataZones.length == 1)
+				GeoType.CONTINENTAL
+
+			// Otherwise, it's an intercontinental trip:
+			else
+				GeoType.INTER_CONTINENTAL
+		}
 	}
 
 	/** Returns the list of nearby airports (within the radius) for the given airport or city.
@@ -844,15 +849,12 @@ class GeoBase() extends Serializable {
 	  * is sorted starting from the closest airport.
 	  *
 	  * {{{
-	  * assert(geoBase.getNearbyAirportsWithDetails("CDG", 50) == List("LBG", "ORY", "VIY", "POX"))
-	  * assert(geoBase.getNearbyAirportsWithDetails("CDG", 36) == List("LBG", "ORY"))
+	  * assert(geoBase.getNearbyAirports("CDG", 50) == List("LBG", "ORY", "VIY", "POX"))
+	  * assert(geoBase.getNearbyAirports("CDG", 36) == List("LBG", "ORY"))
 	  * }}}
 	  *
 	  * Throws a GeoBaseException if GeoBase doesn't have an entry for the
 	  * requested location.
-	  *
-	  * @todo Include an internal cache in order to make it faster to do twice
-	  * the same query?
 	  *
 	  * @param airportOrCity the airport or city for which to find nearby
 	  * airports.
@@ -860,8 +862,8 @@ class GeoBase() extends Serializable {
 	  * considered close.
 	  * @return the sorted per incresaing distance list of tuples (airport,
 	  * distance).
-	  * @throws classOf[GeoBaseException]
 	  */
+	@throws(classOf[GeoBaseException])
 	def getNearbyAirports(airportOrCity: String, radius: Int): List[String] = {
 		getNearbyAirportsWithDetails(airportOrCity, radius).map(_._1)
 	}
@@ -880,17 +882,14 @@ class GeoBase() extends Serializable {
 	  * Throws a GeoBaseException if GeoBase doesn't have an entry for the
 	  * requested location.
 	  *
-	  * @todo Include an internal cache in order to make it faster to do twice
-	  * the same query?
-	  *
 	  * @param airportOrCity the airport or city for which to find nearby
 	  * airports.
 	  * @param radius the maximum distance (in km) for which an airport is
 	  * considered close.
 	  * @return the sorted per incresaing distance list of tuples (airport,
 	  * distance).
-	  * @throws classOf[GeoBaseException]
 	  */
+	@throws(classOf[GeoBaseException])
 	def getNearbyAirportsWithDetails(
 		airportOrCity: String, radius: Int
 	): List[(String, Int)] = {
@@ -901,8 +900,7 @@ class GeoBase() extends Serializable {
 
 		airportsAndCities.keys.toList.filter(
 			// We only keep airport locations:
-			randomLocation =>
-				airportsAndCities(randomLocation).isAirport()
+			randomLocation => airportsAndCities(randomLocation).isAirport()
 		).flatMap(
 			// We compute the distance between all airports to the given airport
 			// and we only keep those for which the distance is within the given
@@ -934,8 +932,8 @@ class GeoBase() extends Serializable {
 	  * the associated country.
 	  * @return the country code corresponding to the given airport (for
 	  * instance FR).
-	  * @throws classOf[GeoBaseException]
 	  */
+	@throws(classOf[GeoBaseException])
 	def getCountryForAirport(airport: String): String = getCountryForCity(airport)
 
 	/** Returns the country associated to the given airport.
@@ -944,8 +942,6 @@ class GeoBase() extends Serializable {
 	  * assert(geoBase.getCountryForAirportOrElse("CDG") == "FR")
 	  * assert(geoBase.getCountryForAirportOrElse("?*#", "") == "")
 	  * }}}
-	  *
-	  * Throws a GeoBaseException if GeoBase can't find a corresponding country.
 	  *
 	  * @param airport the airport IATA code (for instance CDG) for which to get
 	  * the associated country.
@@ -1035,8 +1031,8 @@ class GeoBase() extends Serializable {
 	  * the associated continent.
 	  * @return the continent code corresponding to the given airport (for
 	  * instance EU).
-	  * @throws classOf[GeoBaseException]
 	  */
+	@throws(classOf[GeoBaseException])
 	def getContinentForAirport(airport: String): String = {
 		getContinentForLocation(airport)
 	}
@@ -1055,11 +1051,9 @@ class GeoBase() extends Serializable {
 	  * the associated continent.
 	  * @return the continent code corresponding to the given city (for
 	  * instance EU).
-	  * @throws classOf[GeoBaseException]
 	  */
-	def getContinentForCity(city: String): String = {
-		getContinentForLocation(city)
-	}
+	@throws(classOf[GeoBaseException])
+	def getContinentForCity(city: String): String = getContinentForLocation(city)
 
 	/** Returns the continent associated to the given country.
 	  *
@@ -1075,8 +1069,8 @@ class GeoBase() extends Serializable {
 	  * the associated continent.
 	  * @return the continent code corresponding to the given country (for
 	  * instance EU).
-	  * @throws classOf[GeoBaseException]
 	  */
+	@throws(classOf[GeoBaseException])
 	def getContinentForCountry(country: String): String = {
 		getContinentForLocation(country)
 	}
@@ -1154,8 +1148,8 @@ class GeoBase() extends Serializable {
 	  * the associated IATA zone.
 	  * @return the IATA zone code corresponding to the given airport (for
 	  * instance 21).
-	  * @throws classOf[GeoBaseException]
 	  */
+	@throws(classOf[GeoBaseException])
 	def getIataZoneForAirport(airport: String): String = {
 		getIataZoneForLocation(airport)
 	}
@@ -1173,8 +1167,8 @@ class GeoBase() extends Serializable {
 	  * associated IATA zone.
 	  * @return the IATA zone code corresponding to the given city (for
 	  * instance 11).
-	  * @throws classOf[GeoBaseException]
 	  */
+	@throws(classOf[GeoBaseException])
 	def getIataZoneForCity(city: String): String = getIataZoneForLocation(city)
 
 	/** Returns the IATA zone associated to the given country.
@@ -1190,8 +1184,8 @@ class GeoBase() extends Serializable {
 	  * the associated IATA zone.
 	  * @return the IATA zone code corresponding to the given country (for
 	  * instance 23).
-	  * @throws classOf[GeoBaseException]
 	  */
+	@throws(classOf[GeoBaseException])
 	def getIataZoneForCountry(country: String): String = {
 		getIataZoneForLocation(country)
 	}
@@ -1206,8 +1200,8 @@ class GeoBase() extends Serializable {
 	  * the associated currency.
 	  * @return the currency code corresponding to the given city (for instance
 	  * USD).
-	  * @throws classOf[GeoBaseException]
 	  */
+	@throws(classOf[GeoBaseException])
 	def getCurrencyForCity(city: String): String = getCurrencyForCountry(city)
 
 	/** Returns the currency associated to the given city.
@@ -1238,13 +1232,13 @@ class GeoBase() extends Serializable {
 	  * and the local time. i.e. when we don't have gmt times.
 	  *
 	  * {{{
-	  * assert(geoBase.getEFTfromLocalDates("20160606_1627", "CDG", "20160606_1757", "JFK") == 7.5f)
+	  * assert(geoBase.getEFTfromLocalDates("20160606_1627", "CDG", "20160606_1757", "JFK") == 7.5d)
 	  *
 	  * val computedTripDuration = geoBase.getEFTfromLocalDates(
 	  * 	"2016-06-06T16:27", "CDG", "2016-06-06T17:57", "JFK",
 	  * 	format = "yyyy-MM-dd'T'HH:mm", unit = "minutes"
 	  * )
-	  * assert(computedTripDuration == 450f)
+	  * assert(computedTripDuration == 450d)
 	  * }}}
 	  *
 	  * Throws a GeoBaseException if GeoBase doesn't have an entry for the
@@ -1259,13 +1253,13 @@ class GeoBase() extends Serializable {
 	  * departure and arrival dates are provided.
 	  * @return the trip duration in the chosen unit (in hours by default) and
 	  * format.
-	  * @throws classOf[GeoBaseException]
 	  */
+	@throws(classOf[GeoBaseException])
 	def getEFTfromLocalDates(
 		localDepartureDate: String, originAirportOrCity: String,
 		localArrivalDate: String, destinationAirportOrCity: String,
 		unit: String = "hours", format: String = "yyyyMMdd_HHmm"
-	): Float = {
+	): Double = {
 		getTripDurationFromLocalDates(
 			localDepartureDate, originAirportOrCity,
 			localArrivalDate, destinationAirportOrCity, unit, format
@@ -1280,9 +1274,8 @@ class GeoBase() extends Serializable {
 	  *
 	  * @param itemCode the airline or the country or any item
 	  * @param mapping the mapping for which we check the itemCode key existence
-	  * @throws (classOf[GeoBaseException])
 	  */
-	private def checkExistence(itemCode: String, mapping: Map[String, Any]) = {
+	private def checkExistence(itemCode: String, mapping: Map[String, Any]): Unit = {
 		if (!mapping.contains(itemCode))
 			throw GeoBaseException("No entry in GeoBase for \"" + itemCode + "\"")
 	}

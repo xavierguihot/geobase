@@ -2,7 +2,8 @@
 
 set -e
 
-# This script updates geobase data with opentraveldata github repo
+# This script updates geobase data from the opentraveldata github repo.
+# When building the geobase jar, the opentraveldata data file is incorporated.
 
 cd src/main/resources
 rm -f optd_por_public.csv

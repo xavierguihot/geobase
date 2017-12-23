@@ -41,17 +41,19 @@ The full list of methods is available at
 
 Here is a non-exhaustive list of examples:
 
-	import com.geobase.GeoBase
+```scala
+import com.geobase.GeoBase
 
-	val geoBase = new GeoBase()
+val geoBase = new GeoBase()
 
-	assert(geoBase.getCityForAirport("CDG") == "PAR")
-	assert(geoBase.getCountryForAirline("AF") == "FR")
-	assert(geoBase.getCountryForAirport("CDG") == "FR")
-	assert(geoBase.getCurrencyForCity("NYC") == "USD")
-	assert(geoBase.getDistanceBetween("PAR", "NCE") == 686)
-	assert(geoBase.getTripDurationFromLocalDates("20160606_1627", "CDG", "20160606_1757", "JFK") == 7.5d)
-	assert(geoBase.getNearbyAirportsWithDetails("CDG", 50) == List("LBG", "ORY", "VIY", "POX"))
+assert(geoBase.getCityForAirport("CDG") == "PAR")
+assert(geoBase.getCountryForAirline("AF") == "FR")
+assert(geoBase.getCountryForAirport("CDG") == "FR")
+assert(geoBase.getCurrencyForCity("NYC") == "USD")
+assert(geoBase.getDistanceBetween("PAR", "NCE") == 686)
+assert(geoBase.getTripDurationFromLocalDates("20160606_1627", "CDG", "20160606_1757", "JFK") == 7.5d)
+assert(geoBase.getNearbyAirportsWithDetails("CDG", 50) == List("LBG", "ORY", "VIY", "POX"))
+```
 
 
 ## Including geobase to your dependencies:

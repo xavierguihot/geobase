@@ -1,5 +1,5 @@
 
-# GeoBase [![Build Status](https://travis-ci.org/XavierGuihot/geobase.svg?branch=master)](https://travis-ci.org/XavierGuihot/geobase)
+# GeoBase [![Build Status](https://travis-ci.org/XavierGuihot/geobase.svg?branch=master)](https://travis-ci.org/XavierGuihot/geobase) [![Coverage Status](https://coveralls.io/repos/github/XavierGuihot/geobase/badge.svg?branch=master)](https://coveralls.io/github/XavierGuihot/geobase?branch=master)
 
 
 ## Overview

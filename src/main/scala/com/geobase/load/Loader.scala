@@ -79,6 +79,7 @@ private[geobase] object Loader {
 				val countryCode = splittedLine(0)
 
 				val country = Country(
+					countryCode     = countryCode,
 					currencyCode 	= splittedLine(1),
 					continentCode 	= splittedLine(2),
 					iataZone 		= splittedLine(3)
@@ -104,7 +105,7 @@ private[geobase] object Loader {
 				val airlineCode = splittedLine(0)
 				val countryCode = splittedLine(1)
 
-				(airlineCode, Airline(countryCode))
+				(airlineCode, Airline(airlineCode, countryCode))
 			}
 		).toMap
 	}

@@ -5,7 +5,7 @@
 ## Overview
 
 
-Version: 1.0.4
+Version: 1.1.0
 
 API Scaladoc: [GeoBase](http://xavierguihot.com/geobase/#com.geobase.GeoBase)
 
@@ -46,14 +46,20 @@ import com.geobase.GeoBase
 
 val geoBase = new GeoBase()
 
-assert(geoBase.getCityForAirport("CDG") == "PAR")
-assert(geoBase.getCountryForAirline("AF") == "FR")
-assert(geoBase.getCountryForAirport("CDG") == "FR")
-assert(geoBase.getCurrencyForCity("NYC") == "USD")
-assert(geoBase.getDistanceBetween("PAR", "NCE") == 686)
-assert(geoBase.getTripDurationFromLocalDates("20160606_1627", "CDG", "20160606_1757", "JFK") == 7.5d)
-assert(geoBase.getNearbyAirportsWithDetails("CDG", 50) == List("LBG", "ORY", "VIY", "POX"))
+assert(geoBase.getCityFor("CDG").get == "PAR")
+assert(geoBase.getCountryFor("CDG").get == "FR")
+assert(geoBase.getCountryForAirline("AF").get == "FR")
+assert(geoBase.getCurrencyFor("NYC").get == "USD")
+assert(geoBase.getDistanceBetween("PAR", "NCE").get == 686)
+assert(geoBase.getTripDurationFromLocalDates("20160606_1627", "CDG", "20160606_1757", "JFK").get == 7.5d)
+assert(geoBase.getNearbyAirports("CDG", 50).get == List("LBG", "ORY", "VIY", "POX"))
 ```
+
+Getters all have a return type embedded within the Try monade. Throwing
+exceptions when one might request mappings for non existing locations, isn't
+realy the idiomatic of scala, and simply embedding the result in the Option
+monad doesn't give the user the possibility to understand what went wrong.
+Thus the usage of the Try monade.
 
 
 ## Including geobase to your dependencies:
@@ -61,7 +67,7 @@ assert(geoBase.getNearbyAirportsWithDetails("CDG", 50) == List("LBG", "ORY", "VI
 
 With sbt, just add this one line to your build.sbt:
 
-	libraryDependencies += "geobase" % "geobase" % "1.0.4" from "https://github.com/xavierguihot/geobase/releases/download/v1.0.4/geobase-1.0.4.jar"
+	libraryDependencies += "geobase" % "geobase" % "1.1.0" from "https://github.com/xavierguihot/geobase/releases/download/v1.1.0/geobase-1.1.0.jar"
 
 
 ## Building the project:

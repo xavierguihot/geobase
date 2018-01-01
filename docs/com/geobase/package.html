@@ -90,19 +90,23 @@ computation of a trip duration.</p><p>Here are a few exemples:</p><pre><span cla
 
 <span class="kw">val</span> geoBase = <span class="kw">new</span> GeoBase()
 
-assert(geoBase.getCityForAirport(<span class="lit">"CDG"</span>) == <span class="lit">"PAR"</span>)
-assert(geoBase.getCountryForAirline(<span class="lit">"AF"</span>) == <span class="lit">"FR"</span>)
-assert(geoBase.getCountryForAirport(<span class="lit">"CDG"</span>) == <span class="lit">"FR"</span>)
-assert(geoBase.getCurrencyForCity(<span class="lit">"NYC"</span>) == <span class="lit">"USD"</span>)
-assert(geoBase.getDistanceBetween(<span class="lit">"PAR"</span>, <span class="lit">"NCE"</span>) == <span class="num">686</span>)
-assert(geoBase.getTripDurationFromLocalDates(<span class="lit">"20160606_1627"</span>, <span class="lit">"CDG"</span>, <span class="lit">"20160606_1757"</span>, <span class="lit">"JFK"</span>) == <span class="num">7.5</span>d)
-assert(geoBase.getNearbyAirportsWithDetails(<span class="lit">"CDG"</span>, <span class="num">50</span>) == <span class="std">List</span>(<span class="lit">"LBG"</span>, <span class="lit">"ORY"</span>, <span class="lit">"VIY"</span>, <span class="lit">"POX"</span>))</pre><p>The GeoBase object can be used within Spark jobs (in this case, don't forget
-to <b>broadcast GeoBase</b>).</p><p>Opentraveldata is an accurate and maintained source of various travel
+assert(geoBase.getCityFor(<span class="lit">"CDG"</span>).get == <span class="lit">"PAR"</span>)
+assert(geoBase.getCountry(<span class="lit">"CDG"</span>).get == <span class="lit">"FR"</span>)
+assert(geoBase.getCurrencyFor(<span class="lit">"NYC"</span>).get == <span class="lit">"USD"</span>)
+assert(geoBase.getCountryForAirline(<span class="lit">"AF"</span>).get == <span class="lit">"FR"</span>)
+assert(geoBase.getDistanceBetween(<span class="lit">"PAR"</span>, <span class="lit">"NCE"</span>).get == <span class="num">686</span>)
+assert(geoBase.getTripDurationFromLocalDates(<span class="lit">"20160606_1627"</span>, <span class="lit">"CDG"</span>, <span class="lit">"20160606_1757"</span>, <span class="lit">"JFK"</span>).get == <span class="num">7.5</span>d)
+assert(geoBase.getNearbyAirports(<span class="lit">"CDG"</span>, <span class="num">50</span>).get == <span class="std">List</span>(<span class="lit">"LBG"</span>, <span class="lit">"ORY"</span>, <span class="lit">"VIY"</span>, <span class="lit">"POX"</span>))</pre><p>The GeoBase object can be used within Spark jobs (in this case, don't forget
+the possibility to <b>broadcast GeoBase</b>).</p><p>Opentraveldata is an accurate and maintained source of various travel
 mappings. This scala wrapper around opentraveldata mostly uses this
 file: <a href="https://github.com/opentraveldata/opentraveldata/tree/master/opentraveldata/optd_por_public.csv">
-optd_por_public.csv</a>.</p><p>Source <a href="https://github.com/XavierGuihot/geobase/blob/master/src/main/scala/com/geobase/GeoBase.scala">
+optd_por_public.csv</a>.</p><p>Getters all have a return type embedded within the Try monade. Throwing
+exceptions as is when one might request mappings for non existing locations,
+isn't realy the scala way, and simply embedding the result in the Option
+monad doesn't give the user the possibility to understand what went wrong.
+Thus the usage of the Try monade.</p><p>Source <a href="https://github.com/XavierGuihot/geobase/blob/master/src/main/scala/com/geobase/GeoBase.scala">
 GeoBase</a>
-</p></div><dl class="attributes block"> <dt>Since</dt><dd><p>2016-05</p></dd><dt>To do</dt><dd><span class="cmt"><p>use memoization?</p></span></dd></dl></div>
+</p></div><dl class="attributes block"> <dt>Since</dt><dd><p>2016-05</p></dd></dl></div>
     </li></ol>
             </div>
 

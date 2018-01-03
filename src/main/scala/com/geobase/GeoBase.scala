@@ -287,35 +287,42 @@ class GeoBase() extends Serializable {
 	  */
 	def getDistanceBetween(locationA: String, locationB: String): Try[Int] = {
 
-		val locationADetails = airportsAndCities.get(locationA)
-		val locationBDetails = airportsAndCities.get(locationB)
+		val locationDetailsA = airportsAndCities.get(locationA)
+		val locationDetailsB = airportsAndCities.get(locationB)
 
-		if (locationADetails.isEmpty)
-			Failure(GeoBaseException("Unknown location \"" + locationA + "\""))
-		else if (locationBDetails.isEmpty)
-			Failure(GeoBaseException("Unknown location \"" + locationB + "\""))
+		(locationDetailsA, locationDetailsB) match {
 
-		else {
+			case (None, _) =>
+				Failure(GeoBaseException("Unknown location \"" + locationA + "\""))
 
-			val latA = locationADetails.get.getLatitude()
-			val lngA = locationADetails.get.getLongitude()
-			val latB = locationBDetails.get.getLatitude()
-			val lngB = locationBDetails.get.getLongitude()
+			case (_, None) =>
+				Failure(GeoBaseException("Unknown location \"" + locationB + "\""))
 
-			if (latA.isFailure || lngA.isFailure)
-				Failure(GeoBaseException("No coordinates available for location \"" + locationA + "\""))
-			else if (latB.isFailure || lngB.isFailure)
-				Failure(GeoBaseException("No coordinates available for location \"" + locationB + "\""))
+			case (Some(locationDetailsA), Some(locationDetailsB)) => {
 
-			// The Haversine formula (6371 is Earth radius):
-			else
-				Success(round(
-					2 * 6371 * asin(sqrt(
-						pow(sin(0.5 * (latA.get - latB.get)), 2) +
-						pow(sin(0.5 * (lngA.get - lngB.get)), 2) *
-						cos(latA.get) * cos(latB.get)
-					))
-				).toInt)
+				val latA = locationDetailsA.getLatitude()
+				val lngA = locationDetailsA.getLongitude()
+				val latB = locationDetailsB.getLatitude()
+				val lngB = locationDetailsB.getLongitude()
+
+				(latA, lngA, latB, lngB) match {
+
+					case (Success(latA), Success(lngA), Success(latB), Success(lngB)) =>
+						Success(round(
+							2 * 6371 * asin(sqrt(
+								pow(sin(0.5 * (latA - latB)), 2) +
+								pow(sin(0.5 * (lngA - lngB)), 2) * cos(latA) * cos(latB)
+							))
+						).toInt)
+
+					case _ => {
+						if (latA.isFailure || lngA.isFailure)
+							Failure(GeoBaseException("No coordinates available for location \"" + locationA + "\""))
+						else
+							Failure(GeoBaseException("No coordinates available for location \"" + locationB + "\""))
+					}
+				}
+			}
 		}
 	}
 
@@ -486,11 +493,11 @@ class GeoBase() extends Serializable {
 		unit: String = "hours", format: String = "yyyyMMdd_HHmm"
 	): Try[Double] = {
 
-		if (!List("hours", "minutes").contains(unit))
-			throw new InvalidParameterException(
-				"Option \"unit\" can only take value \"hours\" or " +
-				"\"minutes\" but not \"" + unit + "\""
-			)
+		require(
+			unit == "hours" || unit == "minutes",
+			"option \"unit\" can only take value \"hours\" or \"minutes\" " +
+			"but not \"" + unit + "\""
+		)
 
 		// We retrieve GMT dates in order to be able to do a real duration
 		// computation:
@@ -501,38 +508,39 @@ class GeoBase() extends Serializable {
 			localArrivalDate, destinationLocation, format
 		)
 
-		if (gmtDepartureDate.isFailure)
-			Failure(gmtDepartureDate.failed.get)
+		(gmtDepartureDate, gmtArrivalDate) match {
 
-		else if (gmtArrivalDate.isFailure)
-			Failure(gmtArrivalDate.failed.get)
+			case (Failure(exception), _) => Failure(exception)
 
-		else {
+			case (_, Failure(exception)) => Failure(exception)
 
-			val formatter = new SimpleDateFormat(format)
+			case (Success(gmtDepartureDate), Success(gmtArrivalDate)) => {
 
-			val departureDate = formatter.parse(gmtDepartureDate.get)
-			val arrivalDate = formatter.parse(gmtArrivalDate.get)
+				val formatter = new SimpleDateFormat(format)
 
-			val tripDurationinMilliseconds = arrivalDate.getTime() - departureDate.getTime()
+				val departureDate = formatter.parse(gmtDepartureDate)
+				val arrivalDate = formatter.parse(gmtArrivalDate)
 
-			// We throw an exception if the trip duration is negative:
-			if (tripDurationinMilliseconds < 0)
-				Failure(GeoBaseException(
-					"The trip duration computed is negative (maybe you've " +
-					"inverted departure/origin and arrival/destination)"
-				))
+				val tripDurationinMilliseconds =
+						arrivalDate.getTime() - departureDate.getTime()
 
-			else {
+				if (tripDurationinMilliseconds < 0)
+					Failure(GeoBaseException(
+						"The trip duration computed is negative (maybe you've " +
+						"inverted departure/origin and arrival/destination)"
+					))
 
-				val tripDurationInMinutes = TimeUnit.MINUTES.convert(
-					tripDurationinMilliseconds, TimeUnit.MILLISECONDS
-				)
+				else {
 
-				if (unit == "minutes")
-					Success(tripDurationInMinutes)
-				else
-					Success(tripDurationInMinutes / 60d)
+					val tripDurationInMinutes = TimeUnit.MINUTES.convert(
+						tripDurationinMilliseconds, TimeUnit.MILLISECONDS
+					)
+
+					if (unit == "minutes")
+						Success(tripDurationInMinutes)
+					else
+						Success(tripDurationInMinutes / 60d)
+				}
 			}
 		}
 	}
@@ -562,11 +570,10 @@ class GeoBase() extends Serializable {
 	  */
 	def getGeoType(locations: List[String]): Try[GeoType] = {
 
-		// What would it mean to return a geo type if we have 0 or 1 locations?:
-		if (locations.length < 2)
-			throw new InvalidParameterException(
-				"GeoBase needs at least 2 locations to compute a Geography Type"
-			)
+		require(
+			locations.length >= 2,
+			"at least 2 locations are needed to compute a geography type"
+		)
 
 		// We transform all locations in countries:
 		val distinctCountries = locations.map(
@@ -582,44 +589,44 @@ class GeoBase() extends Serializable {
 				item => "\"" + item + "\""
 			)
 
-			val plural = if (invalidLocations.size == 1) "" else "s"
+			val plural = invalidLocations.size match { case 1 => "" case _ => "s" }
 			Failure(GeoBaseException("Unknown location" + plural + " " + invalidLocations.mkString(", ")))
 		}
 
 		else {
 
-			// If the list of distinct countries is reduced to one element, then
-			// it's a domestic trip:
-			if (distinctCountries.length == 1)
-				Success(GeoType.DOMESTIC)
+			distinctCountries.length match {
 
-			else {
+				case 1 => Success(GeoType.DOMESTIC)
 
-				// If it's not domestic, we transform all countries in iata zones:
-				val distinctIataZones = distinctCountries.map(
-					country => getIataZoneFor(country.get)
-				).distinct
+				case _ => {
 
-				// If at least one mapping country to iata zone is failing:
-				if (distinctIataZones.exists(_.isFailure)) {
+					// If it's not domestic, we transform all countries in iata
+					// zones:
+					val distinctIataZones = distinctCountries.flatMap(_.toOption).map(
+						country => getIataZoneFor(country)
+					).distinct
 
-					val invalidCountries = distinctCountries.filter(
-						country => getIataZoneFor(country.get).isFailure
-					).map(
-						country => "\"" + country.get + "\""
-					)
+					// If at least one mapping country to iata zone is failing:
+					if (distinctIataZones.exists(_.isFailure)) {
 
-					val plural = if (invalidCountries.size == 1) "y" else "ies"
-					Failure(GeoBaseException("Unknown countr" + plural + " " + invalidCountries.mkString(", ")))
+						val invalidCountries =
+							distinctCountries.flatMap(_.toOption).filter(
+								country => getIataZoneFor(country).isFailure
+							).map(
+								country => "\"" + country + "\""
+							)
+
+						val plural = invalidCountries.size match { case 1 => "y" case _ => "ies" }
+						Failure(GeoBaseException("Unknown countr" + plural + " " + invalidCountries.mkString(", ")))
+					}
+
+					else
+						distinctIataZones.length match {
+							case 1 => Success(GeoType.CONTINENTAL)
+							case _ => Success(GeoType.INTER_CONTINENTAL)
+						}
 				}
-
-				// If we only have one iata zone, then it's a continental trip:
-				else if (distinctIataZones.length == 1)
-					Success(GeoType.CONTINENTAL)
-
-				// Otherwise, it's an intercontinental trip:
-				else
-					Success(GeoType.INTER_CONTINENTAL)
 			}
 		}
 	}
@@ -671,9 +678,7 @@ class GeoBase() extends Serializable {
 	  */
 	def getNearbyAirportsWithDetails(location: String, radius: Int): Try[List[(String, Int)]] = {
 
-		// No negative radius allowed:
-		if (radius <= 0)
-			throw new InvalidParameterException("No negative radius allowed")
+		require(radius > 0, "radius must be strictly positive")
 
 		// We check whether the given location is known:
 		if (airportsAndCities.contains(location)) {

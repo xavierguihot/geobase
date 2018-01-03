@@ -5,7 +5,7 @@
 ## Overview
 
 
-Version: 1.1.0
+Version: 1.1.1
 
 API Scaladoc: [GeoBase](http://xavierguihot.com/geobase/#com.geobase.GeoBase)
 
@@ -67,7 +67,7 @@ Thus the usage of the Try monade.
 
 With sbt, just add this one line to your build.sbt:
 
-	libraryDependencies += "geobase" % "geobase" % "1.1.0" from "https://github.com/xavierguihot/geobase/releases/download/v1.1.0/geobase-1.1.0.jar"
+	libraryDependencies += "geobase" % "geobase" % "1.1.1" from "https://github.com/xavierguihot/geobase/releases/download/v1.1.1/geobase-1.1.1.jar"
 
 
 ## Building the project:

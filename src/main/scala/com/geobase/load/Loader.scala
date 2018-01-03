@@ -28,7 +28,7 @@ private[geobase] object Loader {
 			line => line.split("\\^", -1)
 		).filter(
 			// Only lines for which the last date of validity is not definied:
-			splittedLine => splittedLine(14) == ""
+			splittedLine => splittedLine(14).isEmpty
 		).map(
 			splittedLine => {
 

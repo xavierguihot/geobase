@@ -24,7 +24,7 @@ import scala.util.{Try, Success, Failure}
   * @param timeZone the time zone for this iataCode
   * @param locationType either "A" (airport) or "C" (city)
   */
-private[geobase] case class AirportOrCity(
+private[geobase] final case class AirportOrCity(
 	iataCode: String, cityCode: String, countryCode: String,
 	latitude: String, longitude: String,
 	timeZone: String, locationType: String
@@ -33,7 +33,6 @@ private[geobase] case class AirportOrCity(
 	def isAirport(): Boolean = locationType == "A"
 
 	def getCity(): Try[String] = {
-
 		getCities() match {
 			case Success(cities) => Success(cities.head)
 			case Failure(exception) => Failure(exception)
@@ -46,7 +45,7 @@ private[geobase] case class AirportOrCity(
 			Success(List(cityCode))
 
 		// In case of an airport attached to several cities ("PHX,MSC"):
-		if (cityCode.length >= 3)
+		else if (cityCode.length >= 3)
 			cityCode.split("\\,", -1).toList.filter(_.length == 3) match {
 				case Nil => Failure(GeoBaseException("No city available for airport \"" + iataCode + "\""))
 				case cities => Success(cities)
@@ -58,11 +57,21 @@ private[geobase] case class AirportOrCity(
 	}
 
 	def getCountry(): Try[String] = {
+		countryCode match {
+			case "" => Failure(GeoBaseException(
+				"No country available for location \"" + iataCode + "\""
+			))
+			case _ => Success(countryCode)
+		}
+	}
 
-		if (countryCode.length == 2)
-			Success(countryCode)
-		else
-			Failure(GeoBaseException("No country available for location \"" + iataCode + "\""))
+	def getTimeZone(): Try[String] = {
+		timeZone match {
+			case "" => Failure(GeoBaseException(
+				"No time zone available for location \"" + iataCode + "\""
+			))
+			case _ => Success(timeZone)
+		}
 	}
 
 	/** Returns the longitude.
@@ -76,12 +85,4 @@ private[geobase] case class AirportOrCity(
 	  * The raw latitude field might be empty and thus not castable.
 	  */
 	def getLatitude(): Try[Double] = Try(latitude.toDouble / 180 * Pi)
-
-	def getTimeZone(): Try[String] = {
-
-		timeZone match {
-			case "" => Failure(GeoBaseException("No time zone available for location \"" + iataCode + "\""))
-			case _ => Success(timeZone)
-		}
-	}
 }

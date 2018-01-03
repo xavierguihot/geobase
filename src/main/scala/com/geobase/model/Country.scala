@@ -9,43 +9,34 @@ import scala.util.{Try, Success, Failure}
   * @author Xavier Guihot
   * @since 2017-04
   */
-private[geobase] case class Country(
+private[geobase] final case class Country(
 	countryCode: String, currencyCode: String, continentCode: String, iataZone: String
 ) {
 
 	def getContinent(): Try[String] = {
-
-		if (continentCode.length == 2)
-			Success(continentCode)
-
-		else {
-			val exceptionMessage =
+		continentCode match {
+			case "" => Failure(GeoBaseException(
 				"No continent available for country \"" + countryCode + "\""
-			Failure(GeoBaseException(exceptionMessage))
+			))
+			case _ => Success(continentCode)
 		}
 	}
 
 	def getIataZone(): Try[String] = {
-
-		if (iataZone.length == 2)
-			Success(iataZone)
-
-		else {
-			val exceptionMessage =
+		iataZone match {
+			case "" => Failure(GeoBaseException(
 				"No iata zone available for country \"" + countryCode + "\""
-			Failure(GeoBaseException(exceptionMessage))
+			))
+			case _ => Success(iataZone) // Non-empty string
 		}
 	}
 
 	def getCurrency(): Try[String] = {
-
-		if (currencyCode.length == 3)
-			Success(currencyCode)
-
-		else {
-			val exceptionMessage =
+		currencyCode match {
+			case "" => Failure(GeoBaseException(
 				"No currency available for country \"" + countryCode + "\""
-			Failure(GeoBaseException(exceptionMessage))
+			))
+			case _ => Success(currencyCode) // Non-empty string
 		}
 	}
 }

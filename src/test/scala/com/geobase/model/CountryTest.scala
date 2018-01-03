@@ -2,6 +2,8 @@ package com.geobase.model
 
 import com.geobase.error.GeoBaseException
 
+import scala.util.Success
+
 import org.scalatest.FunSuite
 
 /** Testing facility for Country.
@@ -13,7 +15,7 @@ class CountryTest extends FunSuite {
 
 	test("Continent Getter") {
 
-		assert(Country("FR", "", "EU", "").getContinent().get === "EU")
+		assert(Country("FR", "", "EU", "").getContinent() === Success("EU"))
 
 		// Empty continent field:
 		val exceptionThrown = intercept[GeoBaseException] {
@@ -24,7 +26,7 @@ class CountryTest extends FunSuite {
 
 	test("Iata Zone Getter") {
 
-		assert(Country("FR", "", "", "21").getIataZone().get === "21")
+		assert(Country("FR", "", "", "21").getIataZone() === Success("21"))
 
 		// Empty iata zone field:
 		val exceptionThrown = intercept[GeoBaseException] {
@@ -35,7 +37,7 @@ class CountryTest extends FunSuite {
 
 	test("Currency Getter") {
 
-		assert(Country("FR", "EUR", "", "").getCurrency().get === "EUR")
+		assert(Country("FR", "EUR", "", "").getCurrency() === Success("EUR"))
 
 		// Empty currency field:
 		val exceptionThrown = intercept[GeoBaseException] {

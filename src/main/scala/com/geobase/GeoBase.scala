@@ -53,7 +53,7 @@ import math.{asin, cos, pow, round, sin, sqrt}
   * monad doesn't give the user the possibility to understand what went wrong.
   * Thus the usage of the Try monade.
   *
-  * Source <a href="https://github.com/XavierGuihot/geobase/blob/master/src/main/scala/com/geobase/GeoBase.scala">
+  * Source <a href="https://github.com/xavierguihot/geobase/blob/master/src/main/scala/com/geobase/GeoBase.scala">
   * GeoBase</a>
   *
   * @author Xavier Guihot

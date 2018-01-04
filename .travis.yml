@@ -1,7 +1,6 @@
 language: scala
 scala:
    - 2.10.4
-   - 2.11.2
    - 2.11.8
 install: ./update_data.sh
 script: "sbt clean coverage test"

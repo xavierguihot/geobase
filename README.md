@@ -1,11 +1,11 @@
 
-# GeoBase [![Build Status](https://travis-ci.org/XavierGuihot/geobase.svg?branch=master)](https://travis-ci.org/XavierGuihot/geobase) [![Coverage Status](https://coveralls.io/repos/github/XavierGuihot/geobase/badge.svg?branch=master)](https://coveralls.io/github/XavierGuihot/geobase?branch=master)
+# GeoBase [![Build Status](https://travis-ci.org/XavierGuihot/geobase.svg?branch=master)](https://travis-ci.org/XavierGuihot/geobase) [![Coverage Status](https://coveralls.io/repos/github/XavierGuihot/geobase/badge.svg?branch=master)](https://coveralls.io/github/XavierGuihot/geobase?branch=master) [![Release](https://jitpack.io/v/XavierGuihot/geobase.svg)](https://jitpack.io/#XavierGuihot/geobase)
 
 
 ## Overview
 
 
-Version: 1.1.1
+Version: 1.1.2
 
 API Scaladoc: [GeoBase](http://xavierguihot.com/geobase/#com.geobase.GeoBase)
 
@@ -65,9 +65,44 @@ Thus the usage of the Try monade.
 ## Including geobase to your dependencies:
 
 
-With sbt, just add this one line to your build.sbt:
+With sbt, add these lines to your build.sbt:
 
-	libraryDependencies += "geobase" % "geobase" % "1.1.1" from "https://github.com/xavierguihot/geobase/releases/download/v1.1.1/geobase-1.1.1.jar"
+```
+resolvers += "jitpack" at "https://jitpack.io"
+
+libraryDependencies += "com.github.xavierguihot" % "geobase" % "v1.1.2"
+```
+
+With maven, add these lines to your pom.xml:
+
+```xml
+<repositories>
+	<repository>
+		<id>jitpack.io</id>
+		<url>https://jitpack.io</url>
+	</repository>
+</repositories>
+
+<dependency>
+	<groupId>com.github.xavierguihot</groupId>
+	<artifactId>geobase</artifactId>
+	<version>v1.1.2</version>
+</dependency>
+```
+
+With gradle, add these lines to your build.gradle:
+
+```
+allprojects {
+	repositories {
+		maven { url 'https://jitpack.io' }
+	}
+}
+
+dependencies {
+	compile 'com.github.xavierguihot:geobase:v1.1.2'
+}
+```
 
 
 ## Building the project:

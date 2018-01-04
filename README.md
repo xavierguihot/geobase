@@ -67,7 +67,7 @@ Thus the usage of the Try monade.
 
 With sbt, add these lines to your build.sbt:
 
-```
+```scala
 resolvers += "jitpack" at "https://jitpack.io"
 
 libraryDependencies += "com.github.xavierguihot" % "geobase" % "v1.1.2"
@@ -92,7 +92,7 @@ With maven, add these lines to your pom.xml:
 
 With gradle, add these lines to your build.gradle:
 
-```
+```groovy
 allprojects {
 	repositories {
 		maven { url 'https://jitpack.io' }

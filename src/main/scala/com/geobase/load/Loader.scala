@@ -56,8 +56,7 @@ private[geobase] object Loader {
 				val location = locations.map{
 					case (airportOrCityCode, location) => location
 				}.foldLeft(locations.head._2) {
-					(locationA, locationB) =>
-						if (locationA.isAirport()) locationA else locationB
+					(locA, locB) => if (locA.isAirport()) locA else locB
 				}
 
 				(airportOrCityCode, location)

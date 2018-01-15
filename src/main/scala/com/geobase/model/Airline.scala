@@ -11,12 +11,9 @@ import scala.util.{Try, Success, Failure}
   */
 private[geobase] final case class Airline(airlineCode: String, countryCode: String) {
 
-	def getCountry(): Try[String] = {
-		countryCode match {
-			case "" => Failure(GeoBaseException(
-				"No country available for airline \"" + airlineCode + "\""
-			))
-			case _ => Success(countryCode)
-		}
+	def getCountry(): Try[String] = countryCode match {
+		case "" => Failure(GeoBaseException(
+		           "No country available for airline \"" + airlineCode + "\""))
+		case _ => Success(countryCode)
 	}
 }

@@ -217,7 +217,7 @@ class GeoBaseTest extends FunSuite with PrivateMethodTester {
 		exceptionThrown = intercept[GeoBaseException] {
 			geoBase.getGeoType(List("US", "bbb", "NCE", "aaa")).get
 		}
-		assert(exceptionThrown.getMessage === "Unknown locations \"bbb\", \"aaa\"")
+		assert(exceptionThrown.getMessage === "Unknown location \"bbb\"")
 
 		// Unknown IATA zone for a country:
 		exceptionThrown = intercept[GeoBaseException] {
@@ -227,7 +227,7 @@ class GeoBaseTest extends FunSuite with PrivateMethodTester {
 		exceptionThrown = intercept[GeoBaseException] {
 			geoBase.getGeoType(List("FR", "XX", "..")).get
 		}
-		assert(exceptionThrown.getMessage === "Unknown countries \"XX\", \"..\"")
+		assert(exceptionThrown.getMessage === "Unknown country \"XX\"")
 	}
 
 	test("Local Date to GMT Date") {

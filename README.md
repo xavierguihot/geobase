@@ -5,7 +5,7 @@
 ## Overview
 
 
-Version: 1.1.2
+Version: 1.1.3
 
 API Scaladoc: [GeoBase](http://xavierguihot.com/geobase/#com.geobase.GeoBase)
 
@@ -46,19 +46,19 @@ import com.geobase.GeoBase
 
 val geoBase = new GeoBase()
 
-assert(geoBase.getCityFor("CDG").get == "PAR")
-assert(geoBase.getCountryFor("CDG").get == "FR")
-assert(geoBase.getCountryForAirline("AF").get == "FR")
-assert(geoBase.getCurrencyFor("NYC").get == "USD")
-assert(geoBase.getDistanceBetween("PAR", "NCE").get == 686)
-assert(geoBase.getTripDurationFromLocalDates("20160606_1627", "CDG", "20160606_1757", "JFK").get == 7.5d)
-assert(geoBase.getNearbyAirports("CDG", 50).get == List("LBG", "ORY", "VIY", "POX"))
+assert(geoBase.getCityFor("CDG") == Success("PAR"))
+assert(geoBase.getCountryFor("CDG") == Success("FR"))
+assert(geoBase.getCountryForAirline("AF") == Success("FR"))
+assert(geoBase.getCurrencyFor("NYC") == Success("USD"))
+assert(geoBase.getDistanceBetween("PAR", "NCE") == Success(686))
+assert(geoBase.getTripDurationFromLocalDates("20160606_1627", "CDG", "20160606_1757", "JFK") == Success(7.5d))
+assert(geoBase.getNearbyAirports("CDG", 50) == Success(List("LBG", "ORY", "VIY", "POX")))
 ```
 
 Getters all have a return type embedded within the Try monade. Throwing
 exceptions when one might request mappings for non existing locations, isn't
-realy the idiomatic of scala, and simply embedding the result in the Option
-monad doesn't give the user the possibility to understand what went wrong.
+realy the idiomatic scala way, and simply embedding the result in the Option
+monade doesn't give the user the possibility to understand what went wrong.
 Thus the usage of the Try monade.
 
 
@@ -70,7 +70,7 @@ With sbt, add these lines to your build.sbt:
 ```scala
 resolvers += "jitpack" at "https://jitpack.io"
 
-libraryDependencies += "com.github.xavierguihot" % "geobase" % "v1.1.2"
+libraryDependencies += "com.github.xavierguihot" % "geobase" % "v1.1.3"
 ```
 
 With maven, add these lines to your pom.xml:
@@ -86,7 +86,7 @@ With maven, add these lines to your pom.xml:
 <dependency>
 	<groupId>com.github.xavierguihot</groupId>
 	<artifactId>geobase</artifactId>
-	<version>v1.1.2</version>
+	<version>v1.1.3</version>
 </dependency>
 ```
 
@@ -100,7 +100,7 @@ allprojects {
 }
 
 dependencies {
-	compile 'com.github.xavierguihot:geobase:v1.1.2'
+	compile 'com.github.xavierguihot:geobase:v1.1.3'
 }
 ```
 

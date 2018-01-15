@@ -1,6 +1,6 @@
 name := "geobase"
 
-version := "1.1.2"
+version := "1.1.3"
 
 scalaVersion := "2.11.8"
 
@@ -14,5 +14,7 @@ wartremoverWarnings in (Compile, compile) --= Seq(
 assemblyJarName in assembly := name.value + "-" + version.value + ".jar"
 
 assemblyOutputPath in assembly := file("./" + name.value + "-" + version.value + ".jar")
+
+libraryDependencies += "org.typelevel" %% "cats-core" % "1.0.1"
 
 libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.1" % "test"

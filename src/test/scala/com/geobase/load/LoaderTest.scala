@@ -9,33 +9,33 @@ import org.scalatest.FunSuite
   */
 class LoaderTest extends FunSuite {
 
-	test("Load Airports and Cities") {
+  test("Load Airports and Cities") {
 
-		val airportOrCityToDataMap = Loader.loadAirportsAndCities()
+    val airportOrCityToDataMap = Loader.loadAirportsAndCities()
 
-		assert(airportOrCityToDataMap("CDG").countryCode === "FR")
-		assert(airportOrCityToDataMap("ORY").cityCode === "PAR")
-	}
+    assert(airportOrCityToDataMap("CDG").countryCode === "FR")
+    assert(airportOrCityToDataMap("ORY").cityCode === "PAR")
+  }
 
-	test("Load Countries") {
+  test("Load Countries") {
 
-		val countries = Loader.loadCountries()
+    val countries = Loader.loadCountries()
 
-		assert(countries("FR").currencyCode === "EUR")
-		assert(countries("US").currencyCode === "USD")
+    assert(countries("FR").currencyCode === "EUR")
+    assert(countries("US").currencyCode === "USD")
 
-		assert(countries("FR").continentCode === "EU")
-		assert(countries("US").continentCode === "NA")
+    assert(countries("FR").continentCode === "EU")
+    assert(countries("US").continentCode === "NA")
 
-		assert(countries("FR").iataZone === "21")
-		assert(countries("US").iataZone === "11")
-	}
+    assert(countries("FR").iataZone === "21")
+    assert(countries("US").iataZone === "11")
+  }
 
-	test("Load Airlines") {
+  test("Load Airlines") {
 
-		val airlineToCountryMap = Loader.loadAirlines()
+    val airlineToCountryMap = Loader.loadAirlines()
 
-		assert(airlineToCountryMap("AF").countryCode === "FR")
-		assert(airlineToCountryMap("AA").countryCode === "US")
-	}
+    assert(airlineToCountryMap("AF").countryCode === "FR")
+    assert(airlineToCountryMap("AA").countryCode === "US")
+  }
 }

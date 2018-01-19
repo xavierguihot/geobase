@@ -304,8 +304,8 @@ GeoBase</a>
     </span>
       <p class="shortcomment cmt">Returns the cities associated to the given airport.</p><div class="fullcomment"><div class="comment cmt"><p>Returns the cities associated to the given airport.</p><p>It sometimes happens that an airport is shared between cities. This
 method, returns this list of cities (usually the list will only contain
-one city).</p><p>The method getCityFor returns the first city corresponding to the
-given airport, which is by assumption the biggest corresponding city.</p><pre>assert(geoBase.getCitiesFor(<span class="lit">"CDG"</span>) == Success(<span class="std">List</span>(<span class="lit">"PAR"</span>)))
+one city).</p><p>The method getCityFor returns the first city corresponding to the given
+airport, which is by assumption the biggest corresponding city.</p><pre>assert(geoBase.getCitiesFor(<span class="lit">"CDG"</span>) == Success(<span class="std">List</span>(<span class="lit">"PAR"</span>)))
 assert(geoBase.getCitiesFor(<span class="lit">"AZA"</span>) == Success(<span class="std">List</span>(<span class="lit">"PHX"</span>, <span class="lit">"MSC"</span>)))
 assert(geoBase.getCitiesFor(<span class="lit">"?*#"</span>) == Failure(GeoBaseException: Unknown airport <span class="lit">"?*#"</span>)</pre></div><dl class="paramcmts block"><dt class="param">airport</dt><dd class="cmt"><p>the airport IATA code (for instance AZA) for which to get
 the associated cities.</p></dd><dt>returns</dt><dd class="cmt"><p>the list of city codes corresponding to the given airport (for
@@ -367,8 +367,8 @@ PAR).</p></dd></dl></div>
 AF (Africa) - AS (Asia) - AN (Antarctica) - OC (Oceania).</p><pre>assert(geoBase.getContinentFor(<span class="lit">"CDG"</span>) == Success(<span class="lit">"EU"</span>)) <span class="cmt">// location is an airport</span>
 assert(geoBase.getContinentFor(<span class="lit">"NYC"</span>) == Success(<span class="lit">"NA"</span>)) <span class="cmt">// location is a city</span>
 assert(geoBase.getContinentFor(<span class="lit">"CN"</span>) == Success(<span class="lit">"AS"</span>)) <span class="cmt">// location is a country</span>
-assert(geoBase.getContinentFor(<span class="lit">"?*#"</span>) == Failure(GeoBaseException: Unknown location <span class="lit">"?*#"</span>))</pre></div><dl class="paramcmts block"><dt class="param">location</dt><dd class="cmt"><p>the country, city or airport IATA code (for instance
-PAR) for which to get the associated continent.</p></dd><dt>returns</dt><dd class="cmt"><p>the continent code corresponding to the given location (for
+assert(geoBase.getContinentFor(<span class="lit">"?*#"</span>) == Failure(GeoBaseException: Unknown location <span class="lit">"?*#"</span>))</pre></div><dl class="paramcmts block"><dt class="param">location</dt><dd class="cmt"><p>the country, city or airport IATA code (for instance PAR)
+for which to get the associated continent.</p></dd><dt>returns</dt><dd class="cmt"><p>the continent code corresponding to the given location (for
 instance EU).</p></dd></dl></div>
     </li><li name="com.geobase.GeoBase#getCountryFor" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getCountryFor(location:String):scala.util.Try[String]"></a>
@@ -409,8 +409,8 @@ instance FR).</p></dd></dl></div>
     </span>
       <p class="shortcomment cmt">Returns the country associated to the given airline.</p><div class="fullcomment"><div class="comment cmt"><p>Returns the country associated to the given airline.</p><pre>assert(geoBase.getCountryForAirline(<span class="lit">"AF"</span>) == Success(<span class="lit">"FR"</span>))
 assert(geoBase.getCountryForAirline(<span class="lit">"#?"</span>) == Failure(GeoBaseException: Unknown airline <span class="lit">"#?"</span>))</pre></div><dl class="paramcmts block"><dt class="param">airline</dt><dd class="cmt"><p>the airline IATA code (for instance AF) for which to get
-the associated country.</p></dd><dt>returns</dt><dd class="cmt"><p>the country code corresponding to the given airline (for
-instance FR).</p></dd></dl></div>
+the associated country.</p></dd><dt>returns</dt><dd class="cmt"><p>the country code corresponding to the given airline (for instance
+FR).</p></dd></dl></div>
     </li><li name="com.geobase.GeoBase#getCurrencyFor" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getCurrencyFor(location:String):scala.util.Try[String]"></a>
       <a id="getCurrencyFor(String):Try[String]"></a>
@@ -427,7 +427,9 @@ instance FR).</p></dd></dl></div>
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      <p class="shortcomment cmt">Returns the currency associated to the given location (airport, city or country).</p><div class="fullcomment"><div class="comment cmt"><p>Returns the currency associated to the given location (airport, city or country).</p><pre>assert(geoBase.getCurrencyFor(<span class="lit">"JFK"</span>) == Success(<span class="lit">"USD"</span>))
+      <p class="shortcomment cmt">Returns the currency associated to the given location (airport, city or
+country).</p><div class="fullcomment"><div class="comment cmt"><p>Returns the currency associated to the given location (airport, city or
+country).</p><pre>assert(geoBase.getCurrencyFor(<span class="lit">"JFK"</span>) == Success(<span class="lit">"USD"</span>))
 assert(geoBase.getCurrencyFor(<span class="lit">"FR"</span>) == Success(<span class="lit">"EUR"</span>))
 assert(geoBase.getCurrencyFor(<span class="lit">"?#"</span>) == Failure(GeoBaseException: Unknown country <span class="lit">"#?"</span>))</pre></div><dl class="paramcmts block"><dt class="param">location</dt><dd class="cmt"><p>the country, city or airport IATA code (for instance FR)
 for which to get the associated currency.</p></dd><dt>returns</dt><dd class="cmt"><p>the currency code corresponding to the given location (for
@@ -450,9 +452,9 @@ instance EUR).</p></dd></dl></div>
     </span>
       <p class="shortcomment cmt">Returns the distance between two locations (airports/cities).</p><div class="fullcomment"><div class="comment cmt"><p>Returns the distance between two locations (airports/cities).</p><pre>assert(geoBase.getDistanceBetween(<span class="lit">"ORY"</span>, <span class="lit">"NCE"</span>) == Success(<span class="num">674</span>))
 assert(geoBase.getDistanceBetween(<span class="lit">"PAR"</span>, <span class="lit">"NCE"</span>) == Success(<span class="num">686</span>))
-assert(geoBase.getDistanceBetween(<span class="lit">"PAR"</span>, <span class="lit">"~#?"</span>) == Failure(GeoBaseException: Unknown location <span class="lit">"~#?"</span>))</pre></div><dl class="paramcmts block"><dt class="param">locationA</dt><dd class="cmt"><p>an airport or city IATA code (for instance ORY) for
-which to get the distance with locationB.</p></dd><dt class="param">locationB</dt><dd class="cmt"><p>an airport or city IATA code (for instance NCE) for
-which to get the distance with locationA.</p></dd><dt>returns</dt><dd class="cmt"><p>the distance rounded in km between locationA and locationB (for
+assert(geoBase.getDistanceBetween(<span class="lit">"PAR"</span>, <span class="lit">"~#?"</span>) == Failure(GeoBaseException: Unknown location <span class="lit">"~#?"</span>))</pre></div><dl class="paramcmts block"><dt class="param">locationA</dt><dd class="cmt"><p>an airport or city IATA code (for instance ORY) for which
+to get the distance with locationB.</p></dd><dt class="param">locationB</dt><dd class="cmt"><p>an airport or city IATA code (for instance NCE) for which
+to get the distance with locationA.</p></dd><dt>returns</dt><dd class="cmt"><p>the distance rounded in km between locationA and locationB (for
 instance 674 km).</p></dd></dl></div>
     </li><li name="com.geobase.GeoBase#getGeoType" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getGeoType(locations:List[String]):scala.util.Try[com.geobase.GeoType.GeoType]"></a>
@@ -471,14 +473,12 @@ instance 674 km).</p></dd></dl></div>
       </a>
     </span>
       <p class="shortcomment cmt">Returns the geo type of a trip (domestic, continental or inter continental).</p><div class="fullcomment"><div class="comment cmt"><p>Returns the geo type of a trip (domestic, continental or inter continental).</p><p>Return an enum value: GeoType.DOMESTIC, GeoType.CONTINENTAL or
-GeoType.INTER_CONTINENTAL.</p><p>The distinction between continental and intercontinental is made based
-on iata zones.</p><pre>assert(geoBase.getGeoType(<span class="std">List</span>(<span class="lit">"CDG"</span>, <span class="lit">"ORY"</span>)) == Success(GeoType.DOMESTIC))
+GeoType.INTER_CONTINENTAL.</p><p>The distinction between continental and intercontinental is made based on
+iata zones.</p><pre>assert(geoBase.getGeoType(<span class="std">List</span>(<span class="lit">"CDG"</span>, <span class="lit">"ORY"</span>)) == Success(GeoType.DOMESTIC))
 assert(geoBase.getGeoType(<span class="std">List</span>(<span class="lit">"FR"</span>, <span class="lit">"FR"</span>)) == Success(GeoType.DOMESTIC))
 assert(geoBase.getGeoType(<span class="std">List</span>(<span class="lit">"FR"</span>, <span class="lit">"PAR"</span>, <span class="lit">"DUB"</span>)) == Success(GeoType.CONTINENTAL))
 assert(geoBase.getGeoType(<span class="std">List</span>(<span class="lit">"CDG"</span>, <span class="lit">"TLS"</span>, <span class="lit">"JFK"</span>, <span class="lit">"MEX"</span>)) == Success(GeoType.INTER_CONTINENTAL))
-assert(geoBase.getGeoType(<span class="std">List</span>(<span class="lit">"US"</span>, <span class="lit">"bbb"</span>, <span class="lit">"NCE"</span>, <span class="lit">"aaa"</span>)) == Failure(GeoBaseException: Unknown locations \<span class="lit">"bbb\", \"aaa\"))</span></pre></div><dl class="paramcmts block"><dt class="param">locations</dt><dd class="cmt"><p>a list of cities/ariports/countries representing the
-trip.</p></dd><dt>returns</dt><dd class="cmt"><p>the type of the trip (a GeoType enum value, such as
-GeoType.DOMESTIC).</p></dd></dl></div>
+assert(geoBase.getGeoType(<span class="std">List</span>(<span class="lit">"US"</span>, <span class="lit">"bbb"</span>, <span class="lit">"NCE"</span>, <span class="lit">"aaa"</span>)) == Failure(GeoBaseException: Unknown locations \<span class="lit">"bbb\", \"aaa\"))</span></pre></div><dl class="paramcmts block"><dt class="param">locations</dt><dd class="cmt"><p>a list of cities/ariports/countries representing the trip</p></dd><dt>returns</dt><dd class="cmt"><p>the type of the trip (a GeoType enum value, such as GeoType.DOMESTIC).</p></dd></dl></div>
     </li><li name="com.geobase.GeoBase#getIataZoneFor" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getIataZoneFor(location:String):scala.util.Try[String]"></a>
       <a id="getIataZoneFor(String):Try[String]"></a>
@@ -498,8 +498,8 @@ GeoType.DOMESTIC).</p></dd></dl></div>
       <p class="shortcomment cmt">Returns the IATA zone associated to the given airport, city or country.</p><div class="fullcomment"><div class="comment cmt"><p>Returns the IATA zone associated to the given airport, city or country.</p><p>Possible values are 11, 12, 13, 21, 22, 23, 31, 32 or 33.</p><pre>assert(geoBase.getIataZoneFor(<span class="lit">"CDG"</span>) == Success(<span class="lit">"21"</span>))
 assert(geoBase.getIataZoneFor(<span class="lit">"NYC"</span>) == Success(<span class="lit">"11"</span>))
 assert(geoBase.getIataZoneFor(<span class="lit">"ZA"</span>) == Success(<span class="lit">"23"</span>))
-assert(geoBase.getIataZoneFor(<span class="lit">"?*#"</span>) == Failure(GeoBaseException: Unknown location <span class="lit">"?*#"</span>))</pre></div><dl class="paramcmts block"><dt class="param">location</dt><dd class="cmt"><p>the country, city or airport IATA code (for instance
-PAR) for which to get the associated IATA zone.</p></dd><dt>returns</dt><dd class="cmt"><p>the IATA zone code corresponding to the given location (for
+assert(geoBase.getIataZoneFor(<span class="lit">"?*#"</span>) == Failure(GeoBaseException: Unknown location <span class="lit">"?*#"</span>))</pre></div><dl class="paramcmts block"><dt class="param">location</dt><dd class="cmt"><p>the country, city or airport IATA code (for instance PAR)
+for which to get the associated IATA zone.</p></dd><dt>returns</dt><dd class="cmt"><p>the IATA zone code corresponding to the given location (for
 instance 21).</p></dd></dl></div>
     </li><li name="com.geobase.GeoBase#getNearbyAirports" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getNearbyAirports(location:String,radius:Int):scala.util.Try[List[String]]"></a>
@@ -517,10 +517,12 @@ instance 21).</p></dd></dl></div>
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      <p class="shortcomment cmt">Returns the list of nearby airports (within the radius) for the given airport or city.</p><div class="fullcomment"><div class="comment cmt"><p>Returns the list of nearby airports (within the radius) for the given airport or city.</p><p>Find the list of nearby airports, within the requested radius. The list
-is sorted starting from the closest airport.</p><pre>assert(geoBase.getNearbyAirportsWithDetails(<span class="lit">"CDG"</span>, <span class="num">50</span>) == Success(<span class="std">List</span>(<span class="lit">"LBG"</span>, <span class="lit">"ORY"</span>, <span class="lit">"VIY"</span>, <span class="lit">"POX"</span>)))
+      <p class="shortcomment cmt">Returns the list of nearby airports (within the radius) for the given
+airport or city.</p><div class="fullcomment"><div class="comment cmt"><p>Returns the list of nearby airports (within the radius) for the given
+airport or city.</p><p>Find the list of nearby airports, within the requested radius. The list is
+sorted starting from the closest airport.</p><pre>assert(geoBase.getNearbyAirportsWithDetails(<span class="lit">"CDG"</span>, <span class="num">50</span>) == Success(<span class="std">List</span>(<span class="lit">"LBG"</span>, <span class="lit">"ORY"</span>, <span class="lit">"VIY"</span>, <span class="lit">"POX"</span>)))
 assert(geoBase.getNearbyAirportsWithDetails(<span class="lit">"CDG"</span>, <span class="num">36</span>) == Success(<span class="std">List</span>(<span class="lit">"LBG"</span>, <span class="lit">"ORY"</span>)))
-assert(geoBase.getNearbyAirportsWithDetails(<span class="lit">"~#?"</span>, <span class="num">36</span>)) == Failure(GeoBaseException: Unknown location \<span class="lit">"~#?\""</span>))</pre></div><dl class="paramcmts block"><dt class="param">location</dt><dd class="cmt"><p>the airport or city for which to find nearby airports.</p></dd><dt class="param">radius</dt><dd class="cmt"><p>the maximum distance (in km) for which an airport is
+assert(geoBase.getNearbyAirportsWithDetails(<span class="lit">"~#?"</span>, <span class="num">36</span>)) == Failure(GeoBaseException: Unknown location \<span class="lit">"~#?\""</span>))</pre></div><dl class="paramcmts block"><dt class="param">location</dt><dd class="cmt"><p>the airport or city for which to find nearby airports</p></dd><dt class="param">radius</dt><dd class="cmt"><p>the maximum distance (in km) for which an airport is
 considered close.</p></dd><dt>returns</dt><dd class="cmt"><p>the sorted per incresaing distance list nearby airports</p></dd></dl></div>
     </li><li name="com.geobase.GeoBase#getNearbyAirportsWithDetails" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getNearbyAirportsWithDetails(location:String,radius:Int):scala.util.Try[List[(String,Int)]]"></a>
@@ -538,12 +540,13 @@ considered close.</p></dd><dt>returns</dt><dd class="cmt"><p>the sorted per incr
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      <p class="shortcomment cmt">Returns the list of nearby airports (within the radius) for the given airport or city.</p><div class="fullcomment"><div class="comment cmt"><p>Returns the list of nearby airports (within the radius) for the given airport or city.</p><p>Find the list of nearby airports, within the requested radius. The list
-is sorted starting from the closest airport. This list is a tuple of
+      <p class="shortcomment cmt">Returns the list of nearby airports (within the radius) for the given
+airport or city.</p><div class="fullcomment"><div class="comment cmt"><p>Returns the list of nearby airports (within the radius) for the given
+airport or city.</p><p>Find the list of nearby airports, within the requested radius. The list is
+sorted starting from the closest airport. This list is a tuple of
 (airport/distance).</p><pre>assert(geoBase.getNearbyAirportsWithDetails(<span class="lit">"CDG"</span>, <span class="num">50</span>) == Success(<span class="std">List</span>((<span class="lit">"LBG"</span>, <span class="num">9</span>), (<span class="lit">"ORY"</span>, <span class="num">35</span>), (<span class="lit">"VIY"</span>, <span class="num">37</span>), (<span class="lit">"POX"</span>, <span class="num">38</span>))))
 assert(geoBase.getNearbyAirportsWithDetails(<span class="lit">"CDG"</span>, <span class="num">36</span>) == Success(<span class="std">List</span>((<span class="lit">"LBG"</span>, <span class="num">9</span>), (<span class="lit">"ORY"</span>, <span class="num">35</span>))))
-assert(geoBase.getNearbyAirportsWithDetails(<span class="lit">"~#?"</span>, <span class="num">36</span>)) == Failure(GeoBaseException: Unknown location \<span class="lit">"~#?\""</span>))</pre></div><dl class="paramcmts block"><dt class="param">location</dt><dd class="cmt"><p>the airport or city for which to find nearby
-airports.</p></dd><dt class="param">radius</dt><dd class="cmt"><p>the maximum distance (in km) for which an airport is
+assert(geoBase.getNearbyAirportsWithDetails(<span class="lit">"~#?"</span>, <span class="num">36</span>)) == Failure(GeoBaseException: Unknown location \<span class="lit">"~#?\""</span>))</pre></div><dl class="paramcmts block"><dt class="param">location</dt><dd class="cmt"><p>the airport or city for which to find nearby airports.</p></dd><dt class="param">radius</dt><dd class="cmt"><p>the maximum distance (in km) for which an airport is
 considered close.</p></dd><dt>returns</dt><dd class="cmt"><p>the sorted per incresaing distance list of tuples (airport,
 distance).</p></dd></dl></div>
     </li><li name="com.geobase.GeoBase#getOffsetForLocalDate" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
@@ -585,14 +588,15 @@ city/airport (can be negative).</p></dd></dl></div>
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      <p class="shortcomment cmt">Returns the trip duration between two locations (airport or city).</p><div class="fullcomment"><div class="comment cmt"><p>Returns the trip duration between two locations (airport or city).</p><p>In the travel indeuxtry, the trip duration is synonym with elapsed
-flying time (EFT).</p><p>This is meant to be used to compute the trip duration for a segment/bound
+      <p class="shortcomment cmt">Returns the trip duration between two locations (airport or city).</p><div class="fullcomment"><div class="comment cmt"><p>Returns the trip duration between two locations (airport or city).</p><p>In the travel indeuxtry, the trip duration is synonym with elapsed flying
+time (EFT).</p><p>This is meant to be used to compute the trip duration for a segment/bound
 for which we know the origin/destination airports/cities and the local
-time. i.e. when we don't have gmt times.</p><pre>assert(geoBase.getTripDurationFromLocalDates(<span class="lit">"20160606_1627"</span>, <span class="lit">"CDG"</span>, <span class="lit">"20160606_1757"</span>, <span class="lit">"JFK"</span>) == Success(<span class="num">7.5</span>d))
+time. i.e. when we don't have gmt times.</p><pre>assert(geoBase.getTripDurationFromLocalDates(
+  <span class="lit">"20160606_1627"</span>, <span class="lit">"CDG"</span>, <span class="lit">"20160606_1757"</span>, <span class="lit">"JFK"</span>) == Success(<span class="num">7.5</span>d))
 
 <span class="kw">val</span> computedTripDuration = geoBase.getTripDurationFromLocalDates(
-	<span class="lit">"2016-06-06T16:27"</span>, <span class="lit">"CDG"</span>, <span class="lit">"2016-06-06T17:57"</span>, <span class="lit">"JFK"</span>,
-	format = <span class="lit">"yyyy-MM-dd'T'HH:mm"</span>, unit = <span class="lit">"minutes"</span>
+  <span class="lit">"2016-06-06T16:27"</span>, <span class="lit">"CDG"</span>, <span class="lit">"2016-06-06T17:57"</span>, <span class="lit">"JFK"</span>,
+  format = <span class="lit">"yyyy-MM-dd'T'HH:mm"</span>, unit = <span class="lit">"minutes"</span>
 )
 assert(computedTripDuration == Success(<span class="num">450</span>d))
 
@@ -680,8 +684,8 @@ opentraveldata. You don't need to know the time zone, just enter the
 airport or the city as a parameter.</p><pre>assert(geoBase.localDateToGMT(<span class="lit">"20160606_2227"</span>, <span class="lit">"NYC"</span>) == Success(<span class="lit">"20160607_0227"</span>))
 assert(geoBase.localDateToGMT(<span class="lit">"2016-06-06T22:27"</span>, <span class="lit">"NYC"</span>, <span class="lit">"yyyy-MM-dd'T'HH:mm"</span>) == Success(<span class="lit">"2016-06-07T02:27"</span>))
 assert(geoBase.localDateToGMT(<span class="lit">"20160606_2227"</span>, <span class="lit">"~#?"</span>) == Failure(GeoBaseException: Unknown location <span class="lit">"~#?"</span>))</pre></div><dl class="paramcmts block"><dt class="param">localDate</dt><dd class="cmt"><p>the local date at the given location under the given
-format.</p></dd><dt class="param">location</dt><dd class="cmt"><p>the airport or city where this local date applies</p></dd><dt class="param">format</dt><dd class="cmt"><p>(default = &quot;yyyyMMdd_HHmm&quot;) the format under which
-localDate is provided and the GMT date is returned.</p></dd><dt>returns</dt><dd class="cmt"><p>the GMT date associated to the local date under the requested
+format.</p></dd><dt class="param">location</dt><dd class="cmt"><p>the airport or city where this local date applies</p></dd><dt class="param">format</dt><dd class="cmt"><p>(default = &quot;yyyyMMdd_HHmm&quot;) the format under which localDate
+is provided and the GMT date is returned.</p></dd><dt>returns</dt><dd class="cmt"><p>the GMT date associated to the local date under the requested
 format.</p></dd></dl></div>
     </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a>

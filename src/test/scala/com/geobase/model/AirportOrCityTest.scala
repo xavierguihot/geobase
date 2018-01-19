@@ -13,65 +13,73 @@ import org.scalatest.FunSuite
   */
 class AirportOrCityTest extends FunSuite {
 
-	test("City Getter") {
+  test("City Getter") {
 
-		// Norm:
-		assert(AirportOrCity("ORY", "PAR", "", "", "", "", "").getCity() === Success("PAR"))
+    // Norm:
+    var city = AirportOrCity("ORY", "PAR", "", "", "", "", "").getCity()
+    assert(city === Success("PAR"))
 
-		// Shared airport between cities:
-		assert(AirportOrCity("AZA", "PHX,MSC", "", "", "", "", "").getCity() === Success("PHX"))
+    // Shared airport between cities:
+    city = AirportOrCity("AZA", "PHX,MSC", "", "", "", "", "").getCity()
+    assert(city === Success("PHX"))
 
-		// Empty country field:
-		val exceptionThrown = intercept[GeoBaseException] {
-			AirportOrCity("ORY", "", "", "", "", "", "").getCity().get
-		}
-		assert(exceptionThrown.getMessage === "No city available for airport \"ORY\"")
-	}
+    // Empty country field:
+    val exceptionThrown = intercept[GeoBaseException] {
+      AirportOrCity("ORY", "", "", "", "", "", "").getCity().get
+    }
+    assert(
+      exceptionThrown.getMessage === "No city available for airport \"ORY\"")
+  }
 
-	test("Cities Getter") {
+  test("Cities Getter") {
 
-		// Norm:
-		assert(AirportOrCity("ORY", "PAR", "", "", "", "", "").getCities() === Success(List("PAR")))
+    // Norm:
+    var cities = AirportOrCity("ORY", "PAR", "", "", "", "", "").getCities()
+    assert(cities === Success(List("PAR")))
 
-		// Shared airport between cities:
-		var location = AirportOrCity("AZA", "PHX,MSC", "", "", "", "", "")
-		assert(location.getCities() === Success(List("PHX", "MSC")))
+    // Shared airport between cities:
+    cities = AirportOrCity("AZA", "PHX,MSC", "", "", "", "", "").getCities()
+    assert(cities === Success(List("PHX", "MSC")))
 
-		// Empty country field:
-		val exceptionThrown = intercept[GeoBaseException] {
-			AirportOrCity("ORY", "", "", "", "", "", "").getCities().get
-		}
-		assert(exceptionThrown.getMessage === "No city available for airport \"ORY\"")
+    // Empty country field:
+    val exceptionThrown = intercept[GeoBaseException] {
+      AirportOrCity("ORY", "", "", "", "", "", "").getCities().get
+    }
+    assert(
+      exceptionThrown.getMessage === "No city available for airport \"ORY\"")
 
-		// Shared airport between cities, but with an empty city:
-		location = AirportOrCity("AZA", "PHX,MSC,", "", "", "", "", "")
-		assert(location.getCities() === Success(List("PHX", "MSC")))
-		location = AirportOrCity("AZA", "PHX,,MSC", "", "", "", "", "")
-		assert(location.getCities() === Success(List("PHX", "MSC")))
-	}
+    // Shared airport between cities, but with an empty city:
+    cities = AirportOrCity("AZA", "PHX,MSC,", "", "", "", "", "").getCities()
+    assert(cities === Success(List("PHX", "MSC")))
+    cities = AirportOrCity("AZA", "PHX,,MSC", "", "", "", "", "").getCities()
+    assert(cities === Success(List("PHX", "MSC")))
+  }
 
-	test("Country Getter") {
+  test("Country Getter") {
 
-		// Norm:
-		assert(AirportOrCity("ORY", "", "FR", "", "", "", "").getCountry() === Success("FR"))
+    // Norm:
+    val country = AirportOrCity("ORY", "", "FR", "", "", "", "").getCountry()
+    assert(country === Success("FR"))
 
-		// Empty country field:
-		val exceptionThrown = intercept[GeoBaseException] {
-			AirportOrCity("ORY", "", "", "", "", "", "").getCountry().get
-		}
-		assert(exceptionThrown.getMessage === "No country available for location \"ORY\"")
-	}
+    // Empty country field:
+    val exceptionThrown = intercept[GeoBaseException] {
+      AirportOrCity("ORY", "", "", "", "", "", "").getCountry().get
+    }
+    assert(
+      exceptionThrown.getMessage === "No country available for location \"ORY\"")
+  }
 
-	test("Time Zone Getter") {
+  test("Time Zone Getter") {
 
-		// Norm:
-		val location = AirportOrCity("ORY", "", "", "", "", "Europe/Paris", "")
-		assert(location.getTimeZone() === Success("Europe/Paris"))
+    // Norm:
+    val location = AirportOrCity("ORY", "", "", "", "", "Europe/Paris", "")
+    assert(location.getTimeZone() === Success("Europe/Paris"))
 
-		// Empty country field:
-		val exceptionThrown = intercept[GeoBaseException] {
-			AirportOrCity("ORY", "", "", "", "", "", "").getCountry().get
-		}
-		assert(exceptionThrown.getMessage === "No country available for location \"ORY\"")
-	}
+    // Empty country field:
+    val exceptionThrown = intercept[GeoBaseException] {
+      AirportOrCity("ORY", "", "", "", "", "", "").getCountry().get
+    }
+    assert(
+      exceptionThrown.getMessage === "No country available for location \"ORY\"")
+  }
 }

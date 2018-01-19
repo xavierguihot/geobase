@@ -11,14 +11,15 @@ import org.scalatest.FunSuite
   */
 class AirlineTest extends FunSuite {
 
-	test("Country Getter") {
+  test("Country Getter") {
 
-		assert(Airline("AF", "FR").getCountry().get === "FR")
+    assert(Airline("AF", "FR").getCountry().get === "FR")
 
-		// Empty country field:
-		val exceptionThrown = intercept[GeoBaseException] {
-			Airline("AF", "").getCountry().get
-		}
-		assert(exceptionThrown.getMessage === "No country available for airline \"AF\"")
-	}
+    // Empty country field:
+    val exceptionThrown = intercept[GeoBaseException] {
+      Airline("AF", "").getCountry().get
+    }
+    assert(
+      exceptionThrown.getMessage === "No country available for airline \"AF\"")
+  }
 }

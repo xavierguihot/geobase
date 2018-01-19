@@ -13,36 +13,39 @@ import org.scalatest.FunSuite
   */
 class CountryTest extends FunSuite {
 
-	test("Continent Getter") {
+  test("Continent Getter") {
 
-		assert(Country("FR", "", "EU", "").getContinent() === Success("EU"))
+    assert(Country("FR", "", "EU", "").getContinent() === Success("EU"))
 
-		// Empty continent field:
-		val exceptionThrown = intercept[GeoBaseException] {
-			Country("FR", "", "", "").getContinent().get
-		}
-		assert(exceptionThrown.getMessage === "No continent available for country \"FR\"")
-	}
+    // Empty continent field:
+    val exceptionThrown = intercept[GeoBaseException] {
+      Country("FR", "", "", "").getContinent().get
+    }
+    assert(
+      exceptionThrown.getMessage === "No continent available for country \"FR\"")
+  }
 
-	test("Iata Zone Getter") {
+  test("Iata Zone Getter") {
 
-		assert(Country("FR", "", "", "21").getIataZone() === Success("21"))
+    assert(Country("FR", "", "", "21").getIataZone() === Success("21"))
 
-		// Empty iata zone field:
-		val exceptionThrown = intercept[GeoBaseException] {
-			Country("FR", "", "", "").getIataZone().get
-		}
-		assert(exceptionThrown.getMessage === "No iata zone available for country \"FR\"")
-	}
+    // Empty iata zone field:
+    val exceptionThrown = intercept[GeoBaseException] {
+      Country("FR", "", "", "").getIataZone().get
+    }
+    assert(
+      exceptionThrown.getMessage === "No iata zone available for country \"FR\"")
+  }
 
-	test("Currency Getter") {
+  test("Currency Getter") {
 
-		assert(Country("FR", "EUR", "", "").getCurrency() === Success("EUR"))
+    assert(Country("FR", "EUR", "", "").getCurrency() === Success("EUR"))
 
-		// Empty currency field:
-		val exceptionThrown = intercept[GeoBaseException] {
-			Country("FR", "", "", "").getCurrency().get
-		}
-		assert(exceptionThrown.getMessage === "No currency available for country \"FR\"")
-	}
+    // Empty currency field:
+    val exceptionThrown = intercept[GeoBaseException] {
+      Country("FR", "", "", "").getCurrency().get
+    }
+    assert(
+      exceptionThrown.getMessage === "No currency available for country \"FR\"")
+  }
 }

@@ -1,11 +1,8 @@
 package com.geobase
 
 import com.geobase.error.GeoBaseException
-import com.geobase.model.{Airline, AirportOrCity, Country}
 
 import scala.util.Success
-
-import java.security.InvalidParameterException
 
 import org.scalatest.FunSuite
 import org.scalatest.PrivateMethodTester

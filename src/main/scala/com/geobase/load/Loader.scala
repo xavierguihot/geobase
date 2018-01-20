@@ -2,10 +2,6 @@ package com.geobase.load
 
 import com.geobase.model.{Airline, AirportOrCity, Country}
 
-import java.text.SimpleDateFormat
-
-import java.util.TimeZone
-
 import scala.io.Source
 
 /** Functions called when initializating GeoBase (data loads).

@@ -4,7 +4,12 @@ version := "1.1.3"
 
 scalaVersion := "2.11.8"
 
-scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature")
+scalacOptions ++= Seq(
+  "-unchecked",
+  "-deprecation",
+  "-feature",
+  "-Ywarn-unused-import"
+)
 
 wartremoverWarnings in (Compile, compile) ++= Warts.all
 wartremoverWarnings in (Compile, compile) --= Seq(

@@ -213,10 +213,9 @@ class GeoBaseTest extends FunSuite with PrivateMethodTester {
     val invalidExceptionThrown = intercept[IllegalArgumentException] {
       geoBase.getGeoType(List("CDG")).get
     }
-    val invalidExpectedMessage = (
+    val invalidExpectedMessage =
       "requirement failed: at least 2 locations are needed to compute a " +
         "geography type"
-    )
     assert(invalidExceptionThrown.getMessage === invalidExpectedMessage)
 
     // Unknown airport/city:
@@ -269,11 +268,8 @@ class GeoBaseTest extends FunSuite with PrivateMethodTester {
     assert(gmtDate === Success("20160212_1527"))
 
     // 6: Another format:
-    gmtDate = geoBase.localDateToGMT(
-      "2016-06-06T22:27",
-      "NYC",
-      "yyyy-MM-dd'T'HH:mm"
-    )
+    gmtDate = geoBase
+      .localDateToGMT("2016-06-06T22:27", "NYC", "yyyy-MM-dd'T'HH:mm")
     assert(gmtDate === Success("2016-06-07T02:27"))
 
     // 7: With an invalid airport/city:
@@ -325,11 +321,8 @@ class GeoBaseTest extends FunSuite with PrivateMethodTester {
     assert(localDate === Success("20160212_1627"))
 
     // 6: Another format:
-    localDate = geoBase.gmtDateToLocal(
-      "2016-06-07T02:27",
-      "NYC",
-      "yyyy-MM-dd'T'HH:mm"
-    )
+    localDate =
+      geoBase.gmtDateToLocal("2016-06-07T02:27", "NYC", "yyyy-MM-dd'T'HH:mm")
     assert(localDate === Success("2016-06-06T22:27"))
 
     // 7: With an invalid airport/city:
@@ -346,8 +339,7 @@ class GeoBaseTest extends FunSuite with PrivateMethodTester {
       "20160606_1627",
       "NCE",
       "20160606_1627",
-      "NCE"
-    )
+      "NCE")
     assert(computedTripDuration === Success(0d))
 
     // 2: Within same time zone:
@@ -355,8 +347,7 @@ class GeoBaseTest extends FunSuite with PrivateMethodTester {
       "20160606_1627",
       "NCE",
       "20160606_1757",
-      "CDG"
-    )
+      "CDG")
     assert(computedTripDuration === Success(1.5d))
 
     // 3: With a different time zone:
@@ -364,8 +355,7 @@ class GeoBaseTest extends FunSuite with PrivateMethodTester {
       "20160606_1627",
       "CDG",
       "20160606_1757",
-      "JFK"
-    )
+      "JFK")
     assert(computedTripDuration === Success(7.5d))
 
     // 4: With a different time zone and a change of date:
@@ -373,8 +363,7 @@ class GeoBaseTest extends FunSuite with PrivateMethodTester {
       "20160606_2327",
       "CDG",
       "20160607_0057",
-      "JFK"
-    )
+      "JFK")
     assert(computedTripDuration === Success(7.5d))
 
     // 5: With an invalid origin city/ariport:
@@ -401,10 +390,9 @@ class GeoBaseTest extends FunSuite with PrivateMethodTester {
         )
         .get
     }
-    val expectedMessage = (
+    val expectedMessage =
       "The trip duration computed is negative (maybe you've inverted " +
         "departure/origin and arrival/destination)"
-    )
     assert(exceptionThrown.getMessage === expectedMessage)
 
     // 7: The trip duration in minutes:
@@ -413,8 +401,7 @@ class GeoBaseTest extends FunSuite with PrivateMethodTester {
       "CDG",
       "20160606_1757",
       "JFK",
-      unit = "minutes"
-    )
+      unit = "minutes")
     assert(computedTripDuration === Success(450d))
 
     // 8: With a specific format:
@@ -423,8 +410,7 @@ class GeoBaseTest extends FunSuite with PrivateMethodTester {
       "CDG",
       "2016-06-06T17:57",
       "JFK",
-      format = "yyyy-MM-dd'T'HH:mm"
-    )
+      format = "yyyy-MM-dd'T'HH:mm")
     assert(computedTripDuration === Success(7.5d))
 
     // 9: With a specific format and in minutes:
@@ -434,8 +420,7 @@ class GeoBaseTest extends FunSuite with PrivateMethodTester {
       "2016-06-06T17:57",
       "JFK",
       format = "yyyy-MM-dd'T'HH:mm",
-      unit = "minutes"
-    )
+      unit = "minutes")
     assert(computedTripDuration === Success(450d))
 
     // 10: Let's try an invalid unit:
@@ -445,13 +430,11 @@ class GeoBaseTest extends FunSuite with PrivateMethodTester {
         "NCE",
         "20160606_1757",
         "CDG",
-        unit = "osef"
-      )
+        unit = "osef")
     }
-    val invalidExpectedMessage = (
+    val invalidExpectedMessage =
       "requirement failed: option \"unit\" can only take value " +
         "\"hours\" or \"minutes\" but not \"osef\""
-    )
     assert(invalidExceptionThrown.getMessage === invalidExpectedMessage)
   }
 

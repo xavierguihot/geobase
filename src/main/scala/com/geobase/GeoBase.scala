@@ -331,9 +331,7 @@ class GeoBase() extends Serializable {
         outputGMTDateFormatter.setTimeZone(TimeZone.getTimeZone("GMT"))
 
         Success(
-          outputGMTDateFormatter.format(
-            inputLocalDateParser.parse(localDate)
-          ))
+          outputGMTDateFormatter.format(inputLocalDateParser.parse(localDate)))
       }
 
       case Failure(exception) => Failure(exception)
@@ -408,9 +406,7 @@ class GeoBase() extends Serializable {
         outputLocalDateFormatter.setTimeZone(TimeZone.getTimeZone(timeZone))
 
         Success(
-          outputLocalDateFormatter.format(
-            inputGMTDateParser.parse(gmtDate)
-          ))
+          outputLocalDateFormatter.format(inputGMTDateParser.parse(gmtDate)))
       }
 
       case Failure(exception) => Failure(exception)
@@ -461,8 +457,7 @@ class GeoBase() extends Serializable {
     require(
       unit == "hours" || unit == "minutes",
       "option \"unit\" can only take value \"hours\" or \"minutes\" " +
-        "but not \"" + unit + "\""
-    )
+        "but not \"" + unit + "\"")
 
     for {
 
@@ -470,8 +465,7 @@ class GeoBase() extends Serializable {
       gmtArrDate <- localDateToGMT(
         localArrivalDate,
         destinationLocation,
-        format
-      )
+        format)
 
       tripDuration <- {
 
@@ -518,8 +512,7 @@ class GeoBase() extends Serializable {
 
     require(
       locations.length >= 2,
-      "at least 2 locations are needed to compute a geography type"
-    )
+      "at least 2 locations are needed to compute a geography type")
 
     for {
 

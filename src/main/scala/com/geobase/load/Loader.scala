@@ -47,13 +47,11 @@ private[geobase] object Loader {
         // (NCE for instance), we choose to only keep the airport one:
         case (airportOrCityCode, locations) => {
 
-          val location = locations
-            .map {
-              case (airportOrCityCode, location) => location
-            }
-            .foldLeft(locations.head._2) {
-              case (locA, locB) => if (locA.isAirport()) locA else locB
-            }
+          val location = locations.map {
+            case (airportOrCityCode, location) => location
+          }.foldLeft(locations.head._2) {
+            case (locA, locB) => if (locA.isAirport()) locA else locB
+          }
 
           (airportOrCityCode, location)
         }

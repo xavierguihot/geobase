@@ -5,7 +5,7 @@
 ## Overview
 
 
-Version: 1.1.3
+Version: 1.2.0
 
 API Scaladoc: [GeoBase](http://xavierguihot.com/geobase/#com.geobase.GeoBase)
 
@@ -39,20 +39,27 @@ Inspired by [neobase](https://github.com/alexprengere/neobase) for python users.
 The full list of methods is available at
 [GeoBase doc](http://xavierguihot.com/geobase/#com.geobase.GeoBase)
 
-Here is a non-exhaustive list of examples:
+Here is a non-exhaustive list of available methods:
 
 ```scala
 import com.geobase.GeoBase
 
 val geoBase = new GeoBase()
 
-assert(geoBase.getCityFor("CDG") == Success("PAR"))
-assert(geoBase.getCountryFor("CDG") == Success("FR"))
-assert(geoBase.getCountryForAirline("AF") == Success("FR"))
-assert(geoBase.getCurrencyFor("NYC") == Success("USD"))
-assert(geoBase.getDistanceBetween("PAR", "NCE") == Success(686))
-assert(geoBase.getTripDurationFromLocalDates("20160606_1627", "CDG", "20160606_1757", "JFK") == Success(7.5d))
-assert(geoBase.getNearbyAirports("CDG", 50) == Success(List("LBG", "ORY", "VIY", "POX")))
+assert(geoBase.city("CDG") == Success("PAR"))
+assert(geoBase.country("CDG") == Success("FR"))
+assert(geoBase.continent("JFK") == Success("NA"))
+assert(geoBase.iataZone("LON") == Success("21"))
+assert(geoBase.currency("NYC") == Success("USD"))
+assert(geoBase.countryForAirline("AF") == Success("FR"))
+assert(geoBase.timeZone("PAR") === Success("Europe/Paris"))
+assert(geoBase.distanceBetween("PAR", "NCE") == Success(686))
+assert(geoBase.localDateToGMT("20160606_2227", "NYC") == Success("20160607_0227"))
+assert(geoBase.gmtDateToLocal("20160607_0227", "NYC") == Success("20160606_2227"))
+assert(geoBase.offsetForLocalDate("20171224", "NYC") == Success(-300))
+assert(geoBase.tripDurationFromLocalDates("20160606_1627", "CDG", "20160606_1757", "JFK") == Success(7.5d))
+assert(geoBase.geoType(List("CDG", "TLS", "DUB", "FRA")) == Success(CONTINENTAL))
+assert(geoBase.nearbyAirports("CDG", 50) == Success(List("LBG", "ORY", "VIY", "POX")))
 ```
 
 Getters all have a return type embedded within the Try monade. Throwing
@@ -70,7 +77,7 @@ With sbt, add these lines to your build.sbt:
 ```scala
 resolvers += "jitpack" at "https://jitpack.io"
 
-libraryDependencies += "com.github.xavierguihot" % "geobase" % "v1.1.3"
+libraryDependencies += "com.github.xavierguihot" % "geobase" % "v1.2.0"
 ```
 
 With maven, add these lines to your pom.xml:
@@ -86,7 +93,7 @@ With maven, add these lines to your pom.xml:
 <dependency>
 	<groupId>com.github.xavierguihot</groupId>
 	<artifactId>geobase</artifactId>
-	<version>v1.1.3</version>
+	<version>v1.2.0</version>
 </dependency>
 ```
 
@@ -100,7 +107,7 @@ allprojects {
 }
 
 dependencies {
-	compile 'com.github.xavierguihot:geobase:v1.1.3'
+	compile 'com.github.xavierguihot:geobase:v1.2.0'
 }
 ```
 

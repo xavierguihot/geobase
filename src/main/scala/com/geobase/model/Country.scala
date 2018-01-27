@@ -13,30 +13,20 @@ private[geobase] final case class Country(
     countryCode: String,
     currencyCode: String,
     continentCode: String,
-    iataZone: String
+    iataZoneCode: String
 ) {
 
-  def getContinent(): Try[String] = continentCode match {
-    case "" =>
-      Failure(
-        GeoBaseException(
-          "No continent available for country \"" + countryCode + "\""))
-    case _ => Success(continentCode)
-  }
+  def continent(): Try[String] = extract(continentCode, "continent")
 
-  def getIataZone(): Try[String] = iataZone match {
-    case "" =>
-      Failure(
-        GeoBaseException(
-          "No iata zone available for country \"" + countryCode + "\""))
-    case _ => Success(iataZone)
-  }
+  def iataZone(): Try[String] = extract(iataZoneCode, "iata zone")
 
-  def getCurrency(): Try[String] = currencyCode match {
+  def currency(): Try[String] = extract(currencyCode, "currency")
+
+  private def extract(field: String, name: String): Try[String] = field match {
     case "" =>
       Failure(
         GeoBaseException(
-          "No currency available for country \"" + countryCode + "\""))
-    case _ => Success(currencyCode)
+          "No " + name + " available for country \"" + countryCode + "\""))
+    case _ => Success(field)
   }
 }

@@ -13,37 +13,37 @@ import org.scalatest.FunSuite
   */
 class CountryTest extends FunSuite {
 
-  test("Continent Getter") {
+  test("Country to continent") {
 
-    assert(Country("FR", "", "EU", "").getContinent() === Success("EU"))
+    assert(Country("FR", "", "EU", "").continent === Success("EU"))
 
     // Empty continent field:
     val exceptionThrown = intercept[GeoBaseException] {
-      Country("FR", "", "", "").getContinent().get
+      Country("FR", "", "", "").continent.get
     }
     assert(
       exceptionThrown.getMessage === "No continent available for country \"FR\"")
   }
 
-  test("Iata Zone Getter") {
+  test("Country to iata zone") {
 
-    assert(Country("FR", "", "", "21").getIataZone() === Success("21"))
+    assert(Country("FR", "", "", "21").iataZone === Success("21"))
 
     // Empty iata zone field:
     val exceptionThrown = intercept[GeoBaseException] {
-      Country("FR", "", "", "").getIataZone().get
+      Country("FR", "", "", "").iataZone.get
     }
     assert(
       exceptionThrown.getMessage === "No iata zone available for country \"FR\"")
   }
 
-  test("Currency Getter") {
+  test("Country to currency") {
 
-    assert(Country("FR", "EUR", "", "").getCurrency() === Success("EUR"))
+    assert(Country("FR", "EUR", "", "").currency === Success("EUR"))
 
     // Empty currency field:
     val exceptionThrown = intercept[GeoBaseException] {
-      Country("FR", "", "", "").getCurrency().get
+      Country("FR", "", "", "").currency.get
     }
     assert(
       exceptionThrown.getMessage === "No currency available for country \"FR\"")

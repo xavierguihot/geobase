@@ -1,5 +1,7 @@
 package com.geobase.load
 
+import scala.util.Success
+
 import org.scalatest.FunSuite
 
 /** Testing facility for the GeoBase data loader.
@@ -9,33 +11,33 @@ import org.scalatest.FunSuite
   */
 class LoaderTest extends FunSuite {
 
-  test("Load Airports and Cities") {
+  test("Airport and city loader") {
 
     val airportOrCityToDataMap = Loader.loadAirportsAndCities()
 
-    assert(airportOrCityToDataMap("CDG").countryCode === "FR")
-    assert(airportOrCityToDataMap("ORY").cityCode === "PAR")
+    assert(airportOrCityToDataMap("CDG").country === Success("FR"))
+    assert(airportOrCityToDataMap("ORY").city === Success("PAR"))
   }
 
-  test("Load Countries") {
+  test("Country loader") {
 
     val countries = Loader.loadCountries()
 
-    assert(countries("FR").currencyCode === "EUR")
-    assert(countries("US").currencyCode === "USD")
+    assert(countries("FR").currency === Success("EUR"))
+    assert(countries("US").currency === Success("USD"))
 
-    assert(countries("FR").continentCode === "EU")
-    assert(countries("US").continentCode === "NA")
+    assert(countries("FR").continent === Success("EU"))
+    assert(countries("US").continent === Success("NA"))
 
-    assert(countries("FR").iataZone === "21")
-    assert(countries("US").iataZone === "11")
+    assert(countries("FR").iataZone === Success("21"))
+    assert(countries("US").iataZone === Success("11"))
   }
 
-  test("Load Airlines") {
+  test("Airline loader") {
 
     val airlineToCountryMap = Loader.loadAirlines()
 
-    assert(airlineToCountryMap("AF").countryCode === "FR")
-    assert(airlineToCountryMap("AA").countryCode === "US")
+    assert(airlineToCountryMap("AF").country === Success("FR"))
+    assert(airlineToCountryMap("AA").country === Success("US"))
   }
 }

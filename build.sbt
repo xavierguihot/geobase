@@ -1,8 +1,8 @@
 name := "geobase"
 
-version := "1.1.3"
+version := "1.2.0"
 
-scalaVersion := "2.11.8"
+scalaVersion := "2.11.12"
 
 scalacOptions ++= Seq(
   "-unchecked",

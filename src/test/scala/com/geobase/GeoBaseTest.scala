@@ -1,6 +1,7 @@
 package com.geobase
 
 import com.geobase.error.GeoBaseException
+import com.geobase.model.{DOMESTIC, CONTINENTAL, INTER_CONTINENTAL}
 
 import scala.util.Success
 
@@ -16,202 +17,215 @@ class GeoBaseTest extends FunSuite with PrivateMethodTester {
 
   private val geoBase = new GeoBase()
 
-  test("Airport to City Getter") {
+  test("Airport to city") {
 
     // Basic cases:
-    assert(geoBase.getCityFor("ORY") === Success("PAR"))
-    assert(geoBase.getCityFor("CDG") === Success("PAR"))
-    assert(geoBase.getCityFor("JFK") === Success("NYC"))
-    assert(geoBase.getCityFor("NCE") === Success("NCE"))
+    assert(geoBase.city("ORY") === Success("PAR"))
+    assert(geoBase.city("CDG") === Success("PAR"))
+    assert(geoBase.city("JFK") === Success("NYC"))
+    assert(geoBase.city("NCE") === Success("NCE"))
 
     // Case where several cities are given for one airport:
-    assert(geoBase.getCityFor("AZA") === Success("PHX")) // PHX,MSC
+    assert(geoBase.city("AZA") === Success("PHX")) // PHX,MSC
 
     // Unknown airport:
     val exceptionThrown = intercept[GeoBaseException] {
-      geoBase.getCityFor("...").get
+      geoBase.city("...").get
     }
     assert(exceptionThrown.getMessage === "Unknown airport \"...\"")
 
     // A city as input will return the city itself:
-    assert(geoBase.getCityFor("PAR") === Success("PAR"))
+    assert(geoBase.city("PAR") === Success("PAR"))
   }
 
-  test("Airport to Cities Getter") {
+  test("Airport to cities") {
 
     // Basic cases:
-    assert(geoBase.getCitiesFor("ORY") === Success(List("PAR")))
-    assert(geoBase.getCitiesFor("CDG") === Success(List("PAR")))
-    assert(geoBase.getCitiesFor("JFK") === Success(List("NYC")))
-    assert(geoBase.getCitiesFor("NCE") === Success(List("NCE")))
+    assert(geoBase.cities("ORY") === Success(List("PAR")))
+    assert(geoBase.cities("CDG") === Success(List("PAR")))
+    assert(geoBase.cities("JFK") === Success(List("NYC")))
+    assert(geoBase.cities("NCE") === Success(List("NCE")))
 
     // Case where several cities are given for one airport:
-    assert(geoBase.getCitiesFor("AZA") === Success(List("PHX", "MSC")))
+    assert(geoBase.cities("AZA") === Success(List("PHX", "MSC")))
 
     // Unknown airport:
     val exceptionThrown = intercept[GeoBaseException] {
-      geoBase.getCitiesFor("...").get
+      geoBase.cities("...").get
     }
     assert(exceptionThrown.getMessage === "Unknown airport \"...\"")
 
     // A city as input will return the city itself:
-    assert(geoBase.getCitiesFor("PAR") === Success(List("PAR")))
+    assert(geoBase.cities("PAR") === Success(List("PAR")))
   }
 
-  test("Airport/City to Country Getter") {
+  test("Location to country") {
 
-    assert(geoBase.getCountryFor("ORY") === Success("FR"))
-    assert(geoBase.getCountryFor("CDG") === Success("FR"))
-    assert(geoBase.getCountryFor("JFK") === Success("US"))
-    assert(geoBase.getCountryFor("NCE") === Success("FR"))
-    assert(geoBase.getCountryFor("PAR") === Success("FR"))
-    assert(geoBase.getCountryFor("FR") === Success("FR"))
+    assert(geoBase.country("ORY") === Success("FR"))
+    assert(geoBase.country("CDG") === Success("FR"))
+    assert(geoBase.country("JFK") === Success("US"))
+    assert(geoBase.country("NCE") === Success("FR"))
+    assert(geoBase.country("PAR") === Success("FR"))
+    assert(geoBase.country("FR") === Success("FR"))
 
     // Unknown airport/city:
     var exceptionThrown = intercept[GeoBaseException] {
-      geoBase.getCountryFor("...").get
+      geoBase.country("...").get
     }
     assert(exceptionThrown.getMessage === "Unknown location \"...\"")
 
     // Unkown country:
-    exceptionThrown = intercept[GeoBaseException] {
-      geoBase.getCountryFor("").get
-    }
+    exceptionThrown = intercept[GeoBaseException] { geoBase.country("").get }
     assert(exceptionThrown.getMessage === "Unknown location \"\"")
   }
 
-  test("Location to Continent Getter") {
+  test("Location to continent") {
 
     // Various input location types (airport, city, country):
-    assert(geoBase.getContinentFor("ORY") === Success("EU"))
-    assert(geoBase.getContinentFor("LON") === Success("EU"))
-    assert(geoBase.getContinentFor("FR") === Success("EU"))
-    assert(geoBase.getContinentFor("JFK") === Success("NA"))
-    assert(geoBase.getContinentFor("AU") === Success("OC"))
-    assert(geoBase.getContinentFor("HK") === Success("AS"))
-    assert(geoBase.getContinentFor("BUE") === Success("SA"))
-    assert(geoBase.getContinentFor("AN") === Success("NA"))
-    assert(geoBase.getContinentFor("ZA") === Success("AF"))
+    assert(geoBase.continent("ORY") === Success("EU"))
+    assert(geoBase.continent("LON") === Success("EU"))
+    assert(geoBase.continent("FR") === Success("EU"))
+    assert(geoBase.continent("JFK") === Success("NA"))
+    assert(geoBase.continent("AU") === Success("OC"))
+    assert(geoBase.continent("HK") === Success("AS"))
+    assert(geoBase.continent("BUE") === Success("SA"))
+    assert(geoBase.continent("AN") === Success("NA"))
+    assert(geoBase.continent("ZA") === Success("AF"))
 
     // Unknown location:
     val exceptionThrown = intercept[GeoBaseException] {
-      geoBase.getContinentFor("..").get
+      geoBase.continent("..").get
     }
     assert(exceptionThrown.getMessage === "Unknown country \"..\"")
   }
 
-  test("Location to IATA Zone Getter") {
+  test("Location to iata zone") {
 
     // Various input location types (airport, city, country):
-    assert(geoBase.getIataZoneFor("ORY") === Success("21"))
-    assert(geoBase.getIataZoneFor("LON") === Success("21"))
-    assert(geoBase.getIataZoneFor("FR") === Success("21"))
-    assert(geoBase.getIataZoneFor("JFK") === Success("11"))
-    assert(geoBase.getIataZoneFor("AU") === Success("32"))
-    assert(geoBase.getIataZoneFor("HK") === Success("31"))
-    assert(geoBase.getIataZoneFor("BUE") === Success("13"))
-    assert(geoBase.getIataZoneFor("ZA") === Success("23"))
+    assert(geoBase.iataZone("ORY") === Success("21"))
+    assert(geoBase.iataZone("LON") === Success("21"))
+    assert(geoBase.iataZone("FR") === Success("21"))
+    assert(geoBase.iataZone("JFK") === Success("11"))
+    assert(geoBase.iataZone("AU") === Success("32"))
+    assert(geoBase.iataZone("HK") === Success("31"))
+    assert(geoBase.iataZone("BUE") === Success("13"))
+    assert(geoBase.iataZone("ZA") === Success("23"))
 
     // Unknown location:
     val exceptionThrown = intercept[GeoBaseException] {
-      geoBase.getIataZoneFor("..").get
+      geoBase.iataZone("..").get
     }
     assert(exceptionThrown.getMessage === "Unknown country \"..\"")
   }
 
-  test("Location to Currency Getter") {
+  test("Location to currency") {
 
     // Various input location types (airport, city, country):
-    assert(geoBase.getCurrencyFor("PAR") === Success("EUR"))
-    assert(geoBase.getCurrencyFor("JFK") === Success("USD"))
-    assert(geoBase.getCurrencyFor("FR") === Success("EUR"))
-    assert(geoBase.getCurrencyFor("AU") === Success("AUD"))
+    assert(geoBase.currency("PAR") === Success("EUR"))
+    assert(geoBase.currency("JFK") === Success("USD"))
+    assert(geoBase.currency("FR") === Success("EUR"))
+    assert(geoBase.currency("AU") === Success("AUD"))
 
     // Unknown location:
     val exceptionThrown = intercept[GeoBaseException] {
-      geoBase.getCurrencyFor("..").get
+      geoBase.currency("..").get
     }
     assert(exceptionThrown.getMessage === "Unknown country \"..\"")
   }
 
-  test("Airline to Country Getter") {
+  test("Airline to country") {
 
-    assert(geoBase.getCountryForAirline("BA") === Success("GB"))
-    assert(geoBase.getCountryForAirline("AF") === Success("FR"))
-    assert(geoBase.getCountryForAirline("AA") === Success("US"))
-    assert(geoBase.getCountryForAirline("LH") === Success("DE"))
+    assert(geoBase.countryForAirline("BA") === Success("GB"))
+    assert(geoBase.countryForAirline("AF") === Success("FR"))
+    assert(geoBase.countryForAirline("AA") === Success("US"))
+    assert(geoBase.countryForAirline("LH") === Success("DE"))
 
     // Unknown airline:
     val exceptionThrown = intercept[GeoBaseException] {
-      geoBase.getCountryForAirline("..").get
+      geoBase.countryForAirline("..").get
     }
     assert(exceptionThrown.getMessage === "Unknown airline \"..\"")
   }
 
-  test("Distance Getter") {
+  test("Location to time zone") {
+    assert(geoBase.timeZone("CDG") === Success("Europe/Paris"))
+    assert(geoBase.timeZone("PAR") === Success("Europe/Paris"))
+    assert(geoBase.timeZone("JFK") === Success("America/New_York"))
+    assert(geoBase.timeZone("NYC") === Success("America/New_York"))
+    assert(geoBase.timeZone("BOS") === Success("America/New_York"))
+    assert(geoBase.timeZone("LAX") === Success("America/Los_Angeles"))
+    assert(geoBase.timeZone("DUB") === Success("Europe/Dublin"))
 
-    assert(geoBase.getDistanceBetween("ORY", "NCE") === Success(676))
-    assert(geoBase.getDistanceBetween("NCE", "ORY") === Success(676))
-
-    assert(geoBase.getDistanceBetween("ORY", "CDG") === Success(35))
-
-    assert(geoBase.getDistanceBetween("ORY", "ORY") === Success(0))
-
-    // Unknown airport/city:
-    var exceptionThrown = intercept[GeoBaseException] {
-      geoBase.getDistanceBetween("...", "CDG").get
-    }
-    assert(exceptionThrown.getMessage === "Unknown location \"...\"")
-
-    exceptionThrown = intercept[GeoBaseException] {
-      geoBase.getDistanceBetween("CDG", "...").get
+    // Unknown location:
+    val exceptionThrown = intercept[GeoBaseException] {
+      geoBase.timeZone("...").get
     }
     assert(exceptionThrown.getMessage === "Unknown location \"...\"")
   }
 
-  test("Geo Type Getter (domestic, conti., interconti.)") {
+  test("Distance between two locations") {
 
-    var computedGeoType = geoBase.getGeoType(List("CDG", "ORY"))
-    assert(computedGeoType === Success(GeoType.DOMESTIC))
-    computedGeoType = geoBase.getGeoType(List("CDG", "PAR"))
-    assert(computedGeoType === Success(GeoType.DOMESTIC))
+    assert(geoBase.distanceBetween("ORY", "NCE") === Success(676))
+    assert(geoBase.distanceBetween("NCE", "ORY") === Success(676))
 
-    computedGeoType = geoBase.getGeoType(List("CDG", "NCE", "NCE", "TLS"))
-    assert(computedGeoType === Success(GeoType.DOMESTIC))
-    computedGeoType = geoBase.getGeoType(List("CDG", "NCE", "NCE", "CDG"))
-    assert(computedGeoType === Success(GeoType.DOMESTIC))
+    assert(geoBase.distanceBetween("ORY", "CDG") === Success(35))
 
-    computedGeoType = geoBase.getGeoType(List("CDG", "FRA"))
-    assert(computedGeoType === Success(GeoType.CONTINENTAL))
-    computedGeoType = geoBase.getGeoType(List("CDG", "TLS", "DUB", "FRA"))
-    assert(computedGeoType === Success(GeoType.CONTINENTAL))
-    computedGeoType =
-      geoBase.getGeoType(List("CDG", "TLS", "DUB", "FRA", "CDG"))
-    assert(computedGeoType === Success(GeoType.CONTINENTAL))
+    assert(geoBase.distanceBetween("ORY", "ORY") === Success(0))
 
-    computedGeoType = geoBase.getGeoType(List("CDG", "JFK"))
-    assert(computedGeoType === Success(GeoType.INTER_CONTINENTAL))
-    computedGeoType = geoBase.getGeoType(List("PAR", "JFK"))
-    assert(computedGeoType === Success(GeoType.INTER_CONTINENTAL))
-    computedGeoType = geoBase.getGeoType(List("PAR", "NYC"))
-    assert(computedGeoType === Success(GeoType.INTER_CONTINENTAL))
-    computedGeoType = geoBase.getGeoType(List("CDG", "TLS", "JFK", "MEX"))
-    assert(computedGeoType === Success(GeoType.INTER_CONTINENTAL))
+    // Unknown airport/city:
+    var exceptionThrown = intercept[GeoBaseException] {
+      geoBase.distanceBetween("...", "CDG").get
+    }
+    assert(exceptionThrown.getMessage === "Unknown location \"...\"")
 
-    computedGeoType = geoBase.getGeoType(List("FR", "FR"))
-    assert(computedGeoType === Success(GeoType.DOMESTIC))
-    computedGeoType = geoBase.getGeoType(List("FR", "FR", "DE"))
-    assert(computedGeoType === Success(GeoType.CONTINENTAL))
-    computedGeoType = geoBase.getGeoType(List("FR", "GB", "DE"))
-    assert(computedGeoType === Success(GeoType.CONTINENTAL))
-    computedGeoType = geoBase.getGeoType(List("FR", "PAR", "DUB"))
-    assert(computedGeoType === Success(GeoType.CONTINENTAL))
-    computedGeoType = geoBase.getGeoType(List("US", "PAR", "DUB"))
-    assert(computedGeoType === Success(GeoType.INTER_CONTINENTAL))
+    exceptionThrown = intercept[GeoBaseException] {
+      geoBase.distanceBetween("CDG", "...").get
+    }
+    assert(exceptionThrown.getMessage === "Unknown location \"...\"")
+  }
+
+  test("Geo Type from locations (domestic, conti., interconti.)") {
+
+    var computedGeoType = geoBase.geoType(List("CDG", "ORY"))
+    assert(computedGeoType === Success(DOMESTIC))
+    computedGeoType = geoBase.geoType(List("CDG", "PAR"))
+    assert(computedGeoType === Success(DOMESTIC))
+
+    computedGeoType = geoBase.geoType(List("CDG", "NCE", "NCE", "TLS"))
+    assert(computedGeoType === Success(DOMESTIC))
+    computedGeoType = geoBase.geoType(List("CDG", "NCE", "NCE", "CDG"))
+    assert(computedGeoType === Success(DOMESTIC))
+
+    computedGeoType = geoBase.geoType(List("CDG", "FRA"))
+    assert(computedGeoType === Success(CONTINENTAL))
+    computedGeoType = geoBase.geoType(List("CDG", "TLS", "DUB", "FRA"))
+    assert(computedGeoType === Success(CONTINENTAL))
+    computedGeoType = geoBase.geoType(List("CDG", "TLS", "DUB", "FRA", "CDG"))
+    assert(computedGeoType === Success(CONTINENTAL))
+
+    computedGeoType = geoBase.geoType(List("CDG", "JFK"))
+    assert(computedGeoType === Success(INTER_CONTINENTAL))
+    computedGeoType = geoBase.geoType(List("PAR", "JFK"))
+    assert(computedGeoType === Success(INTER_CONTINENTAL))
+    computedGeoType = geoBase.geoType(List("PAR", "NYC"))
+    assert(computedGeoType === Success(INTER_CONTINENTAL))
+    computedGeoType = geoBase.geoType(List("CDG", "TLS", "JFK", "MEX"))
+    assert(computedGeoType === Success(INTER_CONTINENTAL))
+
+    computedGeoType = geoBase.geoType(List("FR", "FR"))
+    assert(computedGeoType === Success(DOMESTIC))
+    computedGeoType = geoBase.geoType(List("FR", "FR", "DE"))
+    assert(computedGeoType === Success(CONTINENTAL))
+    computedGeoType = geoBase.geoType(List("FR", "GB", "DE"))
+    assert(computedGeoType === Success(CONTINENTAL))
+    computedGeoType = geoBase.geoType(List("FR", "PAR", "DUB"))
+    assert(computedGeoType === Success(CONTINENTAL))
+    computedGeoType = geoBase.geoType(List("US", "PAR", "DUB"))
+    assert(computedGeoType === Success(INTER_CONTINENTAL))
 
     // Empty list of airports/cities:
     val invalidExceptionThrown = intercept[IllegalArgumentException] {
-      geoBase.getGeoType(List("CDG")).get
+      geoBase.geoType(List("CDG")).get
     }
     val invalidExpectedMessage =
       "requirement failed: at least 2 locations are needed to compute a " +
@@ -220,30 +234,30 @@ class GeoBaseTest extends FunSuite with PrivateMethodTester {
 
     // Unknown airport/city:
     var exceptionThrown = intercept[GeoBaseException] {
-      geoBase.getGeoType(List("CDG", "...")).get
+      geoBase.geoType(List("CDG", "...")).get
     }
     assert(exceptionThrown.getMessage === "Unknown location \"...\"")
     exceptionThrown = intercept[GeoBaseException] {
-      geoBase.getGeoType(List("US", "CDG", "NCE", "aaa")).get
+      geoBase.geoType(List("US", "CDG", "NCE", "aaa")).get
     }
     assert(exceptionThrown.getMessage === "Unknown location \"aaa\"")
     exceptionThrown = intercept[GeoBaseException] {
-      geoBase.getGeoType(List("US", "bbb", "NCE", "aaa")).get
+      geoBase.geoType(List("US", "bbb", "NCE", "aaa")).get
     }
     assert(exceptionThrown.getMessage === "Unknown location \"bbb\"")
 
     // Unknown IATA zone for a country:
     exceptionThrown = intercept[GeoBaseException] {
-      geoBase.getGeoType(List("FR", "XX")).get
+      geoBase.geoType(List("FR", "XX")).get
     }
     assert(exceptionThrown.getMessage === "Unknown country \"XX\"")
     exceptionThrown = intercept[GeoBaseException] {
-      geoBase.getGeoType(List("FR", "XX", "..")).get
+      geoBase.geoType(List("FR", "XX", "..")).get
     }
     assert(exceptionThrown.getMessage === "Unknown country \"XX\"")
   }
 
-  test("Local Date to GMT Date") {
+  test("Local date to gmt date") {
 
     // 1: French summer time:
     var gmtDate = geoBase.localDateToGMT("20160606_1627", "NCE")
@@ -279,23 +293,23 @@ class GeoBaseTest extends FunSuite with PrivateMethodTester {
     assert(exceptionThrown.getMessage === "Unknown location \"...\"")
   }
 
-  test("Offset Getter from Local Date") {
+  test("Offset from local date") {
 
-    var offset = geoBase.getOffsetForLocalDate("20170712", "NCE")
+    var offset = geoBase.offsetForLocalDate("20170712", "NCE")
     assert(offset === Success(120))
-    offset = geoBase.getOffsetForLocalDate("20170712", "NCE", "yyyyMMdd")
+    offset = geoBase.offsetForLocalDate("20170712", "NCE", "yyyyMMdd")
     assert(offset === Success(120))
-    offset = geoBase.getOffsetForLocalDate("2017-07-12", "NCE", "yyyy-MM-dd")
+    offset = geoBase.offsetForLocalDate("2017-07-12", "NCE", "yyyy-MM-dd")
     assert(offset === Success(120))
 
-    offset = geoBase.getOffsetForLocalDate("20171224", "NCE")
+    offset = geoBase.offsetForLocalDate("20171224", "NCE")
     assert(offset === Success(60))
 
-    offset = geoBase.getOffsetForLocalDate("20171224", "NYC")
+    offset = geoBase.offsetForLocalDate("20171224", "NYC")
     assert(offset === Success(-300))
   }
 
-  test("GMT Date to Local Date") {
+  test("GMT date to local date") {
 
     // 1: French summer time:
     var localDate = geoBase.gmtDateToLocal("20160606_1427", "NCE")
@@ -332,10 +346,10 @@ class GeoBaseTest extends FunSuite with PrivateMethodTester {
     assert(exceptionThrown.getMessage === "Unknown location \"...\"")
   }
 
-  test("Trip Duration Getter Between two Local Dates") {
+  test("Trip duration between two local dates") {
 
     // 1: Origin = destination and departure time = arrival date:
-    var computedTripDuration = geoBase.getTripDurationFromLocalDates(
+    var computedTripDuration = geoBase.tripDurationFromLocalDates(
       "20160606_1627",
       "NCE",
       "20160606_1627",
@@ -343,7 +357,7 @@ class GeoBaseTest extends FunSuite with PrivateMethodTester {
     assert(computedTripDuration === Success(0d))
 
     // 2: Within same time zone:
-    computedTripDuration = geoBase.getTripDurationFromLocalDates(
+    computedTripDuration = geoBase.tripDurationFromLocalDates(
       "20160606_1627",
       "NCE",
       "20160606_1757",
@@ -351,7 +365,7 @@ class GeoBaseTest extends FunSuite with PrivateMethodTester {
     assert(computedTripDuration === Success(1.5d))
 
     // 3: With a different time zone:
-    computedTripDuration = geoBase.getTripDurationFromLocalDates(
+    computedTripDuration = geoBase.tripDurationFromLocalDates(
       "20160606_1627",
       "CDG",
       "20160606_1757",
@@ -359,7 +373,7 @@ class GeoBaseTest extends FunSuite with PrivateMethodTester {
     assert(computedTripDuration === Success(7.5d))
 
     // 4: With a different time zone and a change of date:
-    computedTripDuration = geoBase.getTripDurationFromLocalDates(
+    computedTripDuration = geoBase.tripDurationFromLocalDates(
       "20160606_2327",
       "CDG",
       "20160607_0057",
@@ -369,7 +383,7 @@ class GeoBaseTest extends FunSuite with PrivateMethodTester {
     // 5: With an invalid origin city/ariport:
     var exceptionThrown = intercept[GeoBaseException] {
       geoBase
-        .getTripDurationFromLocalDates(
+        .tripDurationFromLocalDates(
           "20160606_1627",
           "...",
           "20160606_1757",
@@ -382,7 +396,7 @@ class GeoBaseTest extends FunSuite with PrivateMethodTester {
     // 6: A negative trip duration:
     exceptionThrown = intercept[GeoBaseException] {
       geoBase
-        .getTripDurationFromLocalDates(
+        .tripDurationFromLocalDates(
           "20160607_0057",
           "JFK",
           "20160606_2327",
@@ -396,7 +410,7 @@ class GeoBaseTest extends FunSuite with PrivateMethodTester {
     assert(exceptionThrown.getMessage === expectedMessage)
 
     // 7: The trip duration in minutes:
-    computedTripDuration = geoBase.getTripDurationFromLocalDates(
+    computedTripDuration = geoBase.tripDurationFromLocalDates(
       "20160606_1627",
       "CDG",
       "20160606_1757",
@@ -405,7 +419,7 @@ class GeoBaseTest extends FunSuite with PrivateMethodTester {
     assert(computedTripDuration === Success(450d))
 
     // 8: With a specific format:
-    computedTripDuration = geoBase.getTripDurationFromLocalDates(
+    computedTripDuration = geoBase.tripDurationFromLocalDates(
       "2016-06-06T16:27",
       "CDG",
       "2016-06-06T17:57",
@@ -414,7 +428,7 @@ class GeoBaseTest extends FunSuite with PrivateMethodTester {
     assert(computedTripDuration === Success(7.5d))
 
     // 9: With a specific format and in minutes:
-    computedTripDuration = geoBase.getTripDurationFromLocalDates(
+    computedTripDuration = geoBase.tripDurationFromLocalDates(
       "2016-06-06T16:27",
       "CDG",
       "2016-06-06T17:57",
@@ -425,7 +439,7 @@ class GeoBaseTest extends FunSuite with PrivateMethodTester {
 
     // 10: Let's try an invalid unit:
     val invalidExceptionThrown = intercept[IllegalArgumentException] {
-      geoBase.getTripDurationFromLocalDates(
+      geoBase.tripDurationFromLocalDates(
         "20160606_1627",
         "NCE",
         "20160606_1757",
@@ -438,27 +452,27 @@ class GeoBaseTest extends FunSuite with PrivateMethodTester {
     assert(invalidExceptionThrown.getMessage === invalidExpectedMessage)
   }
 
-  test("Get Nearby Airports") {
+  test("Nearby airports") {
 
     // 1: Invalid radius (negative):
     var exceptionThrown = intercept[IllegalArgumentException] {
-      geoBase.getNearbyAirports("CDG", -50).get
+      geoBase.nearbyAirports("CDG", -50).get
     }
     val expectedMessage = "requirement failed: radius must be strictly positive"
     assert(exceptionThrown.getMessage === expectedMessage)
 
     // 2: Invalid radius (zero):
     exceptionThrown = intercept[IllegalArgumentException] {
-      geoBase.getNearbyAirports("CDG", 0).get
+      geoBase.nearbyAirports("CDG", 0).get
     }
     assert(exceptionThrown.getMessage === expectedMessage)
 
     // 3: Normal use case:
     val expectedAirports = List("LBG", "CSF", "ORY", "VIY", "POX", "TNF")
-    assert(geoBase.getNearbyAirports("CDG", 50) === Success(expectedAirports))
+    assert(geoBase.nearbyAirports("CDG", 50) === Success(expectedAirports))
 
     // 4: Normal use case with the detail of distances:
-    val computedAirports = geoBase.getNearbyAirportsWithDetails("CDG", 50)
+    val computedAirports = geoBase.nearbyAirportsWithDetails("CDG", 50)
     val expectedAirportsWithDetails = List(
       ("LBG", 9),
       ("CSF", 27),
@@ -470,14 +484,14 @@ class GeoBaseTest extends FunSuite with PrivateMethodTester {
     assert(computedAirports === Success(expectedAirportsWithDetails))
 
     // 5: Closer radius:
-    assert(geoBase.getNearbyAirports("CDG", 10) === Success(List("LBG")))
+    assert(geoBase.nearbyAirports("CDG", 10) === Success(List("LBG")))
 
     // 6: No nearby airports:
-    assert(geoBase.getNearbyAirports("CDG", 5) === Success(List()))
+    assert(geoBase.nearbyAirports("CDG", 5) === Success(List()))
 
     // 7: Unknown location:
     val exceptionThrown2 = intercept[GeoBaseException] {
-      geoBase.getNearbyAirports("...", 20).get
+      geoBase.nearbyAirports("...", 20).get
     }
     assert(exceptionThrown2.getMessage === "Unknown location \"...\"")
   }

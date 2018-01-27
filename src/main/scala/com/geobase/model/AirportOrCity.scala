@@ -28,20 +28,20 @@ private[geobase] final case class AirportOrCity(
     iataCode: String,
     cityCode: String,
     countryCode: String,
-    latitude: String,
-    longitude: String,
-    timeZone: String,
+    rawLatitude: String,
+    rawLongitude: String,
+    rawTimeZone: String,
     locationType: String
 ) {
 
   def isAirport(): Boolean = locationType == "A"
 
-  def getCity(): Try[String] = getCities() match {
+  def city(): Try[String] = cities() match {
     case Success(city :: _) => Success(city)
     case Failure(exception) => Failure(exception)
   }
 
-  def getCities(): Try[List[String]] = cityCode.length match {
+  def cities(): Try[List[String]] = cityCode.length match {
 
     case 3 => Success(List(cityCode))
 
@@ -59,35 +59,28 @@ private[geobase] final case class AirportOrCity(
         GeoBaseException("No city available for airport \"" + iataCode + "\""))
   }
 
-  def getCountry(): Try[String] = countryCode match {
+  def country(): Try[String] = extract(countryCode, "country")
+
+  def timeZone(): Try[String] = extract(rawTimeZone, "time zone")
+
+  def latitude(): Try[Double] = extractCoordinate(rawLatitude, "latitude")
+
+  def longitude(): Try[Double] = extractCoordinate(rawLongitude, "longitude")
+
+  private def extract(field: String, name: String): Try[String] = field match {
     case "" =>
       Failure(
         GeoBaseException(
-          "No country available for location \"" + iataCode + "\""))
-    case _ => Success(countryCode)
+          "No " + name + " available for location \"" + iataCode + "\""))
+    case _ => Success(field)
   }
 
-  def getTimeZone(): Try[String] = timeZone match {
-    case "" =>
-      Failure(
-        GeoBaseException(
-          "No time zone available for location \"" + iataCode + "\""))
-    case _ => Success(timeZone)
-  }
-
-  def getLongitude(): Try[Double] = Try(longitude.toDouble) match {
-    case Success(longitude) => Success(longitude / 180d * Pi)
-    case Failure(_) =>
-      Failure(
-        GeoBaseException(
-          "No longitude available for location \"" + iataCode + "\""))
-  }
-
-  def getLatitude(): Try[Double] = Try(latitude.toDouble) match {
-    case Success(latitude) => Success(latitude / 180d * Pi)
-    case Failure(_) =>
-      Failure(
-        GeoBaseException(
-          "No latitude available for location \"" + iataCode + "\""))
-  }
+  private def extractCoordinate(field: String, name: String): Try[Double] =
+    Try(field.toDouble) match {
+      case Success(coordinate) => Success(coordinate / 180d * Pi)
+      case Failure(_) =>
+        Failure(
+          GeoBaseException(
+            "No " + name + " available for location \"" + iataCode + "\""))
+    }
 }

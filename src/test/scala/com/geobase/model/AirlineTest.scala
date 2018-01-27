@@ -2,6 +2,8 @@ package com.geobase.model
 
 import com.geobase.error.GeoBaseException
 
+import scala.util.Success
+
 import org.scalatest.FunSuite
 
 /** Testing facility for Airline.
@@ -11,13 +13,13 @@ import org.scalatest.FunSuite
   */
 class AirlineTest extends FunSuite {
 
-  test("Country Getter") {
+  test("Airline to country") {
 
-    assert(Airline("AF", "FR").getCountry().get === "FR")
+    assert(Airline("AF", "FR").country === Success("FR"))
 
     // Empty country field:
     val exceptionThrown = intercept[GeoBaseException] {
-      Airline("AF", "").getCountry().get
+      Airline("AF", "").country.get
     }
     assert(
       exceptionThrown.getMessage === "No country available for airline \"AF\"")

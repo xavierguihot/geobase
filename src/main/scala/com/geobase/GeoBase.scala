@@ -3,6 +3,7 @@ package com.geobase
 import com.geobase.load.Loader
 import com.geobase.error.GeoBaseException
 import com.geobase.model.{Airline, AirportOrCity, Country}
+import com.geobase.model.{GeoType, DOMESTIC, CONTINENTAL, INTER_CONTINENTAL}
 
 import scala.util.{Try, Success, Failure}
 
@@ -30,13 +31,13 @@ import cats.implicits._
   *
   * val geoBase = new GeoBase()
   *
-  * assert(geoBase.getCityFor("CDG") == Success("PAR"))
-  * assert(geoBase.getCountry("CDG") == Success("FR"))
-  * assert(geoBase.getCurrencyFor("NYC") == Success("USD"))
-  * assert(geoBase.getCountryForAirline("AF") == Success("FR"))
-  * assert(geoBase.getDistanceBetween("PAR", "NCE") == Success(686))
-  * assert(geoBase.getTripDurationFromLocalDates("20160606_1627", "CDG", "20160606_1757", "JFK") == Success(7.5d))
-  * assert(geoBase.getNearbyAirports("CDG", 50) == Success(List("LBG", "ORY", "VIY", "POX")))
+  * assert(geoBase.city("CDG") == Success("PAR"))
+  * assert(geoBase.country("CDG") == Success("FR"))
+  * assert(geoBase.currency("NYC") == Success("USD"))
+  * assert(geoBase.countryForAirline("AF") == Success("FR"))
+  * assert(geoBase.distanceBetween("PAR", "NCE") == Success(686))
+  * assert(geoBase.tripDurationFromLocalDates("20160606_1627", "CDG", "20160606_1757", "JFK") == Success(7.5d))
+  * assert(geoBase.nearbyAirports("CDG", 50) == Success(List("LBG", "ORY", "VIY", "POX")))
   * }}}
   *
   * The GeoBase object can be used within Spark jobs (in this case, don't forget
@@ -56,6 +57,8 @@ import cats.implicits._
   * Source <a href="https://github.com/xavierguihot/geobase/blob/master/src/main/scala/com/geobase/GeoBase.scala">
   * GeoBase</a>
   *
+  * @todo modify handling of geo type enum
+  *
   * @author Xavier Guihot
   * @since 2016-05
   *
@@ -68,13 +71,11 @@ class GeoBase() extends Serializable {
   private lazy val countries: Map[String, Country] = Loader.loadCountries()
   private lazy val airlines: Map[String, Airline] = Loader.loadAirlines()
 
-  import GeoType._
-
   /** Returns the city associated to the given airport.
     *
     * {{{
-    * assert(geoBase.getCityFor("CDG") == Success("PAR"))
-    * assert(geoBase.getCityFor("?*#") == Failure(GeoBaseException: Unknown airport "?*#")
+    * assert(geoBase.city("CDG") == Success("PAR"))
+    * assert(geoBase.city("?*#") == Failure(GeoBaseException: Unknown airport "?*#")
     * }}}
     *
     * @param airport the airport IATA code (for instance CDG) for which to get
@@ -82,9 +83,9 @@ class GeoBase() extends Serializable {
     * @return the city code corresponding to the given airport (for instance
     * PAR).
     */
-  def getCityFor(airport: String): Try[String] =
+  def city(airport: String): Try[String] =
     airportsAndCities.get(airport) match {
-      case Some(airportInfo) => airportInfo.getCity()
+      case Some(airportInfo) => airportInfo.city
       case None =>
         Failure(GeoBaseException("Unknown airport \"" + airport + "\""))
     }
@@ -95,13 +96,13 @@ class GeoBase() extends Serializable {
     * method, returns this list of cities (usually the list will only contain
     * one city).
     *
-    * The method getCityFor returns the first city corresponding to the given
+    * The method city returns the first city corresponding to the given
     * airport, which is by assumption the biggest corresponding city.
     *
     * {{{
-    * assert(geoBase.getCitiesFor("CDG") == Success(List("PAR")))
-    * assert(geoBase.getCitiesFor("AZA") == Success(List("PHX", "MSC")))
-    * assert(geoBase.getCitiesFor("?*#") == Failure(GeoBaseException: Unknown airport "?*#")
+    * assert(geoBase.cities("CDG") == Success(List("PAR")))
+    * assert(geoBase.cities("AZA") == Success(List("PHX", "MSC")))
+    * assert(geoBase.cities("?*#") == Failure(GeoBaseException: Unknown airport "?*#")
     * }}}
     *
     * @param airport the airport IATA code (for instance AZA) for which to get
@@ -109,9 +110,9 @@ class GeoBase() extends Serializable {
     * @return the list of city codes corresponding to the given airport (for
     * instance List("PHX", "MSC")).
     */
-  def getCitiesFor(airport: String): Try[List[String]] =
+  def cities(airport: String): Try[List[String]] =
     airportsAndCities.get(airport) match {
-      case Some(airportInfo) => airportInfo.getCities()
+      case Some(airportInfo) => airportInfo.cities
       case None =>
         Failure(GeoBaseException("Unknown airport \"" + airport + "\""))
     }
@@ -119,9 +120,9 @@ class GeoBase() extends Serializable {
   /** Returns the country associated to the given location (city or airport).
     *
     * {{{
-    * assert(geoBase.getCountryFor("PAR") == Success("FR"))
-    * assert(geoBase.getCountryFor("ORY") == Success("FR"))
-    * assert(geoBase.getCountryFor("?*#") == Failure(GeoBaseException: Unknown location "?*#"))
+    * assert(geoBase.country("PAR") == Success("FR"))
+    * assert(geoBase.country("ORY") == Success("FR"))
+    * assert(geoBase.country("?*#") == Failure(GeoBaseException: Unknown location "?*#"))
     * }}}
     *
     * @param location the location IATA code (city or airport - for instance
@@ -129,7 +130,7 @@ class GeoBase() extends Serializable {
     * @return the country code corresponding to the given city or airport (for
     * instance FR).
     */
-  def getCountryFor(location: String): Try[String] = location.length match {
+  def country(location: String): Try[String] = location.length match {
 
     // If it's already a country-like code:
     case 2 => Success(location)
@@ -137,7 +138,7 @@ class GeoBase() extends Serializable {
     // If it's a city/airport code, we transform it to a country:
     case 3 =>
       airportsAndCities.get(location) match {
-        case Some(locationInfo) => locationInfo.getCountry()
+        case Some(locationInfo) => locationInfo.country
         case None =>
           Failure(GeoBaseException("Unknown location \"" + location + "\""))
       }
@@ -151,10 +152,10 @@ class GeoBase() extends Serializable {
     * AF (Africa) - AS (Asia) - AN (Antarctica) - OC (Oceania).
     *
     * {{{
-    * assert(geoBase.getContinentFor("CDG") == Success("EU")) // location is an airport
-    * assert(geoBase.getContinentFor("NYC") == Success("NA")) // location is a city
-    * assert(geoBase.getContinentFor("CN") == Success("AS")) // location is a country
-    * assert(geoBase.getContinentFor("?*#") == Failure(GeoBaseException: Unknown location "?*#"))
+    * assert(geoBase.continent("CDG") == Success("EU")) // location is an airport
+    * assert(geoBase.continent("NYC") == Success("NA")) // location is a city
+    * assert(geoBase.continent("CN") == Success("AS")) // location is a country
+    * assert(geoBase.continent("?*#") == Failure(GeoBaseException: Unknown location "?*#"))
     * }}}
     *
     * @param location the country, city or airport IATA code (for instance PAR)
@@ -162,13 +163,13 @@ class GeoBase() extends Serializable {
     * @return the continent code corresponding to the given location (for
     * instance EU).
     */
-  def getContinentFor(location: String): Try[String] =
+  def continent(location: String): Try[String] =
     for {
 
-      country <- getCountryFor(location)
+      country <- country(location)
 
       continent <- countries.get(country) match {
-        case Some(countryDetails) => countryDetails.getContinent()
+        case Some(countryDetails) => countryDetails.continent
         case None =>
           Failure(GeoBaseException("Unknown country \"" + country + "\""))
       }
@@ -180,10 +181,10 @@ class GeoBase() extends Serializable {
     * Possible values are 11, 12, 13, 21, 22, 23, 31, 32 or 33.
     *
     * {{{
-    * assert(geoBase.getIataZoneFor("CDG") == Success("21"))
-    * assert(geoBase.getIataZoneFor("NYC") == Success("11"))
-    * assert(geoBase.getIataZoneFor("ZA") == Success("23"))
-    * assert(geoBase.getIataZoneFor("?*#") == Failure(GeoBaseException: Unknown location "?*#"))
+    * assert(geoBase.iataZone("CDG") == Success("21"))
+    * assert(geoBase.iataZone("NYC") == Success("11"))
+    * assert(geoBase.iataZone("ZA") == Success("23"))
+    * assert(geoBase.iataZone("?*#") == Failure(GeoBaseException: Unknown location "?*#"))
     * }}}
     *
     * @param location the country, city or airport IATA code (for instance PAR)
@@ -191,13 +192,13 @@ class GeoBase() extends Serializable {
     * @return the IATA zone code corresponding to the given location (for
     * instance 21).
     */
-  def getIataZoneFor(location: String): Try[String] =
+  def iataZone(location: String): Try[String] =
     for {
 
-      country <- getCountryFor(location)
+      country <- country(location)
 
       iataZone <- countries.get(country) match {
-        case Some(countryDetails) => countryDetails.getIataZone()
+        case Some(countryDetails) => countryDetails.iataZone
         case None =>
           Failure(GeoBaseException("Unknown country \"" + country + "\""))
       }
@@ -208,9 +209,9 @@ class GeoBase() extends Serializable {
     * country).
     *
     * {{{
-    * assert(geoBase.getCurrencyFor("JFK") == Success("USD"))
-    * assert(geoBase.getCurrencyFor("FR") == Success("EUR"))
-    * assert(geoBase.getCurrencyFor("?#") == Failure(GeoBaseException: Unknown country "#?"))
+    * assert(geoBase.currency("JFK") == Success("USD"))
+    * assert(geoBase.currency("FR") == Success("EUR"))
+    * assert(geoBase.currency("?#") == Failure(GeoBaseException: Unknown country "#?"))
     * }}}
     *
     * @param location the country, city or airport IATA code (for instance FR)
@@ -218,13 +219,13 @@ class GeoBase() extends Serializable {
     * @return the currency code corresponding to the given location (for
     * instance EUR).
     */
-  def getCurrencyFor(location: String): Try[String] =
+  def currency(location: String): Try[String] =
     for {
 
-      country <- getCountryFor(location)
+      country <- country(location)
 
       currency <- countries.get(country) match {
-        case Some(countryDetails) => countryDetails.getCurrency()
+        case Some(countryDetails) => countryDetails.currency
         case None =>
           Failure(GeoBaseException("Unknown country \"" + country + "\""))
       }
@@ -234,8 +235,8 @@ class GeoBase() extends Serializable {
   /** Returns the country associated to the given airline.
     *
     * {{{
-    * assert(geoBase.getCountryForAirline("AF") == Success("FR"))
-    * assert(geoBase.getCountryForAirline("#?") == Failure(GeoBaseException: Unknown airline "#?"))
+    * assert(geoBase.countryForAirline("AF") == Success("FR"))
+    * assert(geoBase.countryForAirline("#?") == Failure(GeoBaseException: Unknown airline "#?"))
     * }}}
     *
     * @param airline the airline IATA code (for instance AF) for which to get
@@ -243,19 +244,40 @@ class GeoBase() extends Serializable {
     * @return the country code corresponding to the given airline (for instance
     * FR).
     */
-  def getCountryForAirline(airline: String): Try[String] =
+  def countryForAirline(airline: String): Try[String] =
     airlines.get(airline) match {
-      case Some(airline) => airline.getCountry()
+      case Some(airline) => airline.country
       case None =>
         Failure(GeoBaseException("Unknown airline \"" + airline + "\""))
     }
 
+  /** Returns the time zone associated to the given airport or city.
+    *
+    * {{{
+    * assert(geoBase.timeZone("CDG") == Success("Europe/Paris"))
+    * assert(geoBase.timeZone("BOS") == Success("America/New_York"))
+    * assert(geoBase.timeZone("?*#") == Failure(GeoBaseException: Unknown location "?*#"))
+    * }}}
+    *
+    * @param location the city or airport IATA code (for instance PAR) for which
+    * to get the associated time zone.
+    * @return the time zone corresponding to the given location (for instance
+    * Europe/Paris).
+    */
+  def timeZone(location: String): Try[String] = {
+    airportsAndCities.get(location) match {
+      case Some(locationInfo) => locationInfo.timeZone
+      case None =>
+        Failure(GeoBaseException("Unknown location \"" + location + "\""))
+    }
+  }
+
   /** Returns the distance between two locations (airports/cities).
     *
     * {{{
-    * assert(geoBase.getDistanceBetween("ORY", "NCE") == Success(674))
-    * assert(geoBase.getDistanceBetween("PAR", "NCE") == Success(686))
-    * assert(geoBase.getDistanceBetween("PAR", "~#?") == Failure(GeoBaseException: Unknown location "~#?"))
+    * assert(geoBase.distanceBetween("ORY", "NCE") == Success(674))
+    * assert(geoBase.distanceBetween("PAR", "NCE") == Success(686))
+    * assert(geoBase.distanceBetween("PAR", "~#?") == Failure(GeoBaseException: Unknown location "~#?"))
     * }}}
     *
     * @param locationA an airport or city IATA code (for instance ORY) for which
@@ -265,7 +287,7 @@ class GeoBase() extends Serializable {
     * @return the distance rounded in km between locationA and locationB (for
     * instance 674 km).
     */
-  def getDistanceBetween(locationA: String, locationB: String): Try[Int] =
+  def distanceBetween(locationA: String, locationB: String): Try[Int] =
     for {
 
       locationDetailsA <- airportsAndCities.get(locationA) match {
@@ -279,10 +301,10 @@ class GeoBase() extends Serializable {
           Failure(GeoBaseException("Unknown location \"" + locationB + "\""))
       }
 
-      latA <- locationDetailsA.getLatitude()
-      lngA <- locationDetailsA.getLongitude()
-      latB <- locationDetailsB.getLatitude()
-      lngB <- locationDetailsB.getLongitude()
+      latA <- locationDetailsA.latitude
+      lngA <- locationDetailsA.longitude
+      latB <- locationDetailsB.latitude
+      lngB <- locationDetailsB.longitude
 
     } yield
       round(
@@ -320,7 +342,7 @@ class GeoBase() extends Serializable {
       format: String = "yyyyMMdd_HHmm"
   ): Try[String] = {
 
-    getTimeZone(location) match {
+    timeZone(location) match {
 
       case Success(timeZone) => {
 
@@ -341,11 +363,11 @@ class GeoBase() extends Serializable {
   /** Returns the offset in minutes for the given date at the given city/airport.
     *
     * {{{
-    * assert(geoBase.getOffsetForLocalDate("20170712", "NCE") == Success(120))
-    * assert(geoBase.getOffsetForLocalDate("2017-07-12", "NCE", "yyyy-MM-dd") == Success(120))
-    * assert(geoBase.getOffsetForLocalDate("20171224", "NCE") == Success(60))
-    * assert(geoBase.getOffsetForLocalDate("20171224", "NYC") == Success(-300))
-    * assert(geoBase.getOffsetForLocalDate("20171224", "~#?") == Failure(GeoBaseException: Unknown location "~#?"))
+    * assert(geoBase.offsetForLocalDate("20170712", "NCE") == Success(120))
+    * assert(geoBase.offsetForLocalDate("2017-07-12", "NCE", "yyyy-MM-dd") == Success(120))
+    * assert(geoBase.offsetForLocalDate("20171224", "NCE") == Success(60))
+    * assert(geoBase.offsetForLocalDate("20171224", "NYC") == Success(-300))
+    * assert(geoBase.offsetForLocalDate("20171224", "~#?") == Failure(GeoBaseException: Unknown location "~#?"))
     * }}}
     *
     * @param localDate the local date
@@ -355,14 +377,14 @@ class GeoBase() extends Serializable {
     * @return the the offset in minutes for the given date at the given
     * city/airport (can be negative).
     */
-  def getOffsetForLocalDate(
+  def offsetForLocalDate(
       localDate: String,
       location: String,
       format: String = "yyyyMMdd"
   ): Try[Int] =
     for {
 
-      timeZone <- getTimeZone(location)
+      timeZone <- timeZone(location)
 
       dateTime = new SimpleDateFormat(format).parse(localDate).getTime()
 
@@ -395,7 +417,7 @@ class GeoBase() extends Serializable {
       format: String = "yyyyMMdd_HHmm"
   ): Try[String] = {
 
-    getTimeZone(location) match {
+    timeZone(location) match {
 
       case Success(timeZone) => {
 
@@ -423,16 +445,18 @@ class GeoBase() extends Serializable {
     * time. i.e. when we don't have gmt times.
     *
     * {{{
-    * assert(geoBase.getTripDurationFromLocalDates(
+    * assert(geoBase.tripDurationFromLocalDates(
     *   "20160606_1627", "CDG", "20160606_1757", "JFK") == Success(7.5d))
     *
-    * val computedTripDuration = geoBase.getTripDurationFromLocalDates(
+    * val computedTripDuration = geoBase.tripDurationFromLocalDates(
     *   "2016-06-06T16:27", "CDG", "2016-06-06T17:57", "JFK",
     *   format = "yyyy-MM-dd'T'HH:mm", unit = "minutes"
     * )
     * assert(computedTripDuration == Success(450d))
     *
-    * assert(geoBase.getTripDurationFromLocalDates("20160606_1627", "~#?", "20160606_1757", "JFK") == Failure(GeoBaseException: Unknown location "~#?"))
+    * assert(geoBase
+    *   .tripDurationFromLocalDates("20160606_1627", "~#?", "20160606_1757", "JFK")
+    *     == Failure(GeoBaseException: Unknown location "~#?"))
     * }}}
     *
     * @param localDepartureDate the departure local date
@@ -445,7 +469,7 @@ class GeoBase() extends Serializable {
     * @return the trip duration in the chosen unit (in hours by default) and
     * format.
     */
-  def getTripDurationFromLocalDates(
+  def tripDurationFromLocalDates(
       localDepartureDate: String,
       originLocation: String,
       localArrivalDate: String,
@@ -491,24 +515,23 @@ class GeoBase() extends Serializable {
 
   /** Returns the geo type of a trip (domestic, continental or inter continental).
     *
-    * Return an enum value: GeoType.DOMESTIC, GeoType.CONTINENTAL or
-    * GeoType.INTER_CONTINENTAL.
+    * Possible returned values: DOMESTIC, CONTINENTAL or INTER_CONTINENTAL.
     *
     * The distinction between continental and intercontinental is made based on
     * iata zones.
     *
     * {{{
-    * assert(geoBase.getGeoType(List("CDG", "ORY")) == Success(GeoType.DOMESTIC))
-    * assert(geoBase.getGeoType(List("FR", "FR")) == Success(GeoType.DOMESTIC))
-    * assert(geoBase.getGeoType(List("FR", "PAR", "DUB")) == Success(GeoType.CONTINENTAL))
-    * assert(geoBase.getGeoType(List("CDG", "TLS", "JFK", "MEX")) == Success(GeoType.INTER_CONTINENTAL))
-    * assert(geoBase.getGeoType(List("US", "bbb", "NCE", "aaa")) == Failure(GeoBaseException: Unknown locations \"bbb\", \"aaa\"))
+    * assert(geoBase.geoType(List("CDG", "ORY")) == Success(DOMESTIC))
+    * assert(geoBase.geoType(List("FR", "FR")) == Success(DOMESTIC))
+    * assert(geoBase.geoType(List("FR", "PAR", "DUB")) == Success(CONTINENTAL))
+    * assert(geoBase.geoType(List("CDG", "TLS", "JFK", "MEX")) == Success(INTER_CONTINENTAL))
+    * assert(geoBase.geoType(List("US", "bbb", "NCE", "aaa")) == Failure(GeoBaseException: Unknown locations \"bbb\", \"aaa\"))
     * }}}
     *
     * @param locations a list of cities/ariports/countries representing the trip
-    * @return the type of the trip (a GeoType enum value, such as GeoType.DOMESTIC).
+    * @return the type of the trip (a GeoType "enum" value, such as DOMESTIC)
     */
-  def getGeoType(locations: List[String]): Try[GeoType] = {
+  def geoType(locations: List[String]): Try[GeoType] = {
 
     require(
       locations.length >= 2,
@@ -516,30 +539,30 @@ class GeoBase() extends Serializable {
 
     for {
 
-      countries <- locations.traverse(loc => getCountryFor(loc))
+      countries <- locations.traverse(loc => country(loc))
 
       distCountries = countries.distinct
 
-      geoType <- distCountries.length match {
+      geo <- distCountries.length match {
 
-        case 1 => Success(GeoType.DOMESTIC)
+        case 1 => Success(DOMESTIC)
 
         case _ =>
           for {
 
-            iataZones <- distCountries.traverse(ctry => getIataZoneFor(ctry))
+            iataZones <- distCountries.traverse(ctry => iataZone(ctry))
 
             distIataZones = iataZones.distinct
 
-            geoType = distIataZones.length match {
-              case 1 => GeoType.CONTINENTAL
-              case _ => GeoType.INTER_CONTINENTAL
+            geo = distIataZones.length match {
+              case 1 => CONTINENTAL
+              case _ => INTER_CONTINENTAL
             }
 
-          } yield geoType
+          } yield geo
       }
 
-    } yield geoType
+    } yield geo
   }
 
   /** Returns the list of nearby airports (within the radius) for the given
@@ -549,9 +572,9 @@ class GeoBase() extends Serializable {
     * sorted starting from the closest airport.
     *
     * {{{
-    * assert(geoBase.getNearbyAirportsWithDetails("CDG", 50) == Success(List("LBG", "ORY", "VIY", "POX")))
-    * assert(geoBase.getNearbyAirportsWithDetails("CDG", 36) == Success(List("LBG", "ORY")))
-    * assert(geoBase.getNearbyAirportsWithDetails("~#?", 36)) == Failure(GeoBaseException: Unknown location \"~#?\""))
+    * assert(geoBase.nearbyAirports("CDG", 50) == Success(List("LBG", "ORY", "VIY", "POX")))
+    * assert(geoBase.nearbyAirports("CDG", 36) == Success(List("LBG", "ORY")))
+    * assert(geoBase.nearbyAirports("~#?", 36)) == Failure(GeoBaseException: Unknown location \"~#?\""))
     * }}}
     *
     * @param location the airport or city for which to find nearby airports
@@ -559,9 +582,9 @@ class GeoBase() extends Serializable {
     * considered close.
     * @return the sorted per incresaing distance list nearby airports
     */
-  def getNearbyAirports(location: String, radius: Int): Try[List[String]] =
+  def nearbyAirports(location: String, radius: Int): Try[List[String]] =
     for {
-      nearbyAirports <- getNearbyAirportsWithDetails(location, radius)
+      nearbyAirports <- nearbyAirportsWithDetails(location, radius)
     } yield nearbyAirports.map(_._1)
 
   /** Returns the list of nearby airports (within the radius) for the given
@@ -572,9 +595,9 @@ class GeoBase() extends Serializable {
     * (airport/distance).
     *
     * {{{
-    * assert(geoBase.getNearbyAirportsWithDetails("CDG", 50) == Success(List(("LBG", 9), ("ORY", 35), ("VIY", 37), ("POX", 38))))
-    * assert(geoBase.getNearbyAirportsWithDetails("CDG", 36) == Success(List(("LBG", 9), ("ORY", 35))))
-    * assert(geoBase.getNearbyAirportsWithDetails("~#?", 36)) == Failure(GeoBaseException: Unknown location \"~#?\""))
+    * assert(geoBase.nearbyAirportsWithDetails("CDG", 50) == Success(List(("LBG", 9), ("ORY", 35), ("VIY", 37), ("POX", 38))))
+    * assert(geoBase.nearbyAirportsWithDetails("CDG", 36) == Success(List(("LBG", 9), ("ORY", 35))))
+    * assert(geoBase.nearbyAirportsWithDetails("~#?", 36)) == Failure(GeoBaseException: Unknown location \"~#?\""))
     * }}}
     *
     * @param location the airport or city for which to find nearby airports.
@@ -583,7 +606,7 @@ class GeoBase() extends Serializable {
     * @return the sorted per incresaing distance list of tuples (airport,
     * distance).
     */
-  def getNearbyAirportsWithDetails(
+  def nearbyAirportsWithDetails(
       location: String,
       radius: Int
   ): Try[List[(String, Int)]] = {
@@ -598,7 +621,7 @@ class GeoBase() extends Serializable {
         randomLocation <- airportsAndCities.keys.toList
         if (airportsAndCities(randomLocation).isAirport())
 
-        distance = getDistanceBetween(location, randomLocation).getOrElse(-1)
+        distance = distanceBetween(location, randomLocation).getOrElse(-1)
         if (distance > 0)
         if (distance <= radius)
 
@@ -609,18 +632,4 @@ class GeoBase() extends Serializable {
     else
       Failure(GeoBaseException("Unknown location \"" + location + "\""))
   }
-
-  private def getTimeZone(location: String): Try[String] = {
-    airportsAndCities.get(location) match {
-      case Some(locationInfo) => locationInfo.getTimeZone()
-      case None =>
-        Failure(GeoBaseException("Unknown location \"" + location + "\""))
-    }
-  }
-}
-
-/** An enumeration which represents the possible geograpic types of a trip */
-object GeoType extends Enumeration {
-  type GeoType = Value
-  val DOMESTIC, CONTINENTAL, INTER_CONTINENTAL = Value
 }

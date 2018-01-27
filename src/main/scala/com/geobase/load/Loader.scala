@@ -32,9 +32,9 @@ private[geobase] object Loader {
           iataCode = airportOrCityCode,
           cityCode = splittedLine(36).split('|')(0),
           countryCode = splittedLine(16),
-          latitude = splittedLine(8),
-          longitude = splittedLine(9),
-          timeZone = splittedLine(31),
+          rawLatitude = splittedLine(8),
+          rawLongitude = splittedLine(9),
+          rawTimeZone = splittedLine(31),
           locationType = splittedLine(41)
         )
 
@@ -76,7 +76,7 @@ private[geobase] object Loader {
           countryCode = countryCode,
           currencyCode = splittedLine(1),
           continentCode = splittedLine(2),
-          iataZone = splittedLine(3)
+          iataZoneCode = splittedLine(3)
         )
 
         (countryCode, country)

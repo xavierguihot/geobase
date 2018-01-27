@@ -17,6 +17,11 @@ class GeoBaseTest extends FunSuite with PrivateMethodTester {
 
   private val geoBase = new GeoBase()
 
+  // Let's load data (loading is lazy) in order not to impact tests duration:
+  geoBase.city("ORY")
+  geoBase.continent("FR")
+  geoBase.countryForAirline("BA")
+
   test("Airport to city") {
 
     // Basic cases:

@@ -57,8 +57,6 @@ import cats.implicits._
   * Source <a href="https://github.com/xavierguihot/geobase/blob/master/src/main/scala/com/geobase/GeoBase.scala">
   * GeoBase</a>
   *
-  * @todo modify handling of geo type enum
-  *
   * @author Xavier Guihot
   * @since 2016-05
   *

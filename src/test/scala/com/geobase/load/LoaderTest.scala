@@ -11,7 +11,7 @@ import org.scalatest.FunSuite
   */
 class LoaderTest extends FunSuite {
 
-  test("Airport and city loader") {
+  test("Airport and city loading") {
 
     val airportOrCityToDataMap = Loader.loadAirportsAndCities()
 
@@ -19,7 +19,7 @@ class LoaderTest extends FunSuite {
     assert(airportOrCityToDataMap("ORY").city === Success("PAR"))
   }
 
-  test("Country loader") {
+  test("Country loading") {
 
     val countries = Loader.loadCountries()
 
@@ -33,7 +33,7 @@ class LoaderTest extends FunSuite {
     assert(countries("US").iataZone === Success("11"))
   }
 
-  test("Airline loader") {
+  test("Airline loading") {
 
     val airlineToCountryMap = Loader.loadAirlines()
 

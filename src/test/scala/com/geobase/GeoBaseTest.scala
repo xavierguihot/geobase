@@ -6,14 +6,13 @@ import com.geobase.model.{DOMESTIC, CONTINENTAL, INTER_CONTINENTAL}
 import scala.util.Success
 
 import org.scalatest.FunSuite
-import org.scalatest.PrivateMethodTester
 
 /** Testing facility for GeoBase.
   *
   * @author Xavier Guihot
   * @since 2016-05
   */
-class GeoBaseTest extends FunSuite with PrivateMethodTester {
+class GeoBaseTest extends FunSuite {
 
   private val geoBase = new GeoBase()
 

@@ -2,7 +2,6 @@ language: scala
 scala:
    - 2.10.4
    - 2.11.12
-   - 2.12.4
 install: ./update_data.sh
 script: "sbt clean coverage test"
 after_success: "sbt coverageReport coveralls"

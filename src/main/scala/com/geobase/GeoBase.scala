@@ -2,6 +2,7 @@ package com.geobase
 
 import com.geobase.load.Loader
 import com.geobase.error.GeoBaseException
+import com.geobase.model.{Duration, HOURS}
 import com.geobase.model.{Airline, AirportOrCity, Country}
 import com.geobase.model.{GeoType, DOMESTIC, CONTINENTAL, INTER_CONTINENTAL}
 
@@ -448,7 +449,7 @@ class GeoBase() extends Serializable {
     *
     * val computedTripDuration = geoBase.tripDurationFromLocalDates(
     *   "2016-06-06T16:27", "CDG", "2016-06-06T17:57", "JFK",
-    *   format = "yyyy-MM-dd'T'HH:mm", unit = "minutes"
+    *   format = "yyyy-MM-dd'T'HH:mm", unit = MINUTES
     * )
     * assert(computedTripDuration == Success(450d))
     *
@@ -461,7 +462,7 @@ class GeoBase() extends Serializable {
     * @param originLocation the origin airport or city
     * @param localArrivalDate the arrival local date
     * @param destinationLocation the destination airport or city
-    * @param unit (default = "hours") either "hours" or "minutes"
+    * @param unit (default = com.geobase.model.HOURS) either HOURS or MINUTES
     * @param format (default = "yyyyMMdd_HHmm") the format under which local
     * departure and arrival dates are provided.
     * @return the trip duration in the chosen unit (in hours by default) and
@@ -472,14 +473,9 @@ class GeoBase() extends Serializable {
       originLocation: String,
       localArrivalDate: String,
       destinationLocation: String,
-      unit: String = "hours",
+      unit: Duration = HOURS,
       format: String = "yyyyMMdd_HHmm"
   ): Try[Double] = {
-
-    require(
-      unit == "hours" || unit == "minutes",
-      "option \"unit\" can only take value \"hours\" or \"minutes\" " +
-        "but not \"" + unit + "\"")
 
     for {
 
@@ -508,7 +504,7 @@ class GeoBase() extends Serializable {
             TimeUnit.MINUTES.convert(tripDurationMillis, TimeUnit.MILLISECONDS))
       }
 
-    } yield if (unit == "minutes") tripDuration else tripDuration / 60d
+    } yield if (unit == HOURS) tripDuration / 60d else tripDuration
   }
 
   /** Returns the geo type of a trip (domestic, continental or inter continental).

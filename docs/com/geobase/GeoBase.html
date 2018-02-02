@@ -73,7 +73,7 @@ isn't realy the scala way, and simply embedding the result in the Option
 monad doesn't give the user the possibility to understand what went wrong.
 Thus the usage of the Try monade.</p><p>Source <a href="https://github.com/xavierguihot/geobase/blob/master/src/main/scala/com/geobase/GeoBase.scala">
 GeoBase</a>
-</p></div><dl class="attributes block"> <dt>Since</dt><dd><p>2016-05</p></dd><dt>To do</dt><dd><span class="cmt"><p>modify handling of geo type enum</p></span></dd></dl><div class="toggleContainer block">
+</p></div><dl class="attributes block"> <dt>Since</dt><dd><p>2016-05</p></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
@@ -762,18 +762,18 @@ Europe/Paris).</p></dd></dl></div>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="com.geobase.GeoBase#tripDurationFromLocalDates" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="tripDurationFromLocalDates(localDepartureDate:String,originLocation:String,localArrivalDate:String,destinationLocation:String,unit:String,format:String):scala.util.Try[Double]"></a>
-      <a id="tripDurationFromLocalDates(String,String,String,String,String,String):Try[Double]"></a>
+      <a id="tripDurationFromLocalDates(localDepartureDate:String,originLocation:String,localArrivalDate:String,destinationLocation:String,unit:com.geobase.model.Duration,format:String):scala.util.Try[Double]"></a>
+      <a id="tripDurationFromLocalDates(String,String,String,String,Duration,String):Try[Double]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">tripDurationFromLocalDates</span><span class="params">(<span name="localDepartureDate">localDepartureDate: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="originLocation">originLocation: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="localArrivalDate">localArrivalDate: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="destinationLocation">destinationLocation: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="unit">unit: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;hours&quot;</span></span>, <span name="format">format: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;yyyyMMdd_HHmm&quot;</span></span>)</span><span class="result">: <span class="extype" name="scala.util.Try">Try</span>[<span class="extype" name="scala.Double">Double</span>]</span>
+        <span class="name">tripDurationFromLocalDates</span><span class="params">(<span name="localDepartureDate">localDepartureDate: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="originLocation">originLocation: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="localArrivalDate">localArrivalDate: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="destinationLocation">destinationLocation: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="unit">unit: <a href="model/Duration.html" class="extype" name="com.geobase.model.Duration">Duration</a> = <span class="symbol"><span class="name"><a href="../package.html">HOURS</a></span></span></span>, <span name="format">format: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;yyyyMMdd_HHmm&quot;</span></span>)</span><span class="result">: <span class="extype" name="scala.util.Try">Try</span>[<span class="extype" name="scala.Double">Double</span>]</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#com.geobase.GeoBase@tripDurationFromLocalDates(localDepartureDate:String,originLocation:String,localArrivalDate:String,destinationLocation:String,unit:String,format:String):scala.util.Try[Double]" title="Permalink" target="_top">
+      <a href="../../index.html#com.geobase.GeoBase@tripDurationFromLocalDates(localDepartureDate:String,originLocation:String,localArrivalDate:String,destinationLocation:String,unit:com.geobase.model.Duration,format:String):scala.util.Try[Double]" title="Permalink" target="_top">
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
@@ -785,13 +785,13 @@ time. i.e. when we don't have gmt times.</p><pre>assert(geoBase.tripDurationFrom
 
 <span class="kw">val</span> computedTripDuration = geoBase.tripDurationFromLocalDates(
   <span class="lit">"2016-06-06T16:27"</span>, <span class="lit">"CDG"</span>, <span class="lit">"2016-06-06T17:57"</span>, <span class="lit">"JFK"</span>,
-  format = <span class="lit">"yyyy-MM-dd'T'HH:mm"</span>, unit = <span class="lit">"minutes"</span>
+  format = <span class="lit">"yyyy-MM-dd'T'HH:mm"</span>, unit = MINUTES
 )
 assert(computedTripDuration == Success(<span class="num">450</span>d))
 
 assert(geoBase
   .tripDurationFromLocalDates(<span class="lit">"20160606_1627"</span>, <span class="lit">"~#?"</span>, <span class="lit">"20160606_1757"</span>, <span class="lit">"JFK"</span>)
-    == Failure(GeoBaseException: Unknown location <span class="lit">"~#?"</span>))</pre></div><dl class="paramcmts block"><dt class="param">localDepartureDate</dt><dd class="cmt"><p>the departure local date</p></dd><dt class="param">originLocation</dt><dd class="cmt"><p>the origin airport or city</p></dd><dt class="param">localArrivalDate</dt><dd class="cmt"><p>the arrival local date</p></dd><dt class="param">destinationLocation</dt><dd class="cmt"><p>the destination airport or city</p></dd><dt class="param">unit</dt><dd class="cmt"><p>(default = &quot;hours&quot;) either &quot;hours&quot; or &quot;minutes&quot;</p></dd><dt class="param">format</dt><dd class="cmt"><p>(default = &quot;yyyyMMdd_HHmm&quot;) the format under which local
+    == Failure(GeoBaseException: Unknown location <span class="lit">"~#?"</span>))</pre></div><dl class="paramcmts block"><dt class="param">localDepartureDate</dt><dd class="cmt"><p>the departure local date</p></dd><dt class="param">originLocation</dt><dd class="cmt"><p>the origin airport or city</p></dd><dt class="param">localArrivalDate</dt><dd class="cmt"><p>the arrival local date</p></dd><dt class="param">destinationLocation</dt><dd class="cmt"><p>the destination airport or city</p></dd><dt class="param">unit</dt><dd class="cmt"><p>(default = com.geobase.model.HOURS) either HOURS or MINUTES</p></dd><dt class="param">format</dt><dd class="cmt"><p>(default = &quot;yyyyMMdd_HHmm&quot;) the format under which local
 departure and arrival dates are provided.</p></dd><dt>returns</dt><dd class="cmt"><p>the trip duration in the chosen unit (in hours by default) and
 format.</p></dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">

@@ -5,7 +5,7 @@
 ## Overview
 
 
-Version: 1.2.0
+Version: 1.2.1
 
 API Scaladoc: [GeoBase](http://xavierguihot.com/geobase/#com.geobase.GeoBase)
 
@@ -77,7 +77,7 @@ With sbt, add these lines to your build.sbt:
 ```scala
 resolvers += "jitpack" at "https://jitpack.io"
 
-libraryDependencies += "com.github.xavierguihot" % "geobase" % "v1.2.0"
+libraryDependencies += "com.github.xavierguihot" % "geobase" % "v1.2.1"
 ```
 
 With maven, add these lines to your pom.xml:
@@ -93,7 +93,7 @@ With maven, add these lines to your pom.xml:
 <dependency>
 	<groupId>com.github.xavierguihot</groupId>
 	<artifactId>geobase</artifactId>
-	<version>v1.2.0</version>
+	<version>v1.2.1</version>
 </dependency>
 ```
 
@@ -107,7 +107,7 @@ allprojects {
 }
 
 dependencies {
-	compile 'com.github.xavierguihot:geobase:v1.2.0'
+	compile 'com.github.xavierguihot:geobase:v1.2.1'
 }
 ```
 

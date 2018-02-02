@@ -1,6 +1,7 @@
 package com.geobase
 
 import com.geobase.error.GeoBaseException
+import com.geobase.model.MINUTES
 import com.geobase.model.{DOMESTIC, CONTINENTAL, INTER_CONTINENTAL}
 
 import scala.util.Success
@@ -391,8 +392,7 @@ class GeoBaseTest extends FunSuite {
           "20160606_1627",
           "...",
           "20160606_1757",
-          "CDG"
-        )
+          "CDG")
         .get
     }
     assert(exceptionThrown.getMessage === "Unknown location \"...\"")
@@ -404,8 +404,7 @@ class GeoBaseTest extends FunSuite {
           "20160607_0057",
           "JFK",
           "20160606_2327",
-          "CDG"
-        )
+          "CDG")
         .get
     }
     val expectedMessage =
@@ -419,7 +418,7 @@ class GeoBaseTest extends FunSuite {
       "CDG",
       "20160606_1757",
       "JFK",
-      unit = "minutes")
+      unit = MINUTES)
     assert(computedTripDuration === Success(450d))
 
     // 8: With a specific format:
@@ -438,22 +437,8 @@ class GeoBaseTest extends FunSuite {
       "2016-06-06T17:57",
       "JFK",
       format = "yyyy-MM-dd'T'HH:mm",
-      unit = "minutes")
+      unit = MINUTES)
     assert(computedTripDuration === Success(450d))
-
-    // 10: Let's try an invalid unit:
-    val invalidExceptionThrown = intercept[IllegalArgumentException] {
-      geoBase.tripDurationFromLocalDates(
-        "20160606_1627",
-        "NCE",
-        "20160606_1757",
-        "CDG",
-        unit = "osef")
-    }
-    val invalidExpectedMessage =
-      "requirement failed: option \"unit\" can only take value " +
-        "\"hours\" or \"minutes\" but not \"osef\""
-    assert(invalidExceptionThrown.getMessage === invalidExpectedMessage)
   }
 
   test("Nearby airports") {

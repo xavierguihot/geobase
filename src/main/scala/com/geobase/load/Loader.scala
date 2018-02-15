@@ -21,21 +21,21 @@ private[geobase] object Loader {
     Source
       .fromURL(getClass.getResource("/optd_por_public.csv"), "UTF-8")
       .getLines()
-      .map(line => line.split("\\^", -1))
+      .map(_.split("\\^", -1))
       // Only lines for which the last date of validity is not definied:
-      .filter(splittedLine => splittedLine(14).isEmpty)
-      .map(splittedLine => {
+      .filter(_(14).isEmpty)
+      .map(splitLine => {
 
-        val airportOrCityCode = splittedLine(0)
+        val airportOrCityCode = splitLine(0)
 
         val location = AirportOrCity(
           iataCode = airportOrCityCode,
-          cityCode = splittedLine(36).split('|')(0),
-          countryCode = splittedLine(16),
-          rawLatitude = splittedLine(8),
-          rawLongitude = splittedLine(9),
-          rawTimeZone = splittedLine(31),
-          locationType = splittedLine(41)
+          cityCode = splitLine(36).split('|')(0),
+          countryCode = splitLine(16),
+          rawLatitude = splitLine(8),
+          rawLongitude = splitLine(9),
+          rawTimeZone = splitLine(31),
+          locationType = splitLine(41)
         )
 
         (airportOrCityCode, location)
@@ -65,19 +65,18 @@ private[geobase] object Loader {
     Source
       .fromURL(getClass.getResource("/countries.csv"))
       .getLines()
-      .filter(line => !line.startsWith("#")) // Remove the header
+      .filter(!_.startsWith("#")) // Remove the header
       .map(line => {
 
-        val splittedLine = line.split("\\^", -1)
+        val splitLine = line.split("\\^", -1)
 
-        val countryCode = splittedLine(0)
+        val countryCode = splitLine(0)
 
         val country = Country(
           countryCode = countryCode,
-          currencyCode = splittedLine(1),
-          continentCode = splittedLine(2),
-          iataZoneCode = splittedLine(3)
-        )
+          currencyCode = splitLine(1),
+          continentCode = splitLine(2),
+          iataZoneCode = splitLine(3))
 
         (countryCode, country)
       })
@@ -90,13 +89,13 @@ private[geobase] object Loader {
     Source
       .fromURL(getClass.getResource("/airlines.csv"))
       .getLines()
-      .filter(line => !line.startsWith("#")) // Remove the header
+      .filter(!_.startsWith("#")) // Remove the header
       .map(line => {
 
-        val splittedLine = line.split("\\^", -1)
+        val splitLine = line.split("\\^", -1)
 
-        val airlineCode = splittedLine(0)
-        val countryCode = splittedLine(1)
+        val airlineCode = splitLine(0)
+        val countryCode = splitLine(1)
 
         (airlineCode, Airline(airlineCode, countryCode))
       })

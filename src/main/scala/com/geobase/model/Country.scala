@@ -17,9 +17,7 @@ private[geobase] final case class Country(
 ) {
 
   def continent(): Try[String] = extract(continentCode, "continent")
-
   def iataZone(): Try[String] = extract(iataZoneCode, "iata zone")
-
   def currency(): Try[String] = extract(currencyCode, "currency")
 
   private def extract(field: String, name: String): Try[String] = field match {

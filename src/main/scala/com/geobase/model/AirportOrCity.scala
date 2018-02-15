@@ -60,11 +60,9 @@ private[geobase] final case class AirportOrCity(
   }
 
   def country(): Try[String] = extract(countryCode, "country")
-
   def timeZone(): Try[String] = extract(rawTimeZone, "time zone")
 
   def latitude(): Try[Double] = extractCoordinate(rawLatitude, "latitude")
-
   def longitude(): Try[Double] = extractCoordinate(rawLongitude, "longitude")
 
   private def extract(field: String, name: String): Try[String] = field match {

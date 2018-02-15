@@ -312,6 +312,11 @@ class GeoBaseTest extends FunSuite {
 
     offset = geoBase.offsetForLocalDate("20171224", "NYC")
     assert(offset === Success(-300))
+
+    val exceptionThrown = intercept[GeoBaseException] {
+      geoBase.offsetForLocalDate("20171224", "...").get
+    }
+    assert(exceptionThrown.getMessage === "Unknown location \"...\"")
   }
 
   test("GMT date to local date") {

@@ -83,11 +83,11 @@ class GeoBase() extends Serializable {
     * PAR).
     */
   def city(airport: String): Try[String] =
-    airportsAndCities.get(airport) match {
-      case Some(airportInfo) => airportInfo.city
-      case None =>
-        Failure(GeoBaseException("Unknown airport \"" + airport + "\""))
-    }
+    airportsAndCities
+      .get(airport)
+      .map(_.city)
+      .getOrElse(
+        Failure(GeoBaseException("Unknown airport \"" + airport + "\"")))
 
   /** Returns the cities associated to the given airport.
     *
@@ -110,11 +110,11 @@ class GeoBase() extends Serializable {
     * instance List("PHX", "MSC")).
     */
   def cities(airport: String): Try[List[String]] =
-    airportsAndCities.get(airport) match {
-      case Some(airportInfo) => airportInfo.cities
-      case None =>
-        Failure(GeoBaseException("Unknown airport \"" + airport + "\""))
-    }
+    airportsAndCities
+      .get(airport)
+      .map(_.cities)
+      .getOrElse(
+        Failure(GeoBaseException("Unknown airport \"" + airport + "\"")))
 
   /** Returns the country associated to the given location (city or airport).
     *
@@ -136,11 +136,11 @@ class GeoBase() extends Serializable {
 
     // If it's a city/airport code, we transform it to a country:
     case 3 =>
-      airportsAndCities.get(location) match {
-        case Some(locationInfo) => locationInfo.country
-        case None =>
-          Failure(GeoBaseException("Unknown location \"" + location + "\""))
-      }
+      airportsAndCities
+        .get(location)
+        .map(_.country)
+        .getOrElse(
+          Failure(GeoBaseException("Unknown location \"" + location + "\"")))
 
     case _ => Failure(GeoBaseException("Unknown location \"" + location + "\""))
   }
@@ -167,11 +167,11 @@ class GeoBase() extends Serializable {
 
       country <- country(location)
 
-      continent <- countries.get(country) match {
-        case Some(countryDetails) => countryDetails.continent
-        case None =>
-          Failure(GeoBaseException("Unknown country \"" + country + "\""))
-      }
+      continent <- countries
+        .get(country)
+        .map(_.continent)
+        .getOrElse(
+          Failure(GeoBaseException("Unknown country \"" + country + "\"")))
 
     } yield continent
 
@@ -196,11 +196,11 @@ class GeoBase() extends Serializable {
 
       country <- country(location)
 
-      iataZone <- countries.get(country) match {
-        case Some(countryDetails) => countryDetails.iataZone
-        case None =>
-          Failure(GeoBaseException("Unknown country \"" + country + "\""))
-      }
+      iataZone <- countries
+        .get(country)
+        .map(_.iataZone)
+        .getOrElse(
+          Failure(GeoBaseException("Unknown country \"" + country + "\"")))
 
     } yield iataZone
 
@@ -223,11 +223,11 @@ class GeoBase() extends Serializable {
 
       country <- country(location)
 
-      currency <- countries.get(country) match {
-        case Some(countryDetails) => countryDetails.currency
-        case None =>
-          Failure(GeoBaseException("Unknown country \"" + country + "\""))
-      }
+      currency <- countries
+        .get(country)
+        .map(_.currency)
+        .getOrElse(
+          Failure(GeoBaseException("Unknown country \"" + country + "\"")))
 
     } yield currency
 
@@ -244,11 +244,11 @@ class GeoBase() extends Serializable {
     * FR).
     */
   def countryForAirline(airline: String): Try[String] =
-    airlines.get(airline) match {
-      case Some(airline) => airline.country
-      case None =>
-        Failure(GeoBaseException("Unknown airline \"" + airline + "\""))
-    }
+    airlines
+      .get(airline)
+      .map(_.country)
+      .getOrElse(
+        Failure(GeoBaseException("Unknown airline \"" + airline + "\"")))
 
   /** Returns the time zone associated to the given airport or city.
     *
@@ -263,13 +263,12 @@ class GeoBase() extends Serializable {
     * @return the time zone corresponding to the given location (for instance
     * Europe/Paris).
     */
-  def timeZone(location: String): Try[String] = {
-    airportsAndCities.get(location) match {
-      case Some(locationInfo) => locationInfo.timeZone
-      case None =>
-        Failure(GeoBaseException("Unknown location \"" + location + "\""))
-    }
-  }
+  def timeZone(location: String): Try[String] =
+    airportsAndCities
+      .get(location)
+      .map(_.timeZone)
+      .getOrElse(
+        Failure(GeoBaseException("Unknown location \"" + location + "\"")))
 
   /** Returns the distance between two locations (airports/cities).
     *
@@ -289,16 +288,16 @@ class GeoBase() extends Serializable {
   def distanceBetween(locationA: String, locationB: String): Try[Int] =
     for {
 
-      locationDetailsA <- airportsAndCities.get(locationA) match {
-        case Some(location) => Success(location)
-        case None =>
-          Failure(GeoBaseException("Unknown location \"" + locationA + "\""))
-      }
-      locationDetailsB <- airportsAndCities.get(locationB) match {
-        case Some(location) => Success(location)
-        case None =>
-          Failure(GeoBaseException("Unknown location \"" + locationB + "\""))
-      }
+      locationDetailsA <- airportsAndCities
+        .get(locationA)
+        .map(Success(_))
+        .getOrElse(
+          Failure(GeoBaseException("Unknown location \"" + locationA + "\"")))
+      locationDetailsB <- airportsAndCities
+        .get(locationB)
+        .map(Success(_))
+        .getOrElse(
+          Failure(GeoBaseException("Unknown location \"" + locationB + "\"")))
 
       latA <- locationDetailsA.latitude
       lngA <- locationDetailsA.longitude
@@ -341,22 +340,16 @@ class GeoBase() extends Serializable {
       format: String = "yyyyMMdd_HHmm"
   ): Try[String] = {
 
-    timeZone(location) match {
+    timeZone(location).map(timeZone => {
 
-      case Success(timeZone) => {
+      val inputLocalDateParser = new SimpleDateFormat(format)
+      inputLocalDateParser.setTimeZone(TimeZone.getTimeZone(timeZone))
 
-        val inputLocalDateParser = new SimpleDateFormat(format)
-        inputLocalDateParser.setTimeZone(TimeZone.getTimeZone(timeZone))
+      val outputGMTDateFormatter = new SimpleDateFormat(format)
+      outputGMTDateFormatter.setTimeZone(TimeZone.getTimeZone("GMT"))
 
-        val outputGMTDateFormatter = new SimpleDateFormat(format)
-        outputGMTDateFormatter.setTimeZone(TimeZone.getTimeZone("GMT"))
-
-        Success(
-          outputGMTDateFormatter.format(inputLocalDateParser.parse(localDate)))
-      }
-
-      case Failure(exception) => Failure(exception)
-    }
+      outputGMTDateFormatter.format(inputLocalDateParser.parse(localDate))
+    })
   }
 
   /** Returns the offset in minutes for the given date at the given city/airport.
@@ -381,13 +374,10 @@ class GeoBase() extends Serializable {
       location: String,
       format: String = "yyyyMMdd"
   ): Try[Int] =
-    for {
-
-      timeZone <- timeZone(location)
-
-      dateTime = new SimpleDateFormat(format).parse(localDate).getTime()
-
-    } yield TimeZone.getTimeZone(timeZone).getOffset(dateTime) / 60000
+    timeZone(location).map(timeZone => {
+      val dateTime = new SimpleDateFormat(format).parse(localDate).getTime()
+      TimeZone.getTimeZone(timeZone).getOffset(dateTime) / 60000
+    })
 
   /** Transforms a GMT date into a local date for the given airport or city.
     *
@@ -416,22 +406,16 @@ class GeoBase() extends Serializable {
       format: String = "yyyyMMdd_HHmm"
   ): Try[String] = {
 
-    timeZone(location) match {
+    timeZone(location).map(timeZone => {
 
-      case Success(timeZone) => {
+      val inputGMTDateParser = new SimpleDateFormat(format)
+      inputGMTDateParser.setTimeZone(TimeZone.getTimeZone("GMT"))
 
-        val inputGMTDateParser = new SimpleDateFormat(format)
-        inputGMTDateParser.setTimeZone(TimeZone.getTimeZone("GMT"))
+      val outputLocalDateFormatter = new SimpleDateFormat(format)
+      outputLocalDateFormatter.setTimeZone(TimeZone.getTimeZone(timeZone))
 
-        val outputLocalDateFormatter = new SimpleDateFormat(format)
-        outputLocalDateFormatter.setTimeZone(TimeZone.getTimeZone(timeZone))
-
-        Success(
-          outputLocalDateFormatter.format(inputGMTDateParser.parse(gmtDate)))
-      }
-
-      case Failure(exception) => Failure(exception)
-    }
+      outputLocalDateFormatter.format(inputGMTDateParser.parse(gmtDate))
+    })
   }
 
   /** Returns the trip duration between two locations (airport or city).
@@ -533,7 +517,7 @@ class GeoBase() extends Serializable {
 
     for {
 
-      countries <- locations.traverse(loc => country(loc))
+      countries <- locations.traverse(country)
 
       distCountries = countries.distinct
 
@@ -544,7 +528,7 @@ class GeoBase() extends Serializable {
         case _ =>
           for {
 
-            iataZones <- distCountries.traverse(ctry => iataZone(ctry))
+            iataZones <- distCountries.traverse(iataZone)
 
             distIataZones = iataZones.distinct
 

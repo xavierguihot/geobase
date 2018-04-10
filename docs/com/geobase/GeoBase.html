@@ -584,6 +584,26 @@ assert(geoBase.localDateToGMT(<span class="lit">"20160606_2227"</span>, <span cl
 format.</p></dd><dt class="param">location</dt><dd class="cmt"><p>the airport or city where this local date applies</p></dd><dt class="param">format</dt><dd class="cmt"><p>(default = &quot;yyyyMMdd_HHmm&quot;) the format under which localDate
 is provided and the GMT date is returned.</p></dd><dt>returns</dt><dd class="cmt"><p>the GMT date associated to the local date under the requested
 format.</p></dd></dl></div>
+    </li><li name="com.geobase.GeoBase#nameOfAirline" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="nameOfAirline(airline:String):scala.util.Try[String]"></a>
+      <a id="nameOfAirline(String):Try[String]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">nameOfAirline</span><span class="params">(<span name="airline">airline: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.util.Try">Try</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#com.geobase.GeoBase@nameOfAirline(airline:String):scala.util.Try[String]" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Returns the name associated to the given airline.</p><div class="fullcomment"><div class="comment cmt"><p>Returns the name associated to the given airline.</p><pre>assert(geoBase.nameOfAirline(<span class="lit">"AF"</span>) == Success(<span class="lit">"Air France"</span>))
+assert(geoBase.nameOfAirline(<span class="lit">"#?"</span>) == Failure(GeoBaseException: Unknown airline <span class="lit">"#?"</span>))</pre></div><dl class="paramcmts block"><dt class="param">airline</dt><dd class="cmt"><p>the airline IATA code (for instance AF) for which to get
+the associated airline name.</p></dd><dt>returns</dt><dd class="cmt"><p>the name corresponding to the given airline (for instance
+Air France).</p></dd></dl></div>
     </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a>
       <a id="ne(AnyRef):Boolean"></a>

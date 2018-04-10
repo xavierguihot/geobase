@@ -5,5 +5,6 @@ project/target
 target
 
 src/main/resources/optd_por_public.csv
+src/main/resources/optd_airlines.csv
 
 .ensime*

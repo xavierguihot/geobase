@@ -5,7 +5,7 @@
 ## Overview
 
 
-Version: 1.2.1
+Version: 1.2.2
 
 API Scaladoc: [GeoBase](http://xavierguihot.com/geobase/#com.geobase.GeoBase)
 
@@ -60,6 +60,7 @@ assert(geoBase.offsetForLocalDate("20171224", "NYC") == Success(-300))
 assert(geoBase.tripDurationFromLocalDates("20160606_1627", "CDG", "20160606_1757", "JFK") == Success(7.5d))
 assert(geoBase.geoType(List("CDG", "TLS", "DUB", "FRA")) == Success(CONTINENTAL))
 assert(geoBase.nearbyAirports("CDG", 50) == Success(List("LBG", "ORY", "VIY", "POX")))
+assert(geoBase.nameOfAirline("AF") == Success("Air France"))
 ```
 
 Getters all have a return type embedded within the Try monade. Throwing

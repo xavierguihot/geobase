@@ -1,6 +1,6 @@
 package com.geobase.load
 
-import com.geobase.model.{Airline, AirportOrCity, Country}
+import com.geobase.model.{Airline, AirlineName, AirportOrCity, Country}
 
 import scala.io.Source
 
@@ -98,6 +98,24 @@ private[geobase] object Loader {
         val countryCode = splitLine(1)
 
         (airlineCode, Airline(airlineCode, countryCode))
+      })
+      .toMap
+  }
+
+  /** Loads the airline names dataset */
+  def loadAirlineNames(): Map[String, AirlineName] = {
+
+    Source
+      .fromURL(getClass.getResource("/optd_airlines.csv"))
+      .getLines()
+      .filter(!_.startsWith("pk")) // Remove the header
+      .map(line => {
+
+        val splitLine = line.split("\\^", -1)
+        val airlineCode = splitLine(5)
+        val airlineName = splitLine(7)
+
+        (airlineCode, AirlineName(airlineCode, airlineName))
       })
       .toMap
   }

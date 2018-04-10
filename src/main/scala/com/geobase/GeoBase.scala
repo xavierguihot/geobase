@@ -3,7 +3,7 @@ package com.geobase
 import com.geobase.load.Loader
 import com.geobase.error.GeoBaseException
 import com.geobase.model.{Duration, HOURS}
-import com.geobase.model.{Airline, AirlineName, AirportOrCity, Country}
+import com.geobase.model.{Airline, AirportOrCity, Country}
 import com.geobase.model.{GeoType, DOMESTIC, CONTINENTAL, INTER_CONTINENTAL}
 
 import scala.util.{Try, Success, Failure}
@@ -69,8 +69,6 @@ class GeoBase() extends Serializable {
     Loader.loadAirportsAndCities()
   private lazy val countries: Map[String, Country] = Loader.loadCountries()
   private lazy val airlines: Map[String, Airline] = Loader.loadAirlines()
-  private lazy val airlineNames: Map[String, AirlineName] =
-    Loader.loadAirlineNames()
 
   /** Returns the city associated to the given airport.
     *
@@ -255,17 +253,17 @@ class GeoBase() extends Serializable {
   /** Returns the name associated to the given airline.
     *
     * {{{
-    * assert(geoBase.nameForAirline("AF") == Success("Air France"))
-    * assert(geoBase.nameForAirline("#?") == Failure(GeoBaseException: Unknown airline "#?"))
+    * assert(geoBase.nameOfAirline("AF") == Success("Air France"))
+    * assert(geoBase.nameOfAirline("#?") == Failure(GeoBaseException: Unknown airline "#?"))
     * }}}
     *
     * @param airline the airline IATA code (for instance AF) for which to get
-    * the associated country.
+    * the associated airline name.
     * @return the name corresponding to the given airline (for instance
     * Air France).
     */
   def nameOfAirline(airline: String): Try[String] =
-    airlineNames
+    airlines
       .get(airline)
       .map(_.name)
       .getOrElse(

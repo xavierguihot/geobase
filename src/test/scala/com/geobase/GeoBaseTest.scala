@@ -21,7 +21,6 @@ class GeoBaseTest extends FunSuite {
   geoBase.city("ORY")
   geoBase.continent("FR")
   geoBase.countryForAirline("BA")
-  geoBase.nameOfAirline("AH")
 
   test("Airport to city") {
 
@@ -153,13 +152,16 @@ class GeoBaseTest extends FunSuite {
     assert(exceptionThrown.getMessage === "Unknown airline \"..\"")
   }
 
-  test("Airline to name") {
+  test("Airline to airline name") {
 
     assert(geoBase.nameOfAirline("BA") === Success("British Airways"))
     assert(geoBase.nameOfAirline("AF") === Success("Air France"))
     assert(geoBase.nameOfAirline("AA") === Success("American Airlines"))
     assert(geoBase.nameOfAirline("LH") === Success("Lufthansa"))
     assert(geoBase.nameOfAirline("AH") === Success("Air Algerie"))
+
+    // Several names for this airline code:
+    assert(geoBase.nameOfAirline("5K") === Success("Hi Fly"))
 
     // Unknown airline:
     val exceptionThrown = intercept[GeoBaseException] {

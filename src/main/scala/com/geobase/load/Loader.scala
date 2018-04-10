@@ -1,6 +1,6 @@
 package com.geobase.load
 
-import com.geobase.model.{Airline, AirlineName, AirportOrCity, Country}
+import com.geobase.model.{Airline, AirportOrCity, Country}
 
 import scala.io.Source
 
@@ -86,7 +86,24 @@ private[geobase] object Loader {
   /** Loads the airline dataset */
   def loadAirlines(): Map[String, Airline] = {
 
-    Source
+    // Airline code to airline name:
+    val airlineNames = Source
+      .fromURL(getClass.getResource("/optd_airlines.csv"))
+      .getLines()
+      .filter(!_.startsWith("pk^")) // Remove the header
+      .map(line => {
+
+        val splitLine = line.split("\\^", -1)
+
+        val airlineCode = splitLine(5)
+        val airlineName = splitLine(7)
+
+        Airline(airlineCode, "", airlineName)
+      })
+      .toList
+
+    // Airline code to country:
+    val airlineCountries = Source
       .fromURL(getClass.getResource("/airlines.csv"))
       .getLines()
       .filter(!_.startsWith("#")) // Remove the header
@@ -97,26 +114,21 @@ private[geobase] object Loader {
         val airlineCode = splitLine(0)
         val countryCode = splitLine(1)
 
-        (airlineCode, Airline(airlineCode, countryCode))
+        Airline(airlineCode, countryCode, "")
       })
-      .toMap
-  }
+      .toList
 
-  /** Loads the airline names dataset */
-  def loadAirlineNames(): Map[String, AirlineName] = {
-
-    Source
-      .fromURL(getClass.getResource("/optd_airlines.csv"))
-      .getLines()
-      .filter(!_.startsWith("pk")) // Remove the header
-      .map(line => {
-
-        val splitLine = line.split("\\^", -1)
-        val airlineCode = splitLine(5)
-        val airlineName = splitLine(7)
-
-        (airlineCode, AirlineName(airlineCode, airlineName))
-      })
-      .toMap
+    (airlineNames ::: airlineCountries).groupBy {
+      case Airline(code, _, _) => code
+    }.map {
+      // Only airline name or country available:
+      case (code, List(airline)) => (code, airline)
+      // Both country and at least one name available (when an airline has
+      // several names, we take the first one):
+      case (code, (Airline(_, "", name) :: _) :+ Airline(_, country, "")) =>
+        (code, Airline(code, country, name))
+      // No information on the country, but several names available:
+      case (code, Airline(_, "", name) :: _) => (code, Airline(code, "", name))
+    }.toMap
   }
 }

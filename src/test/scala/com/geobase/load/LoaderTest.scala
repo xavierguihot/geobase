@@ -35,17 +35,12 @@ class LoaderTest extends FunSuite {
 
   test("Airline loading") {
 
-    val airlineToCountryMap = Loader.loadAirlines()
+    val airlines = Loader.loadAirlines()
 
-    assert(airlineToCountryMap("AF").country === Success("FR"))
-    assert(airlineToCountryMap("AA").country === Success("US"))
-  }
+    assert(airlines("AF").country === Success("FR"))
+    assert(airlines("AA").country === Success("US"))
 
-  test("AirlineNames loading") {
-
-    val airlineToNameMap = Loader.loadAirlineNames()
-
-    assert(airlineToNameMap("AF").name === Success("Air France"))
-    assert(airlineToNameMap("AH").name === Success("Air Algerie"))
+    assert(airlines("AF").name === Success("Air France"))
+    assert(airlines("AH").name === Success("Air Algerie"))
   }
 }

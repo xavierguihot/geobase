@@ -78,7 +78,7 @@ With sbt, add these lines to your build.sbt:
 ```scala
 resolvers += "jitpack" at "https://jitpack.io"
 
-libraryDependencies += "com.github.xavierguihot" % "geobase" % "v1.2.1"
+libraryDependencies += "com.github.xavierguihot" % "geobase" % "v1.2.2"
 ```
 
 With maven, add these lines to your pom.xml:
@@ -94,7 +94,7 @@ With maven, add these lines to your pom.xml:
 <dependency>
 	<groupId>com.github.xavierguihot</groupId>
 	<artifactId>geobase</artifactId>
-	<version>v1.2.1</version>
+	<version>v1.2.2</version>
 </dependency>
 ```
 
@@ -108,7 +108,7 @@ allprojects {
 }
 
 dependencies {
-	compile 'com.github.xavierguihot:geobase:v1.2.1'
+	compile 'com.github.xavierguihot:geobase:v1.2.2'
 }
 ```
 

@@ -44,23 +44,21 @@ Here is a non-exhaustive list of available methods:
 ```scala
 import com.geobase.GeoBase
 
-val geoBase = new GeoBase()
-
-assert(geoBase.city("CDG") == Success("PAR"))
-assert(geoBase.country("CDG") == Success("FR"))
-assert(geoBase.continent("JFK") == Success("NA"))
-assert(geoBase.iataZone("LON") == Success("21"))
-assert(geoBase.currency("NYC") == Success("USD"))
-assert(geoBase.countryForAirline("AF") == Success("FR"))
-assert(geoBase.timeZone("PAR") == Success("Europe/Paris"))
-assert(geoBase.distanceBetween("PAR", "NCE") == Success(686))
-assert(geoBase.localDateToGMT("20160606_2227", "NYC") == Success("20160607_0227"))
-assert(geoBase.gmtDateToLocal("20160607_0227", "NYC") == Success("20160606_2227"))
-assert(geoBase.offsetForLocalDate("20171224", "NYC") == Success(-300))
-assert(geoBase.tripDurationFromLocalDates("20160606_1627", "CDG", "20160606_1757", "JFK") == Success(7.5d))
-assert(geoBase.geoType(List("CDG", "TLS", "DUB", "FRA")) == Success(CONTINENTAL))
-assert(geoBase.nearbyAirports("CDG", 50) == Success(List("LBG", "ORY", "VIY", "POX")))
-assert(geoBase.nameOfAirline("AF") == Success("Air France"))
+assert(GeoBase.city("CDG") == Success("PAR"))
+assert(GeoBase.country("CDG") == Success("FR"))
+assert(GeoBase.continent("JFK") == Success("NA"))
+assert(GeoBase.iataZone("LON") == Success("21"))
+assert(GeoBase.currency("NYC") == Success("USD"))
+assert(GeoBase.countryForAirline("AF") == Success("FR"))
+assert(GeoBase.timeZone("PAR") == Success("Europe/Paris"))
+assert(GeoBase.distanceBetween("PAR", "NCE") == Success(686))
+assert(GeoBase.localDateToGMT("20160606_2227", "NYC") == Success("20160607_0227"))
+assert(GeoBase.gmtDateToLocal("20160607_0227", "NYC") == Success("20160606_2227"))
+assert(GeoBase.offsetForLocalDate("20171224", "NYC") == Success(-300))
+assert(GeoBase.tripDurationFromLocalDates("20160606_1627", "CDG", "20160606_1757", "JFK") == Success(7.5d))
+assert(GeoBase.geoType(List("CDG", "TLS", "DUB", "FRA")) == Success(CONTINENTAL))
+assert(GeoBase.nearbyAirports("CDG", 50) == Success(List("LBG", "ORY", "VIY", "POX")))
+assert(GeoBase.nameOfAirline("AF") == Success("Air France"))
 ```
 
 Getters all have a return type embedded within the Try monade. Throwing

@@ -64,7 +64,7 @@ GeoBase.nameOfAirline("AF") // Success("Air France")
 These functions can also be called as attachments to Strings:
 
 ```scala
-import com.geobase.GeoBase._
+import com.geobase.GeoBase.StringExtensions
 
 "CDG".city // Success("PAR")
 "PAR".country // Success("FR")

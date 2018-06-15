@@ -1,6 +1,6 @@
 package com.geobase
 
-import com.geobase.GeoBase._
+import com.geobase.GeoBase.StringExtensions
 import com.geobase.error.GeoBaseException
 import com.geobase.model.MINUTES
 import com.geobase.model.{DOMESTIC, CONTINENTAL, INTER_CONTINENTAL}

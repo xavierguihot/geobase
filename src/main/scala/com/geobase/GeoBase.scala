@@ -17,9 +17,7 @@ import math.{asin, cos, pow, round, sin, sqrt}
 
 import cats.implicits._
 
-/** A facility to '''deal with travel/geographical data'''.
-  *
-  * Provides '''geographical mappings''' at airport/city/country level mainly
+/** Provides '''geographical mappings''' at airport/city/country level mainly
   * based on <a href="https://github.com/opentraveldata/opentraveldata">
   * opentraveldata</a> as well as other mappings (airlines, currencies, ...).
   * This tool also provides classic time-oriented methods such as the
@@ -30,21 +28,45 @@ import cats.implicits._
   * {{{
   * import com.geobase.GeoBase
   *
-  * assert(GeoBase.city("CDG") == Success("PAR"))
-  * assert(GeoBase.country("CDG") == Success("FR"))
-  * assert(GeoBase.currency("NYC") == Success("USD"))
-  * assert(GeoBase.countryForAirline("AF") == Success("FR"))
-  * assert(GeoBase.distanceBetween("PAR", "NCE") == Success(686))
-  * assert(GeoBase.tripDurationFromLocalDates("20160606_1627", "CDG", "20160606_1757", "JFK") == Success(7.5d))
-  * assert(GeoBase.nearbyAirports("CDG", 50) == Success(List("LBG", "ORY", "VIY", "POX")))
+  * GeoBase.city("CDG") // Success("PAR")
+  * GeoBase.country("CDG") // Success("FR")
+  * GeoBase.continent("JFK") // Success("NA")
+  * GeoBase.iataZone("LON") // Success("21")
+  * GeoBase.currency("NYC") // Success("USD")
+  * GeoBase.countryForAirline("AF") // Success("FR")
+  * GeoBase.timeZone("PAR") // Success("Europe/Paris")
+  * GeoBase.distanceBetween("PAR", "NCE") // Success(686)
+  * GeoBase.localDateToGMT("20160606_2227", "NYC") // Success("20160607_0227")
+  * GeoBase.gmtDateToLocal("20160607_0227", "NYC") // Success("20160606_2227")
+  * GeoBase.offsetForLocalDate("20171224", "NYC") // Success(-300)
+  * GeoBase.tripDurationFromLocalDates("20160606_1627", "CDG", "20160606_1757", "JFK") // Success(7.5d)
+  * GeoBase.geoType(List("CDG", "TLS", "DUB", "FRA")) // Success(CONTINENTAL)
+  * GeoBase.nearbyAirports("CDG", 50) // Success(List("LBG", "ORY", "VIY", "POX"))
+  * GeoBase.nameOfAirline("AF") // Success("Air France")
+  * }}}
+  *
+  * and by pimping String:
+  *
+  * {{{
+  * import com.geobase.GeoBase.StringExtensions
+  *
+  * "CDG".city // Success("PAR")
+  * "PAR".country // Success("FR")
+  * "CDG".continent // Success("EU")
+  * "CDG".iataZone // Success("21")
+  * "JFK".currency // Success("USD")
+  * "AF".name // Success("Air France")
+  * "CDG".timeZone // Success("Europe/Paris")
+  * "LON".distanceWith("NYC") // Success(5568)
+  * "CDG".nearbyAirports(50) // Success(List("LBG", "ORY", "VIY", "POX"))
   * }}}
   *
   * The GeoBase object can be used within Spark jobs (in this case, don't forget
-  * the possibility to '''broadcast GeoBase''').
+  * to broadcast it.
   *
   * Opentraveldata is an accurate and maintained source of various travel
-  * mappings. This scala wrapper around opentraveldata mostly uses this
-  * file: <a href="https://github.com/opentraveldata/opentraveldata/tree/master/opentraveldata/optd_por_public.csv">
+  * mappings. This scala wrapper uses this file:
+  * <a href="https://github.com/opentraveldata/opentraveldata/tree/master/opentraveldata/optd_por_public.csv">
   * optd_por_public.csv</a>.
   *
   * Getters all have a return type embedded within the Try monad. Throwing
@@ -58,8 +80,6 @@ import cats.implicits._
   *
   * @author Xavier Guihot
   * @since 2016-05
-  *
-  * @constructor Creates a GeoBase object.
   */
 object GeoBase extends Serializable {
 
@@ -160,7 +180,7 @@ object GeoBase extends Serializable {
   def continent(location: String): Try[String] =
     for {
 
-      country <- country(location)
+      country <- location.country
 
       continent <- countries
         .get(country)
@@ -188,7 +208,7 @@ object GeoBase extends Serializable {
   def iataZone(location: String): Try[String] =
     for {
 
-      country <- country(location)
+      country <- location.country
 
       iataZone <- countries
         .get(country)
@@ -214,7 +234,7 @@ object GeoBase extends Serializable {
   def currency(location: String): Try[String] =
     for {
 
-      country <- country(location)
+      country <- location.country
 
       currency <- countries
         .get(country)
@@ -380,10 +400,10 @@ object GeoBase extends Serializable {
       location: String,
       format: String = "yyyyMMdd"
   ): Try[Int] =
-    timeZone(location).map(timeZone => {
+    timeZone(location).map { timeZone =>
       val dateTime = new SimpleDateFormat(format).parse(localDate).getTime
       TimeZone.getTimeZone(timeZone).getOffset(dateTime) / 60000
-    })
+    }
 
   /** Transforms a GMT date into a local date for the given airport or city.
     *
@@ -473,7 +493,8 @@ object GeoBase extends Serializable {
       gmtArrDate <- localDateToGMT(
         localArrivalDate,
         destinationLocation,
-        format)
+        format
+      )
 
       tripDuration <- {
 

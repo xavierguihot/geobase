@@ -1,7 +1,7 @@
 package com.geobase
 
 import com.geobase.load.Loader
-import com.geobase.error.GeoBaseException
+import com.geobase.error.{GeoBaseException => BGEx}
 import com.geobase.model.{Duration, HOURS}
 import com.geobase.model.{Airline, AirportOrCity, Country}
 import com.geobase.model.{GeoType, DOMESTIC, CONTINENTAL, INTER_CONTINENTAL}
@@ -84,8 +84,7 @@ object GeoBase extends Serializable {
     airportsAndCities
       .get(airport)
       .map(_.city)
-      .getOrElse(
-        Failure(GeoBaseException("Unknown airport \"" + airport + "\"")))
+      .getOrElse(Failure(BGEx("Unknown airport \"" + airport + "\"")))
 
   /** Returns the cities associated to the given airport.
     *
@@ -111,8 +110,7 @@ object GeoBase extends Serializable {
     airportsAndCities
       .get(airport)
       .map(_.cities)
-      .getOrElse(
-        Failure(GeoBaseException("Unknown airport \"" + airport + "\"")))
+      .getOrElse(Failure(BGEx("Unknown airport \"" + airport + "\"")))
 
   /** Returns the country associated to the given location (city or airport).
     *
@@ -137,10 +135,9 @@ object GeoBase extends Serializable {
       airportsAndCities
         .get(location)
         .map(_.country)
-        .getOrElse(
-          Failure(GeoBaseException("Unknown location \"" + location + "\"")))
+        .getOrElse(Failure(BGEx("Unknown location \"" + location + "\"")))
 
-    case _ => Failure(GeoBaseException("Unknown location \"" + location + "\""))
+    case _ => Failure(BGEx("Unknown location \"" + location + "\""))
   }
 
   /** Returns the continent associated to the given airport, city or country.
@@ -168,8 +165,7 @@ object GeoBase extends Serializable {
       continent <- countries
         .get(country)
         .map(_.continent)
-        .getOrElse(
-          Failure(GeoBaseException("Unknown country \"" + country + "\"")))
+        .getOrElse(Failure(BGEx("Unknown country \"" + country + "\"")))
 
     } yield continent
 
@@ -197,8 +193,7 @@ object GeoBase extends Serializable {
       iataZone <- countries
         .get(country)
         .map(_.iataZone)
-        .getOrElse(
-          Failure(GeoBaseException("Unknown country \"" + country + "\"")))
+        .getOrElse(Failure(BGEx("Unknown country \"" + country + "\"")))
 
     } yield iataZone
 
@@ -224,8 +219,7 @@ object GeoBase extends Serializable {
       currency <- countries
         .get(country)
         .map(_.currency)
-        .getOrElse(
-          Failure(GeoBaseException("Unknown country \"" + country + "\"")))
+        .getOrElse(Failure(BGEx("Unknown country \"" + country + "\"")))
 
     } yield currency
 
@@ -245,8 +239,7 @@ object GeoBase extends Serializable {
     airlines
       .get(airline)
       .map(_.country)
-      .getOrElse(
-        Failure(GeoBaseException("Unknown airline \"" + airline + "\"")))
+      .getOrElse(Failure(BGEx("Unknown airline \"" + airline + "\"")))
 
   /** Returns the name associated to the given airline.
     *
@@ -264,8 +257,7 @@ object GeoBase extends Serializable {
     airlines
       .get(airline)
       .map(_.name)
-      .getOrElse(
-        Failure(GeoBaseException("Unknown airline \"" + airline + "\"")))
+      .getOrElse(Failure(BGEx("Unknown airline \"" + airline + "\"")))
 
   /** Returns the time zone associated to the given airport or city.
     *
@@ -284,8 +276,7 @@ object GeoBase extends Serializable {
     airportsAndCities
       .get(location)
       .map(_.timeZone)
-      .getOrElse(
-        Failure(GeoBaseException("Unknown location \"" + location + "\"")))
+      .getOrElse(Failure(BGEx("Unknown location \"" + location + "\"")))
 
   /** Returns the distance between two locations (airports/cities).
     *
@@ -308,13 +299,11 @@ object GeoBase extends Serializable {
       locationDetailsA <- airportsAndCities
         .get(locationA)
         .map(Success(_))
-        .getOrElse(
-          Failure(GeoBaseException("Unknown location \"" + locationA + "\"")))
+        .getOrElse(Failure(BGEx("Unknown location \"" + locationA + "\"")))
       locationDetailsB <- airportsAndCities
         .get(locationB)
         .map(Success(_))
-        .getOrElse(
-          Failure(GeoBaseException("Unknown location \"" + locationB + "\"")))
+        .getOrElse(Failure(BGEx("Unknown location \"" + locationB + "\"")))
 
       latA <- locationDetailsA.latitude
       lngA <- locationDetailsA.longitude
@@ -497,7 +486,7 @@ object GeoBase extends Serializable {
 
         if (tripDurationMillis < 0)
           Failure(
-            GeoBaseException(
+            BGEx(
               "The trip duration computed is negative (maybe you've " +
                 "inverted departure/origin and arrival/destination)"))
         else
@@ -625,6 +614,161 @@ object GeoBase extends Serializable {
       Success(nearbyAirports.sortWith(_._2 < _._2)) // Sorted per increasing radius
     }
     else
-      Failure(GeoBaseException("Unknown location \"" + location + "\""))
+      Failure(BGEx("Unknown location \"" + location + "\""))
+  }
+
+  implicit class StringExtensions(val string: String) extends AnyVal {
+
+    /** Returns the city associated to the given airport.
+      *
+      * {{{
+      * assert("CDG".city == Success("PAR"))
+      * assert("?*#".city == Failure(GeoBaseException: Unknown airport "?*#")
+      * }}}
+      *
+      * @return the city code corresponding to the given airport (for instance
+      * PAR).
+      */
+    def city: Try[String] = GeoBase.city(string)
+
+    /** Returns the cities associated to the given airport.
+      *
+      * It sometimes happens that an airport is shared between cities. This
+      * method, returns this list of cities (usually the list will only contain
+      * one city).
+      *
+      * The city method returns the first city corresponding to the given
+      * airport, which is by assumption the biggest corresponding city.
+      *
+      * {{{
+      * assert("CDG".cities == Success(List("PAR")))
+      * assert("AZA".cities == Success(List("PHX", "MSC")))
+      * assert("?*#".cities == Failure(GeoBaseException: Unknown airport "?*#")
+      * }}}
+      *
+      * @return the list of city codes corresponding to the given airport (for
+      * instance List("PHX", "MSC")).
+      */
+    def cities: Try[List[String]] = GeoBase.cities(string)
+
+    /** Returns the country associated to the given location (city or airport).
+      *
+      * {{{
+      * assert("PAR".country == Success("FR"))
+      * assert("ORY".country == Success("FR"))
+      * assert("?*#".country == Failure(GeoBaseException: Unknown location "?*#"))
+      * }}}
+      *
+      * @return the country code corresponding to the given city or airport (for
+      * instance FR).
+      */
+    def country: Try[String] = GeoBase.country(string)
+
+    /** Returns the continent associated to the given airport, city or country.
+      *
+      * Possible values: EU (Europe) - NA (North America) - SA (South Africa) -
+      * AF (Africa) - AS (Asia) - AN (Antarctica) - OC (Oceania).
+      *
+      * {{{
+      * assert("CDG".continent == Success("EU")) // location is an airport
+      * assert("NYC".continent == Success("NA")) // location is a city
+      * assert("CN".continent == Success("AS")) // location is a country
+      * assert("?*#".continent == Failure(GeoBaseException: Unknown location "?*#"))
+      * }}}
+      *
+      * @return the continent code corresponding to the given location (for
+      * instance EU).
+      */
+    def continent: Try[String] = GeoBase.continent(string)
+
+    /** Returns the IATA zone associated to the given airport, city or country.
+      *
+      * Possible values are 11, 12, 13, 21, 22, 23, 31, 32 or 33.
+      *
+      * {{{
+      * assert("CDG".iataZone == Success("21"))
+      * assert("NYC".iataZone == Success("11"))
+      * assert("ZA".iataZone == Success("23"))
+      * assert("?*#".iataZone == Failure(GeoBaseException: Unknown location "?*#"))
+      * }}}
+      *
+      * @return the IATA zone code corresponding to the given location (for
+      * instance 21).
+      */
+    def iataZone: Try[String] = GeoBase.iataZone(string)
+
+    /** Returns the currency associated to the given location (airport, city or
+      * country).
+      *
+      * {{{
+      * assert("JFK".currency == Success("USD"))
+      * assert("FR".currency == Success("EUR"))
+      * assert("?#".currency == Failure(GeoBaseException: Unknown country "#?"))
+      * }}}
+      *
+      * @return the currency code corresponding to the given location (for
+      * instance EUR).
+      */
+    def currency: Try[String] = GeoBase.currency(string)
+
+    /** Returns the name associated to the given airline.
+      *
+      * {{{
+      * assert("AF".name == Success("Air France"))
+      * assert("#?".name == Failure(GeoBaseException: Unknown airline "#?"))
+      * }}}
+      *
+      * @return the name corresponding to the given airline (for instance
+      * Air France).
+      */
+    def name: Try[String] = GeoBase.nameOfAirline(string)
+
+    /** Returns the time zone associated to the given airport or city.
+      *
+      * {{{
+      * assert("CDG".timeZone == Success("Europe/Paris"))
+      * assert("BOS".timeZone == Success("America/New_York"))
+      * assert("?*#".timeZone == Failure(GeoBaseException: Unknown location "?*#"))
+      * }}}
+      *
+      * @return the time zone corresponding to the given location (for instance
+      * Europe/Paris).
+      */
+    def timeZone: Try[String] = GeoBase.timeZone(string)
+
+    /** Returns the distance between two locations (airports/cities).
+      *
+      * {{{
+      * assert("ORY".distanceWith("NCE") == Success(674))
+      * assert("PAR".distanceWith("NCE") == Success(686))
+      * assert("PAR".distanceWith("~#?") == Failure(GeoBaseException: Unknown location "~#?"))
+      * }}}
+      *
+      * @param location an airport or city IATA code (for instance NCE) for
+      * which to get the distance with the location this is called for.
+      * @return the distance rounded in km between locationA and locationB (for
+      * instance 674 km).
+      */
+    def distanceWith(location: String): Try[Int] =
+      GeoBase.distanceBetween(string, location)
+
+    /** Returns the list of nearby airports (within the radius) for the given
+      * airport or city.
+      *
+      * Find the list of nearby airports, within the requested radius. The list
+      * is sorted starting from the closest airport.
+      *
+      * {{{
+      * assert("CDG".nearbyAirports(50) == Success(List("LBG", "ORY", "VIY", "POX")))
+      * assert("CDG".nearbyAirports(36) == Success(List("LBG", "ORY")))
+      * assert("~#?".nearbyAirports(36)) == Failure(GeoBaseException: Unknown location \"~#?\""))
+      * }}}
+      *
+      * @param radius the maximum distance (in km) for which an airport is
+      * considered close.
+      * @return the sorted per increasing distance list nearby airports
+      */
+    def nearbyAirports(radius: Int): Try[List[String]] =
+      GeoBase.nearbyAirports(string, radius)
   }
 }

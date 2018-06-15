@@ -1,5 +1,6 @@
 package com.geobase
 
+import com.geobase.GeoBase._
 import com.geobase.error.GeoBaseException
 import com.geobase.model.MINUTES
 import com.geobase.model.{DOMESTIC, CONTINENTAL, INTER_CONTINENTAL}
@@ -41,6 +42,9 @@ class GeoBaseTest extends FunSuite with SharedSparkContext {
 
     // A city as input will return the city itself:
     assert(GeoBase.city("PAR") === Success("PAR"))
+
+    // Pimped case:
+    assert("CDG".city === Success("PAR"))
   }
 
   test("Airport to cities") {
@@ -62,6 +66,9 @@ class GeoBaseTest extends FunSuite with SharedSparkContext {
 
     // A city as input will return the city itself:
     assert(GeoBase.cities("PAR") === Success(List("PAR")))
+
+    // Pimped case:
+    assert("ORY".cities === Success(List("PAR")))
   }
 
   test("Location to country") {
@@ -82,6 +89,9 @@ class GeoBaseTest extends FunSuite with SharedSparkContext {
     // Unknown country:
     exceptionThrown = intercept[GeoBaseException] { GeoBase.country("").get }
     assert(exceptionThrown.getMessage === "Unknown location \"\"")
+
+    // Pimped case:
+    assert("ORY".country === Success("FR"))
   }
 
   test("Location to continent") {
@@ -102,6 +112,9 @@ class GeoBaseTest extends FunSuite with SharedSparkContext {
       GeoBase.continent("..").get
     }
     assert(exceptionThrown.getMessage === "Unknown country \"..\"")
+
+    // Pimped case:
+    assert("ORY".continent === Success("EU"))
   }
 
   test("Location to iata zone") {
@@ -121,6 +134,9 @@ class GeoBaseTest extends FunSuite with SharedSparkContext {
       GeoBase.iataZone("..").get
     }
     assert(exceptionThrown.getMessage === "Unknown country \"..\"")
+
+    // Pimped case:
+    assert("ORY".iataZone === Success("21"))
   }
 
   test("Location to currency") {
@@ -136,6 +152,9 @@ class GeoBaseTest extends FunSuite with SharedSparkContext {
       GeoBase.currency("..").get
     }
     assert(exceptionThrown.getMessage === "Unknown country \"..\"")
+
+    // Pimped case:
+    assert("PAR".currency === Success("EUR"))
   }
 
   test("Airline to country") {
@@ -168,6 +187,9 @@ class GeoBaseTest extends FunSuite with SharedSparkContext {
       GeoBase.nameOfAirline("..").get
     }
     assert(exceptionThrown.getMessage === "Unknown airline \"..\"")
+
+    // Pimped case:
+    assert("BA".name === Success("British Airways"))
   }
 
   test("Location to time zone") {
@@ -184,6 +206,9 @@ class GeoBaseTest extends FunSuite with SharedSparkContext {
       GeoBase.timeZone("...").get
     }
     assert(exceptionThrown.getMessage === "Unknown location \"...\"")
+
+    // Pimped case:
+    assert("CDG".timeZone === Success("Europe/Paris"))
   }
 
   test("Distance between two locations") {
@@ -205,6 +230,9 @@ class GeoBaseTest extends FunSuite with SharedSparkContext {
       GeoBase.distanceBetween("CDG", "...").get
     }
     assert(exceptionThrown.getMessage === "Unknown location \"...\"")
+
+    // Pimped case:
+    assert("ORY".distanceWith("NCE") === Success(676))
   }
 
   test("Geo Type from locations (domestic, conti., interconti.)") {
@@ -499,6 +527,9 @@ class GeoBaseTest extends FunSuite with SharedSparkContext {
       GeoBase.nearbyAirports("...", 20).get
     }
     assert(exceptionThrown2.getMessage === "Unknown location \"...\"")
+
+    // 8: Pimped case:
+    assert("CDG".nearbyAirports(50) === Success(expectedAirports))
   }
 
   test("Check everything is Serializable") {

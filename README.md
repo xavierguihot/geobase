@@ -44,34 +44,50 @@ Here is a non-exhaustive list of available methods:
 ```scala
 import com.geobase.GeoBase
 
-assert(GeoBase.city("CDG") == Success("PAR"))
-assert(GeoBase.country("CDG") == Success("FR"))
-assert(GeoBase.continent("JFK") == Success("NA"))
-assert(GeoBase.iataZone("LON") == Success("21"))
-assert(GeoBase.currency("NYC") == Success("USD"))
-assert(GeoBase.countryForAirline("AF") == Success("FR"))
-assert(GeoBase.timeZone("PAR") == Success("Europe/Paris"))
-assert(GeoBase.distanceBetween("PAR", "NCE") == Success(686))
-assert(GeoBase.localDateToGMT("20160606_2227", "NYC") == Success("20160607_0227"))
-assert(GeoBase.gmtDateToLocal("20160607_0227", "NYC") == Success("20160606_2227"))
-assert(GeoBase.offsetForLocalDate("20171224", "NYC") == Success(-300))
-assert(GeoBase.tripDurationFromLocalDates("20160606_1627", "CDG", "20160606_1757", "JFK") == Success(7.5d))
-assert(GeoBase.geoType(List("CDG", "TLS", "DUB", "FRA")) == Success(CONTINENTAL))
-assert(GeoBase.nearbyAirports("CDG", 50) == Success(List("LBG", "ORY", "VIY", "POX")))
-assert(GeoBase.nameOfAirline("AF") == Success("Air France"))
+GeoBase.city("CDG") // Success("PAR")
+GeoBase.country("CDG") // Success("FR")
+GeoBase.continent("JFK") // Success("NA")
+GeoBase.iataZone("LON") // Success("21")
+GeoBase.currency("NYC") // Success("USD")
+GeoBase.countryForAirline("AF") // Success("FR")
+GeoBase.timeZone("PAR") // Success("Europe/Paris")
+GeoBase.distanceBetween("PAR", "NCE") // Success(686)
+GeoBase.localDateToGMT("20160606_2227", "NYC") // Success("20160607_0227")
+GeoBase.gmtDateToLocal("20160607_0227", "NYC") // Success("20160606_2227")
+GeoBase.offsetForLocalDate("20171224", "NYC") // Success(-300)
+GeoBase.tripDurationFromLocalDates("20160606_1627", "CDG", "20160606_1757", "JFK") // Success(7.5d)
+GeoBase.geoType(List("CDG", "TLS", "DUB", "FRA")) // Success(CONTINENTAL)
+GeoBase.nearbyAirports("CDG", 50) // Success(List("LBG", "ORY", "VIY", "POX"))
+GeoBase.nameOfAirline("AF") // Success("Air France")
 ```
 
-Getters all have a return type embedded within the Try monade. Throwing
+These functions can also be called as attachments to Strings:
+
+```scala
+import com.geobase.GeoBase._
+
+"CDG".city // Success("PAR")
+"PAR".country // Success("FR")
+"CDG".continent // Success("EU")
+"CDG".iataZone // Success("21")
+"JFK".currency // Success("USD")
+"AF".name // Success("Air France")
+"CDG".timeZone // Success("Europe/Paris")
+"LON".distanceWith("NYC") // Success(5568)
+"CDG".nearbyAirports(50) // Success(List("LBG", "ORY", "VIY", "POX"))
+```
+
+Getters all have a return type embedded within the Try monad. Throwing
 exceptions when one might request mappings for non existing locations, isn't
-realy the idiomatic scala way, and simply embedding the result in the Option
-monade doesn't give the user the possibility to understand what went wrong.
-Thus the usage of the Try monade.
+really the idiomatic scala way, and simply embedding the result in the Option
+monad doesn't give the user the possibility to understand what went wrong.
+Thus the usage of the Try monad.
 
 
 ## Including geobase to your dependencies:
 
 
-With sbt, add these lines to your build.sbt:
+With sbt:
 
 ```scala
 resolvers += "jitpack" at "https://jitpack.io"
@@ -79,7 +95,7 @@ resolvers += "jitpack" at "https://jitpack.io"
 libraryDependencies += "com.github.xavierguihot" % "geobase" % "v1.2.3"
 ```
 
-With maven, add these lines to your pom.xml:
+With maven:
 
 ```xml
 <repositories>
@@ -96,7 +112,7 @@ With maven, add these lines to your pom.xml:
 </dependency>
 ```
 
-With gradle, add these lines to your build.gradle:
+With gradle:
 
 ```groovy
 allprojects {

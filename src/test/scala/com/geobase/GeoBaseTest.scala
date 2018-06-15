@@ -8,12 +8,14 @@ import scala.util.Success
 
 import org.scalatest.FunSuite
 
+import com.holdenkarau.spark.testing.SharedSparkContext
+
 /** Testing facility for GeoBase.
   *
   * @author Xavier Guihot
   * @since 2016-05
   */
-class GeoBaseTest extends FunSuite {
+class GeoBaseTest extends FunSuite with SharedSparkContext {
 
   private val geoBase = new GeoBase()
 
@@ -499,5 +501,14 @@ class GeoBaseTest extends FunSuite {
       geoBase.nearbyAirports("...", 20).get
     }
     assert(exceptionThrown2.getMessage === "Unknown location \"...\"")
+  }
+
+  test("Check everything is Serializable") {
+
+    val geoBaseBr = sc.broadcast(new GeoBase())
+
+    val airports = sc.parallelize(Array("ORY", "GAT"), 2)
+    val cities = airports.map(airport => geoBaseBr.value.city(airport))
+    assert(cities.collect === Array(Success("PAR"), Success("GAT")))
   }
 }

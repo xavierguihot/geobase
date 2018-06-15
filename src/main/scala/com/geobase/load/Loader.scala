@@ -18,6 +18,8 @@ private[geobase] object Loader {
     */
   def loadAirportsAndCities(): Map[String, AirportOrCity] = {
 
+    println("GeoBase: Loading airports and cities")
+
     Source
       .fromURL(getClass.getResource("/optd_por_public.csv"), "UTF-8")
       .getLines()
@@ -55,6 +57,8 @@ private[geobase] object Loader {
 
   def loadCountries(): Map[String, Country] = {
 
+    println("GeoBase: Loading countries")
+
     Source
       .fromURL(getClass.getResource("/countries.csv"))
       .getLines()
@@ -77,6 +81,8 @@ private[geobase] object Loader {
   }
 
   def loadAirlines(): Map[String, Airline] = {
+
+    println("GeoBase: Loading airlines")
 
     // Airline code to airline name:
     val airlineNames = Source

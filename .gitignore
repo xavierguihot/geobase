@@ -8,3 +8,5 @@ src/main/resources/optd_por_public.csv
 src/main/resources/optd_airlines.csv
 
 .ensime*
+.idea
+geobase.iml

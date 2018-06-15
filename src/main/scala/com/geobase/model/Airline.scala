@@ -15,7 +15,7 @@ private[geobase] final case class Airline(
     airlineName: String
 ) {
 
-  def country(): Try[String] = countryCode match {
+  def country: Try[String] = countryCode match {
     case "" =>
       Failure(
         GeoBaseException(
@@ -23,7 +23,7 @@ private[geobase] final case class Airline(
     case _ => Success(countryCode)
   }
 
-  def name(): Try[String] = airlineName match {
+  def name: Try[String] = airlineName match {
     case "" =>
       Failure(
         GeoBaseException(

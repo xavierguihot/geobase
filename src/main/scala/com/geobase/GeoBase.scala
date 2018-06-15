@@ -25,7 +25,7 @@ import cats.implicits._
   * This tool also provides classic time-oriented methods such as the
   * computation of a trip duration.
   *
-  * Here are a few exemples:
+  * Here are a few examples:
   *
   * {{{
   * import com.geobase.GeoBase
@@ -49,11 +49,11 @@ import cats.implicits._
   * file: <a href="https://github.com/opentraveldata/opentraveldata/tree/master/opentraveldata/optd_por_public.csv">
   * optd_por_public.csv</a>.
   *
-  * Getters all have a return type embedded within the Try monade. Throwing
+  * Getters all have a return type embedded within the Try monad. Throwing
   * exceptions as is when one might request mappings for non existing locations,
-  * isn't realy the scala way, and simply embedding the result in the Option
+  * isn't really the scala way, and simply embedding the result in the Option
   * monad doesn't give the user the possibility to understand what went wrong.
-  * Thus the usage of the Try monade.
+  * Thus the usage of the Try monad.
   *
   * Source <a href="https://github.com/xavierguihot/geobase/blob/master/src/main/scala/com/geobase/GeoBase.scala">
   * GeoBase</a>
@@ -147,7 +147,7 @@ class GeoBase() extends Serializable {
 
   /** Returns the continent associated to the given airport, city or country.
     *
-    * Possible values: EU (Eurrope) - NA (North America) - SA (South Africa) -
+    * Possible values: EU (Europe) - NA (North America) - SA (South Africa) -
     * AF (Africa) - AS (Asia) - AN (Antarctica) - OC (Oceania).
     *
     * {{{
@@ -394,7 +394,7 @@ class GeoBase() extends Serializable {
       format: String = "yyyyMMdd"
   ): Try[Int] =
     timeZone(location).map(timeZone => {
-      val dateTime = new SimpleDateFormat(format).parse(localDate).getTime()
+      val dateTime = new SimpleDateFormat(format).parse(localDate).getTime
       TimeZone.getTimeZone(timeZone).getOffset(dateTime) / 60000
     })
 
@@ -439,7 +439,7 @@ class GeoBase() extends Serializable {
 
   /** Returns the trip duration between two locations (airport or city).
     *
-    * In the travel indeuxtry, the trip duration is synonym with elapsed flying
+    * In the travel industry, the trip duration is synonym with elapsed flying
     * time (EFT).
     *
     * This is meant to be used to compute the trip duration for a segment/bound
@@ -495,7 +495,7 @@ class GeoBase() extends Serializable {
         val depDate = formatter.parse(gmtDepDate)
         val arrDate = formatter.parse(gmtArrDate)
 
-        val tripDurationMillis = arrDate.getTime() - depDate.getTime()
+        val tripDurationMillis = arrDate.getTime - depDate.getTime
 
         if (tripDurationMillis < 0)
           Failure(
@@ -525,7 +525,7 @@ class GeoBase() extends Serializable {
     * assert(geoBase.geoType(List("US", "bbb", "NCE", "aaa")) == Failure(GeoBaseException: Unknown locations \"bbb\", \"aaa\"))
     * }}}
     *
-    * @param locations a list of cities/ariports/countries representing the trip
+    * @param locations a list of cities/airports/countries representing the trip
     * @return the type of the trip (a GeoType "enum" value, such as DOMESTIC)
     */
   def geoType(locations: List[String]): Try[GeoType] = {
@@ -577,7 +577,7 @@ class GeoBase() extends Serializable {
     * @param location the airport or city for which to find nearby airports
     * @param radius the maximum distance (in km) for which an airport is
     * considered close.
-    * @return the sorted per incresaing distance list nearby airports
+    * @return the sorted per increasing distance list nearby airports
     */
   def nearbyAirports(location: String, radius: Int): Try[List[String]] =
     for {
@@ -600,7 +600,7 @@ class GeoBase() extends Serializable {
     * @param location the airport or city for which to find nearby airports.
     * @param radius the maximum distance (in km) for which an airport is
     * considered close.
-    * @return the sorted per incresaing distance list of tuples (airport,
+    * @return the sorted per increasing distance list of tuples (airport,
     * distance).
     */
   def nearbyAirportsWithDetails(
@@ -616,11 +616,11 @@ class GeoBase() extends Serializable {
       val nearbyAirports = for {
 
         randomLocation <- airportsAndCities.keys.toList
-        if (airportsAndCities(randomLocation).isAirport())
+        if airportsAndCities(randomLocation).isAirport
 
         distance = distanceBetween(location, randomLocation).getOrElse(-1)
-        if (distance > 0)
-        if (distance <= radius)
+        if distance > 0
+        if distance <= radius
 
       } yield (randomLocation, distance)
 

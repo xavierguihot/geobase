@@ -4,7 +4,7 @@ import com.geobase.model.{Airline, AirportOrCity, Country}
 
 import scala.io.Source
 
-/** Functions called when initializating GeoBase (data loads).
+/** Functions called when initializing GeoBase (data loads).
   *
   * @author Xavier Guihot
   * @since 2017-01
@@ -22,7 +22,7 @@ private[geobase] object Loader {
       .fromURL(getClass.getResource("/optd_por_public.csv"), "UTF-8")
       .getLines()
       .map(_.split("\\^", -1))
-      // Only lines for which the last date of validity is not definied:
+      // Only lines for which the last date of validity is not defined:
       .filter(_(14).isEmpty)
       .map(splitLine => {
 
@@ -45,21 +45,14 @@ private[geobase] object Loader {
       .map {
         // Since we have iata codes shared by both an airport and a city
         // (NCE for instance), we choose to only keep the airport one:
-        case (airportOrCityCode, locations) => {
-
-          val location = locations.map {
-            case (airportOrCityCode, location) => location
-          }.foldLeft(locations.head._2) {
-            case (locA, locB) => if (locA.isAirport()) locA else locB
-          }
-
+        case (airportOrCityCode, locations) =>
+          val location = locations
+            .map(_._2)
+            .reduceLeft((locA, locB) => if (locA.isAirport) locA else locB)
           (airportOrCityCode, location)
-        }
       }
-      .toMap
   }
 
-  /** Loads the country dataset */
   def loadCountries(): Map[String, Country] = {
 
     Source
@@ -83,7 +76,6 @@ private[geobase] object Loader {
       .toMap
   }
 
-  /** Loads the airline dataset */
   def loadAirlines(): Map[String, Airline] = {
 
     // Airline code to airline name:
@@ -129,6 +121,6 @@ private[geobase] object Loader {
         (code, Airline(code, country, name))
       // No information on the country, but several names available:
       case (code, Airline(_, "", name) :: _) => (code, Airline(code, "", name))
-    }.toMap
+    }
   }
 }

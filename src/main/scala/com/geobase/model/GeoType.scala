@@ -1,6 +1,6 @@
 package com.geobase.model
 
-/** An enumeration which represents the geograpic types of a trip */
+/** An enumeration which represents the geographic types of a trip */
 sealed trait GeoType
 
 case object DOMESTIC extends GeoType

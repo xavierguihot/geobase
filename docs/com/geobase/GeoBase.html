@@ -53,7 +53,7 @@
 based on <a href="https://github.com/opentraveldata/opentraveldata">
 opentraveldata</a> as well as other mappings (airlines, currencies, ...).
 This tool also provides classic time-oriented methods such as the
-computation of a trip duration.</p><p>Here are a few exemples:</p><pre><span class="kw">import</span> com.geobase.GeoBase
+computation of a trip duration.</p><p>Here are a few examples:</p><pre><span class="kw">import</span> com.geobase.GeoBase
 
 <span class="kw">val</span> geoBase = <span class="kw">new</span> GeoBase()
 
@@ -67,11 +67,11 @@ assert(geoBase.nearbyAirports(<span class="lit">"CDG"</span>, <span class="num">
 the possibility to <b>broadcast GeoBase</b>).</p><p>Opentraveldata is an accurate and maintained source of various travel
 mappings. This scala wrapper around opentraveldata mostly uses this
 file: <a href="https://github.com/opentraveldata/opentraveldata/tree/master/opentraveldata/optd_por_public.csv">
-optd_por_public.csv</a>.</p><p>Getters all have a return type embedded within the Try monade. Throwing
+optd_por_public.csv</a>.</p><p>Getters all have a return type embedded within the Try monad. Throwing
 exceptions as is when one might request mappings for non existing locations,
-isn't realy the scala way, and simply embedding the result in the Option
+isn't really the scala way, and simply embedding the result in the Option
 monad doesn't give the user the possibility to understand what went wrong.
-Thus the usage of the Try monade.</p><p>Source <a href="https://github.com/xavierguihot/geobase/blob/master/src/main/scala/com/geobase/GeoBase.scala">
+Thus the usage of the Try monad.</p><p>Source <a href="https://github.com/xavierguihot/geobase/blob/master/src/main/scala/com/geobase/GeoBase.scala">
 GeoBase</a>
 </p></div><dl class="attributes block"> <dt>Since</dt><dd><p>2016-05</p></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
@@ -289,7 +289,7 @@ PAR).</p></dd></dl></div>
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      <p class="shortcomment cmt">Returns the continent associated to the given airport, city or country.</p><div class="fullcomment"><div class="comment cmt"><p>Returns the continent associated to the given airport, city or country.</p><p>Possible values: EU (Eurrope) - NA (North America) - SA (South Africa) -
+      <p class="shortcomment cmt">Returns the continent associated to the given airport, city or country.</p><div class="fullcomment"><div class="comment cmt"><p>Returns the continent associated to the given airport, city or country.</p><p>Possible values: EU (Europe) - NA (North America) - SA (South Africa) -
 AF (Africa) - AS (Asia) - AN (Antarctica) - OC (Oceania).</p><pre>assert(geoBase.continent(<span class="lit">"CDG"</span>) == Success(<span class="lit">"EU"</span>)) <span class="cmt">// location is an airport</span>
 assert(geoBase.continent(<span class="lit">"NYC"</span>) == Success(<span class="lit">"NA"</span>)) <span class="cmt">// location is a city</span>
 assert(geoBase.continent(<span class="lit">"CN"</span>) == Success(<span class="lit">"AS"</span>)) <span class="cmt">// location is a country</span>
@@ -460,7 +460,7 @@ iata zones.</p><pre>assert(geoBase.geoType(<span class="std">List</span>(<span c
 assert(geoBase.geoType(<span class="std">List</span>(<span class="lit">"FR"</span>, <span class="lit">"FR"</span>)) == Success(DOMESTIC))
 assert(geoBase.geoType(<span class="std">List</span>(<span class="lit">"FR"</span>, <span class="lit">"PAR"</span>, <span class="lit">"DUB"</span>)) == Success(CONTINENTAL))
 assert(geoBase.geoType(<span class="std">List</span>(<span class="lit">"CDG"</span>, <span class="lit">"TLS"</span>, <span class="lit">"JFK"</span>, <span class="lit">"MEX"</span>)) == Success(INTER_CONTINENTAL))
-assert(geoBase.geoType(<span class="std">List</span>(<span class="lit">"US"</span>, <span class="lit">"bbb"</span>, <span class="lit">"NCE"</span>, <span class="lit">"aaa"</span>)) == Failure(GeoBaseException: Unknown locations \<span class="lit">"bbb\", \"aaa\"))</span></pre></div><dl class="paramcmts block"><dt class="param">locations</dt><dd class="cmt"><p>a list of cities/ariports/countries representing the trip</p></dd><dt>returns</dt><dd class="cmt"><p>the type of the trip (a GeoType &quot;enum&quot; value, such as DOMESTIC)</p></dd></dl></div>
+assert(geoBase.geoType(<span class="std">List</span>(<span class="lit">"US"</span>, <span class="lit">"bbb"</span>, <span class="lit">"NCE"</span>, <span class="lit">"aaa"</span>)) == Failure(GeoBaseException: Unknown locations \<span class="lit">"bbb\", \"aaa\"))</span></pre></div><dl class="paramcmts block"><dt class="param">locations</dt><dd class="cmt"><p>a list of cities/airports/countries representing the trip</p></dd><dt>returns</dt><dd class="cmt"><p>the type of the trip (a GeoType &quot;enum&quot; value, such as DOMESTIC)</p></dd></dl></div>
     </li><li name="scala.AnyRef#getClass" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="getClass():Class[_]"></a>
       <a id="getClass():Class[_]"></a>
@@ -643,7 +643,7 @@ airport or city.</p><p>Find the list of nearby airports, within the requested ra
 sorted starting from the closest airport.</p><pre>assert(geoBase.nearbyAirports(<span class="lit">"CDG"</span>, <span class="num">50</span>) == Success(<span class="std">List</span>(<span class="lit">"LBG"</span>, <span class="lit">"ORY"</span>, <span class="lit">"VIY"</span>, <span class="lit">"POX"</span>)))
 assert(geoBase.nearbyAirports(<span class="lit">"CDG"</span>, <span class="num">36</span>) == Success(<span class="std">List</span>(<span class="lit">"LBG"</span>, <span class="lit">"ORY"</span>)))
 assert(geoBase.nearbyAirports(<span class="lit">"~#?"</span>, <span class="num">36</span>)) == Failure(GeoBaseException: Unknown location \<span class="lit">"~#?\""</span>))</pre></div><dl class="paramcmts block"><dt class="param">location</dt><dd class="cmt"><p>the airport or city for which to find nearby airports</p></dd><dt class="param">radius</dt><dd class="cmt"><p>the maximum distance (in km) for which an airport is
-considered close.</p></dd><dt>returns</dt><dd class="cmt"><p>the sorted per incresaing distance list nearby airports</p></dd></dl></div>
+considered close.</p></dd><dt>returns</dt><dd class="cmt"><p>the sorted per increasing distance list nearby airports</p></dd></dl></div>
     </li><li name="com.geobase.GeoBase#nearbyAirportsWithDetails" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="nearbyAirportsWithDetails(location:String,radius:Int):scala.util.Try[List[(String,Int)]]"></a>
       <a id="nearbyAirportsWithDetails(String,Int):Try[List[(String,Int)]]"></a>
@@ -667,7 +667,7 @@ sorted starting from the closest airport. This list is a tuple of
 (airport/distance).</p><pre>assert(geoBase.nearbyAirportsWithDetails(<span class="lit">"CDG"</span>, <span class="num">50</span>) == Success(<span class="std">List</span>((<span class="lit">"LBG"</span>, <span class="num">9</span>), (<span class="lit">"ORY"</span>, <span class="num">35</span>), (<span class="lit">"VIY"</span>, <span class="num">37</span>), (<span class="lit">"POX"</span>, <span class="num">38</span>))))
 assert(geoBase.nearbyAirportsWithDetails(<span class="lit">"CDG"</span>, <span class="num">36</span>) == Success(<span class="std">List</span>((<span class="lit">"LBG"</span>, <span class="num">9</span>), (<span class="lit">"ORY"</span>, <span class="num">35</span>))))
 assert(geoBase.nearbyAirportsWithDetails(<span class="lit">"~#?"</span>, <span class="num">36</span>)) == Failure(GeoBaseException: Unknown location \<span class="lit">"~#?\""</span>))</pre></div><dl class="paramcmts block"><dt class="param">location</dt><dd class="cmt"><p>the airport or city for which to find nearby airports.</p></dd><dt class="param">radius</dt><dd class="cmt"><p>the maximum distance (in km) for which an airport is
-considered close.</p></dd><dt>returns</dt><dd class="cmt"><p>the sorted per incresaing distance list of tuples (airport,
+considered close.</p></dd><dt>returns</dt><dd class="cmt"><p>the sorted per increasing distance list of tuples (airport,
 distance).</p></dd></dl></div>
     </li><li name="scala.AnyRef#notify" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="notify():Unit"></a>
@@ -797,7 +797,7 @@ Europe/Paris).</p></dd></dl></div>
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      <p class="shortcomment cmt">Returns the trip duration between two locations (airport or city).</p><div class="fullcomment"><div class="comment cmt"><p>Returns the trip duration between two locations (airport or city).</p><p>In the travel indeuxtry, the trip duration is synonym with elapsed flying
+      <p class="shortcomment cmt">Returns the trip duration between two locations (airport or city).</p><div class="fullcomment"><div class="comment cmt"><p>Returns the trip duration between two locations (airport or city).</p><p>In the travel industry, the trip duration is synonym with elapsed flying
 time (EFT).</p><p>This is meant to be used to compute the trip duration for a segment/bound
 for which we know the origin/destination airports/cities and the local
 time. i.e. when we don't have gmt times.</p><pre>assert(geoBase.tripDurationFromLocalDates(

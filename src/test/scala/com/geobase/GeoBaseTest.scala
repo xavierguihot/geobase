@@ -79,7 +79,7 @@ class GeoBaseTest extends FunSuite {
     }
     assert(exceptionThrown.getMessage === "Unknown location \"...\"")
 
-    // Unkown country:
+    // Unknown country:
     exceptionThrown = intercept[GeoBaseException] { geoBase.country("").get }
     assert(exceptionThrown.getMessage === "Unknown location \"\"")
   }
@@ -285,8 +285,6 @@ class GeoBaseTest extends FunSuite {
     // 1: French summer time:
     var gmtDate = geoBase.localDateToGMT("20160606_1627", "NCE")
     assert(gmtDate === Success("20160606_1427"))
-    gmtDate = geoBase.localDateToGMT("20160606_1627", "NCE", "yyyyMMdd_HHmm")
-    assert(gmtDate === Success("20160606_1427"))
 
     // 2: LON
     gmtDate = geoBase.localDateToGMT("20160606_1527", "LON")
@@ -320,8 +318,6 @@ class GeoBaseTest extends FunSuite {
 
     var offset = geoBase.offsetForLocalDate("20170712", "NCE")
     assert(offset === Success(120))
-    offset = geoBase.offsetForLocalDate("20170712", "NCE", "yyyyMMdd")
-    assert(offset === Success(120))
     offset = geoBase.offsetForLocalDate("2017-07-12", "NCE", "yyyy-MM-dd")
     assert(offset === Success(120))
 
@@ -341,9 +337,6 @@ class GeoBaseTest extends FunSuite {
 
     // 1: French summer time:
     var localDate = geoBase.gmtDateToLocal("20160606_1427", "NCE")
-    assert(localDate === Success("20160606_1627"))
-
-    localDate = geoBase.gmtDateToLocal("20160606_1427", "NCE", "yyyyMMdd_HHmm")
     assert(localDate === Success("20160606_1627"))
 
     // 2: LON
@@ -408,7 +401,7 @@ class GeoBaseTest extends FunSuite {
       "JFK")
     assert(computedTripDuration === Success(7.5d))
 
-    // 5: With an invalid origin city/ariport:
+    // 5: With an invalid origin city/airport:
     var exceptionThrown = intercept[GeoBaseException] {
       geoBase
         .tripDurationFromLocalDates(

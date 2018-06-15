@@ -86,7 +86,7 @@
 based on <a href="https://github.com/opentraveldata/opentraveldata">
 opentraveldata</a> as well as other mappings (airlines, currencies, ...).
 This tool also provides classic time-oriented methods such as the
-computation of a trip duration.</p><p>Here are a few exemples:</p><pre><span class="kw">import</span> com.geobase.GeoBase
+computation of a trip duration.</p><p>Here are a few examples:</p><pre><span class="kw">import</span> com.geobase.GeoBase
 
 <span class="kw">val</span> geoBase = <span class="kw">new</span> GeoBase()
 
@@ -100,11 +100,11 @@ assert(geoBase.nearbyAirports(<span class="lit">"CDG"</span>, <span class="num">
 the possibility to <b>broadcast GeoBase</b>).</p><p>Opentraveldata is an accurate and maintained source of various travel
 mappings. This scala wrapper around opentraveldata mostly uses this
 file: <a href="https://github.com/opentraveldata/opentraveldata/tree/master/opentraveldata/optd_por_public.csv">
-optd_por_public.csv</a>.</p><p>Getters all have a return type embedded within the Try monade. Throwing
+optd_por_public.csv</a>.</p><p>Getters all have a return type embedded within the Try monad. Throwing
 exceptions as is when one might request mappings for non existing locations,
-isn't realy the scala way, and simply embedding the result in the Option
+isn't really the scala way, and simply embedding the result in the Option
 monad doesn't give the user the possibility to understand what went wrong.
-Thus the usage of the Try monade.</p><p>Source <a href="https://github.com/xavierguihot/geobase/blob/master/src/main/scala/com/geobase/GeoBase.scala">
+Thus the usage of the Try monad.</p><p>Source <a href="https://github.com/xavierguihot/geobase/blob/master/src/main/scala/com/geobase/GeoBase.scala">
 GeoBase</a>
 </p></div><dl class="attributes block"> <dt>Since</dt><dd><p>2016-05</p></dd></dl></div>
     </li></ol>

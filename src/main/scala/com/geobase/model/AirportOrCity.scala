@@ -16,12 +16,12 @@ import scala.util.{Try, Success, Failure}
   * @since 2017-01
   *
   * @param iataCode the airport or city iata code
-  * @param cityCode the city code for this iataCode (only ussefull when the iata
+  * @param cityCode the city code for this iataCode (only useful when the iata
   * code is an airport).
   * @param countryCode the country code for this iataCode
-  * @param latitude the latitude for this iataCode
-  * @param longitude the longitude for this iataCode
-  * @param timeZone the time zone for this iataCode
+  * @param rawLatitude the latitude for this iataCode
+  * @param rawLongitude the longitude for this iataCode
+  * @param rawTimeZone the time zone for this iataCode
   * @param locationType either "A" (airport) or "C" (city)
   */
 private[geobase] final case class AirportOrCity(
@@ -34,14 +34,14 @@ private[geobase] final case class AirportOrCity(
     locationType: String
 ) {
 
-  def isAirport(): Boolean = locationType == "A"
+  def isAirport: Boolean = locationType == "A"
 
-  def city(): Try[String] = cities() match {
+  def city: Try[String] = cities match {
     case Success(city :: _) => Success(city)
     case Failure(exception) => Failure(exception)
   }
 
-  def cities(): Try[List[String]] = cityCode.length match {
+  def cities: Try[List[String]] = cityCode.length match {
 
     case 3 => Success(List(cityCode))
 
@@ -59,11 +59,11 @@ private[geobase] final case class AirportOrCity(
         GeoBaseException("No city available for airport \"" + iataCode + "\""))
   }
 
-  def country(): Try[String] = extract(countryCode, "country")
-  def timeZone(): Try[String] = extract(rawTimeZone, "time zone")
+  def country: Try[String] = extract(countryCode, "country")
+  def timeZone: Try[String] = extract(rawTimeZone, "time zone")
 
-  def latitude(): Try[Double] = extractCoordinate(rawLatitude, "latitude")
-  def longitude(): Try[Double] = extractCoordinate(rawLongitude, "longitude")
+  def latitude: Try[Double] = extractCoordinate(rawLatitude, "latitude")
+  def longitude: Try[Double] = extractCoordinate(rawLongitude, "longitude")
 
   private def extract(field: String, name: String): Try[String] = field match {
     case "" =>

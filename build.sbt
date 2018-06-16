@@ -1,6 +1,6 @@
 name := "geobase"
 
-version := "1.2.3"
+version := "2.0.0"
 
 scalaVersion := "2.11.12"
 
@@ -31,8 +31,12 @@ scalafmtOnCompile := true
 
 val catsVersion = "1.0.1"
 val scalatestVersion = "3.0.4"
+val sparkVersion = "2.1.0"
+val sparkTestVersion = "2.1.0_0.8.0"
 
 libraryDependencies ++= Seq(
-  "org.typelevel" %% "cats-core" % catsVersion,
-  "org.scalatest" %% "scalatest" % scalatestVersion % "test"
+  "org.typelevel"    %% "cats-core"          % catsVersion,
+  "org.scalatest"    %% "scalatest"          % scalatestVersion % "test",
+  "org.apache.spark" %% "spark-core"         % sparkVersion % "test",
+  "com.holdenkarau"  %% "spark-testing-base" % sparkTestVersion % "test"
 )

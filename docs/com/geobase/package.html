@@ -64,42 +64,64 @@
         <div id="allMembers">
         
 
-        <div id="types" class="types members">
-              <h3>Type Members</h3>
+        
+
+        
+
+        <div id="values" class="values members">
+              <h3>Value Members</h3>
               <ol><li name="com.geobase.GeoBase" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="GeoBaseextendsSerializable"></a>
+      <a id="GeoBase"></a>
       <a id="GeoBase:GeoBase"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">class</span>
+        <span class="kind">object</span>
       </span>
       <span class="symbol">
-        <a href="GeoBase.html"><span class="name">GeoBase</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="GeoBase$.html"><span class="name">GeoBase</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#com.geobase.package@GeoBaseextendsSerializable" title="Permalink" target="_top">
+      <a href="../../index.html#com.geobase.package@GeoBase" title="Permalink" target="_top">
         <img src="../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      <p class="shortcomment cmt">A facility to <b>deal with travel/geographical data</b>.</p><div class="fullcomment"><div class="comment cmt"><p>A facility to <b>deal with travel/geographical data</b>.</p><p>Provides <b>geographical mappings</b> at airport/city/country level mainly
+      <p class="shortcomment cmt">Provides <b>geographical mappings</b> at airport/city/country level mainly
+based on <a href="https://github.com/opentraveldata/opentraveldata">
+opentraveldata</a> as well as other mappings (airlines, currencies, ...).</a></p><div class="fullcomment"><div class="comment cmt"><p>Provides <b>geographical mappings</b> at airport/city/country level mainly
 based on <a href="https://github.com/opentraveldata/opentraveldata">
 opentraveldata</a> as well as other mappings (airlines, currencies, ...).
 This tool also provides classic time-oriented methods such as the
 computation of a trip duration.</p><p>Here are a few examples:</p><pre><span class="kw">import</span> com.geobase.GeoBase
 
-<span class="kw">val</span> geoBase = <span class="kw">new</span> GeoBase()
+GeoBase.city(<span class="lit">"CDG"</span>) <span class="cmt">// Success("PAR")</span>
+GeoBase.country(<span class="lit">"CDG"</span>) <span class="cmt">// Success("FR")</span>
+GeoBase.continent(<span class="lit">"JFK"</span>) <span class="cmt">// Success("NA")</span>
+GeoBase.iataZone(<span class="lit">"LON"</span>) <span class="cmt">// Success("21")</span>
+GeoBase.currency(<span class="lit">"NYC"</span>) <span class="cmt">// Success("USD")</span>
+GeoBase.countryForAirline(<span class="lit">"AF"</span>) <span class="cmt">// Success("FR")</span>
+GeoBase.timeZone(<span class="lit">"PAR"</span>) <span class="cmt">// Success("Europe/Paris")</span>
+GeoBase.distanceBetween(<span class="lit">"PAR"</span>, <span class="lit">"NCE"</span>) <span class="cmt">// Success(686)</span>
+GeoBase.localDateToGMT(<span class="lit">"20160606_2227"</span>, <span class="lit">"NYC"</span>) <span class="cmt">// Success("20160607_0227")</span>
+GeoBase.gmtDateToLocal(<span class="lit">"20160607_0227"</span>, <span class="lit">"NYC"</span>) <span class="cmt">// Success("20160606_2227")</span>
+GeoBase.offsetForLocalDate(<span class="lit">"20171224"</span>, <span class="lit">"NYC"</span>) <span class="cmt">// Success(-300)</span>
+GeoBase.tripDurationFromLocalDates(<span class="lit">"20160606_1627"</span>, <span class="lit">"CDG"</span>, <span class="lit">"20160606_1757"</span>, <span class="lit">"JFK"</span>) <span class="cmt">// Success(7.5d)</span>
+GeoBase.geoType(<span class="std">List</span>(<span class="lit">"CDG"</span>, <span class="lit">"TLS"</span>, <span class="lit">"DUB"</span>, <span class="lit">"FRA"</span>)) <span class="cmt">// Success(CONTINENTAL)</span>
+GeoBase.nearbyAirports(<span class="lit">"CDG"</span>, <span class="num">50</span>) <span class="cmt">// Success(List("LBG", "ORY", "VIY", "POX"))</span>
+GeoBase.nameOfAirline(<span class="lit">"AF"</span>) <span class="cmt">// Success("Air France")</span></pre><p>and by pimping String:</p><pre><span class="kw">import</span> com.geobase.GeoBase.StringExtensions
 
-assert(geoBase.city(<span class="lit">"CDG"</span>) == Success(<span class="lit">"PAR"</span>))
-assert(geoBase.country(<span class="lit">"CDG"</span>) == Success(<span class="lit">"FR"</span>))
-assert(geoBase.currency(<span class="lit">"NYC"</span>) == Success(<span class="lit">"USD"</span>))
-assert(geoBase.countryForAirline(<span class="lit">"AF"</span>) == Success(<span class="lit">"FR"</span>))
-assert(geoBase.distanceBetween(<span class="lit">"PAR"</span>, <span class="lit">"NCE"</span>) == Success(<span class="num">686</span>))
-assert(geoBase.tripDurationFromLocalDates(<span class="lit">"20160606_1627"</span>, <span class="lit">"CDG"</span>, <span class="lit">"20160606_1757"</span>, <span class="lit">"JFK"</span>) == Success(<span class="num">7.5</span>d))
-assert(geoBase.nearbyAirports(<span class="lit">"CDG"</span>, <span class="num">50</span>) == Success(<span class="std">List</span>(<span class="lit">"LBG"</span>, <span class="lit">"ORY"</span>, <span class="lit">"VIY"</span>, <span class="lit">"POX"</span>)))</pre><p>The GeoBase object can be used within Spark jobs (in this case, don't forget
-the possibility to <b>broadcast GeoBase</b>).</p><p>Opentraveldata is an accurate and maintained source of various travel
-mappings. This scala wrapper around opentraveldata mostly uses this
-file: <a href="https://github.com/opentraveldata/opentraveldata/tree/master/opentraveldata/optd_por_public.csv">
+<span class="lit">"CDG"</span>.city <span class="cmt">// Success("PAR")</span>
+<span class="lit">"PAR"</span>.country <span class="cmt">// Success("FR")</span>
+<span class="lit">"CDG"</span>.continent <span class="cmt">// Success("EU")</span>
+<span class="lit">"CDG"</span>.iataZone <span class="cmt">// Success("21")</span>
+<span class="lit">"JFK"</span>.currency <span class="cmt">// Success("USD")</span>
+<span class="lit">"AF"</span>.name <span class="cmt">// Success("Air France")</span>
+<span class="lit">"CDG"</span>.timeZone <span class="cmt">// Success("Europe/Paris")</span>
+<span class="lit">"LON"</span>.distanceWith(<span class="lit">"NYC"</span>) <span class="cmt">// Success(5568)</span>
+<span class="lit">"CDG"</span>.nearbyAirports(<span class="num">50</span>) <span class="cmt">// Success(List("LBG", "ORY", "VIY", "POX"))</span></pre><p>The GeoBase object can be used within Spark jobs (in this case, don't forget
+to broadcast it.</p><p>Opentraveldata is an accurate and maintained source of various travel
+mappings. This scala wrapper uses this file:
+<a href="https://github.com/opentraveldata/opentraveldata/tree/master/opentraveldata/optd_por_public.csv">
 optd_por_public.csv</a>.</p><p>Getters all have a return type embedded within the Try monad. Throwing
 exceptions as is when one might request mappings for non existing locations,
 isn't really the scala way, and simply embedding the result in the Option
@@ -107,14 +129,7 @@ monad doesn't give the user the possibility to understand what went wrong.
 Thus the usage of the Try monad.</p><p>Source <a href="https://github.com/xavierguihot/geobase/blob/master/src/main/scala/com/geobase/GeoBase.scala">
 GeoBase</a>
 </p></div><dl class="attributes block"> <dt>Since</dt><dd><p>2016-05</p></dd></dl></div>
-    </li></ol>
-            </div>
-
-        
-
-        <div id="values" class="values members">
-              <h3>Value Members</h3>
-              <ol><li name="com.geobase.error" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="com.geobase.error" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="error"></a>
       <a id="error:error"></a>
       <h4 class="signature">

@@ -36,10 +36,7 @@ private[geobase] final case class AirportOrCity(
 
   def isAirport: Boolean = locationType == "A"
 
-  def city: Try[String] = cities match {
-    case Success(city :: _) => Success(city)
-    case Failure(exception) => Failure(exception)
-  }
+  def city: Try[String] = cities.map { case city :: _ => city }
 
   def cities: Try[List[String]] = cityCode.length match {
 

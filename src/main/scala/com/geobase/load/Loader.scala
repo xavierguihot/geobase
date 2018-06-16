@@ -18,6 +18,8 @@ private[geobase] object Loader {
     */
   def loadAirportsAndCities(): Map[String, AirportOrCity] = {
 
+    println("GeoBase: Loading airports and cities")
+
     Source
       .fromURL(getClass.getResource("/optd_por_public.csv"), "UTF-8")
       .getLines()
@@ -55,10 +57,12 @@ private[geobase] object Loader {
 
   def loadCountries(): Map[String, Country] = {
 
+    println("GeoBase: Loading countries")
+
     Source
       .fromURL(getClass.getResource("/countries.csv"))
       .getLines()
-      .filter(!_.startsWith("#")) // Remove the header
+      .drop(1) // Remove the header
       .map(line => {
 
         val splitLine = line.split("\\^", -1)
@@ -69,7 +73,8 @@ private[geobase] object Loader {
           countryCode = countryCode,
           currencyCode = splitLine(1),
           continentCode = splitLine(2),
-          iataZoneCode = splitLine(3))
+          iataZoneCode = splitLine(3)
+        )
 
         (countryCode, country)
       })
@@ -78,11 +83,13 @@ private[geobase] object Loader {
 
   def loadAirlines(): Map[String, Airline] = {
 
+    println("GeoBase: Loading airlines")
+
     // Airline code to airline name:
     val airlineNames = Source
       .fromURL(getClass.getResource("/optd_airlines.csv"))
       .getLines()
-      .filter(!_.startsWith("pk^")) // Remove the header
+      .drop(1) // Remove the header
       .map(line => {
 
         val splitLine = line.split("\\^", -1)
@@ -98,7 +105,7 @@ private[geobase] object Loader {
     val airlineCountries = Source
       .fromURL(getClass.getResource("/airlines.csv"))
       .getLines()
-      .filter(!_.startsWith("#")) // Remove the header
+      .drop(1) // Remove the header
       .map(line => {
 
         val splitLine = line.split("\\^", -1)

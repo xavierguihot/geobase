@@ -5,9 +5,7 @@
 ## Overview
 
 
-Version: 1.2.3
-
-API Scaladoc: [GeoBase](http://xavierguihot.com/geobase/#com.geobase.GeoBase)
+API Scaladoc: [GeoBase](http://xavierguihot.com/geobase/#com.geobase.GeoBase$)
 
 Scala wrapper around opentraveldata (geo/travel data).
 
@@ -37,7 +35,7 @@ Inspired by [neobase](https://github.com/alexprengere/neobase) for python users.
 
 
 The full list of methods is available at
-[GeoBase doc](http://xavierguihot.com/geobase/#com.geobase.GeoBase)
+[GeoBase doc](http://xavierguihot.com/geobase/#com.geobase.GeoBase$)
 
 Here is a non-exhaustive list of available methods:
 
@@ -92,7 +90,7 @@ With sbt:
 ```scala
 resolvers += "jitpack" at "https://jitpack.io"
 
-libraryDependencies += "com.github.xavierguihot" % "geobase" % "v1.2.3"
+libraryDependencies += "com.github.xavierguihot" % "geobase" % "2.0.0"
 ```
 
 With maven:
@@ -108,7 +106,7 @@ With maven:
 <dependency>
 	<groupId>com.github.xavierguihot</groupId>
 	<artifactId>geobase</artifactId>
-	<version>v1.2.3</version>
+	<version>2.0.0</version>
 </dependency>
 ```
 
@@ -122,9 +120,12 @@ allprojects {
 }
 
 dependencies {
-	compile 'com.github.xavierguihot:geobase:v1.2.3'
+	compile 'com.github.xavierguihot:geobase:2.0.0'
 }
 ```
+
+For versions anterior to `2.0.0`, use prefix `v` in the version tag; for
+instance `v1.0.0`
 
 
 ## Building the project:

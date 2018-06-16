@@ -540,7 +540,8 @@ object GeoBase extends Serializable {
 
     require(
       locations.length >= 2,
-      "at least 2 locations are needed to compute a geography type")
+      "at least 2 locations are needed to compute a geography type"
+    )
 
     for {
 

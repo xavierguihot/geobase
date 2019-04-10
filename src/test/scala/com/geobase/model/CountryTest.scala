@@ -21,8 +21,7 @@ class CountryTest extends FunSuite {
     val exceptionThrown = intercept[GeoBaseException] {
       Country("FR", "", "", "").continent.get
     }
-    assert(
-      exceptionThrown.getMessage === "No continent available for country \"FR\"")
+    assert(exceptionThrown.getMessage === "No continent available for country \"FR\"")
   }
 
   test("Country to iata zone") {
@@ -33,8 +32,7 @@ class CountryTest extends FunSuite {
     val exceptionThrown = intercept[GeoBaseException] {
       Country("FR", "", "", "").iataZone.get
     }
-    assert(
-      exceptionThrown.getMessage === "No iata zone available for country \"FR\"")
+    assert(exceptionThrown.getMessage === "No iata zone available for country \"FR\"")
   }
 
   test("Country to currency") {
@@ -45,7 +43,6 @@ class CountryTest extends FunSuite {
     val exceptionThrown = intercept[GeoBaseException] {
       Country("FR", "", "", "").currency.get
     }
-    assert(
-      exceptionThrown.getMessage === "No currency available for country \"FR\"")
+    assert(exceptionThrown.getMessage === "No currency available for country \"FR\"")
   }
 }

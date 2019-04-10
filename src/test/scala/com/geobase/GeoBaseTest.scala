@@ -35,9 +35,7 @@ class GeoBaseTest extends FunSuite with SharedSparkContext {
     assert(GeoBase.city("AZA") === Success("PHX")) // PHX,MSC
 
     // Unknown airport:
-    val exceptionThrown = intercept[GeoBaseException] {
-      GeoBase.city("...").get
-    }
+    val exceptionThrown = intercept[GeoBaseException] { GeoBase.city("...").get }
     assert(exceptionThrown.getMessage === "Unknown airport \"...\"")
 
     // A city as input will return the city itself:
@@ -59,9 +57,7 @@ class GeoBaseTest extends FunSuite with SharedSparkContext {
     assert(GeoBase.cities("AZA") === Success(List("PHX", "MSC")))
 
     // Unknown airport:
-    val exceptionThrown = intercept[GeoBaseException] {
-      GeoBase.cities("...").get
-    }
+    val exceptionThrown = intercept[GeoBaseException] { GeoBase.cities("...").get }
     assert(exceptionThrown.getMessage === "Unknown airport \"...\"")
 
     // A city as input will return the city itself:
@@ -81,9 +77,7 @@ class GeoBaseTest extends FunSuite with SharedSparkContext {
     assert(GeoBase.country("FR") === Success("FR"))
 
     // Unknown airport/city:
-    var exceptionThrown = intercept[GeoBaseException] {
-      GeoBase.country("...").get
-    }
+    var exceptionThrown = intercept[GeoBaseException] { GeoBase.country("...").get }
     assert(exceptionThrown.getMessage === "Unknown location \"...\"")
 
     // Unknown country:
@@ -108,9 +102,7 @@ class GeoBaseTest extends FunSuite with SharedSparkContext {
     assert(GeoBase.continent("ZA") === Success("AF"))
 
     // Unknown location:
-    val exceptionThrown = intercept[GeoBaseException] {
-      GeoBase.continent("..").get
-    }
+    val exceptionThrown = intercept[GeoBaseException] { GeoBase.continent("..").get }
     assert(exceptionThrown.getMessage === "Unknown country \"..\"")
 
     // Pimped case:
@@ -130,9 +122,7 @@ class GeoBaseTest extends FunSuite with SharedSparkContext {
     assert(GeoBase.iataZone("ZA") === Success("23"))
 
     // Unknown location:
-    val exceptionThrown = intercept[GeoBaseException] {
-      GeoBase.iataZone("..").get
-    }
+    val exceptionThrown = intercept[GeoBaseException] { GeoBase.iataZone("..").get }
     assert(exceptionThrown.getMessage === "Unknown country \"..\"")
 
     // Pimped case:
@@ -148,9 +138,7 @@ class GeoBaseTest extends FunSuite with SharedSparkContext {
     assert(GeoBase.currency("AU") === Success("AUD"))
 
     // Unknown location:
-    val exceptionThrown = intercept[GeoBaseException] {
-      GeoBase.currency("..").get
-    }
+    val exceptionThrown = intercept[GeoBaseException] { GeoBase.currency("..").get }
     assert(exceptionThrown.getMessage === "Unknown country \"..\"")
 
     // Pimped case:
@@ -183,9 +171,7 @@ class GeoBaseTest extends FunSuite with SharedSparkContext {
     assert(GeoBase.nameOfAirline("5K") === Success("Hi Fly"))
 
     // Unknown airline:
-    val exceptionThrown = intercept[GeoBaseException] {
-      GeoBase.nameOfAirline("..").get
-    }
+    val exceptionThrown = intercept[GeoBaseException] { GeoBase.nameOfAirline("..").get }
     assert(exceptionThrown.getMessage === "Unknown airline \"..\"")
 
     // Pimped case:
@@ -202,9 +188,7 @@ class GeoBaseTest extends FunSuite with SharedSparkContext {
     assert(GeoBase.timeZone("DUB") === Success("Europe/Dublin"))
 
     // Unknown location:
-    val exceptionThrown = intercept[GeoBaseException] {
-      GeoBase.timeZone("...").get
-    }
+    val exceptionThrown = intercept[GeoBaseException] { GeoBase.timeZone("...").get }
     assert(exceptionThrown.getMessage === "Unknown location \"...\"")
 
     // Pimped case:
@@ -384,8 +368,7 @@ class GeoBaseTest extends FunSuite with SharedSparkContext {
     assert(localDate === Success("20160212_1627"))
 
     // 6: Another format:
-    localDate =
-      GeoBase.gmtDateToLocal("2016-06-07T02:27", "NYC", "yyyy-MM-dd'T'HH:mm")
+    localDate = GeoBase.gmtDateToLocal("2016-06-07T02:27", "NYC", "yyyy-MM-dd'T'HH:mm")
     assert(localDate === Success("2016-06-06T22:27"))
 
     // 7: With an invalid airport/city:
@@ -398,45 +381,29 @@ class GeoBaseTest extends FunSuite with SharedSparkContext {
   test("Trip duration between two local dates") {
 
     // 1: Origin = destination and departure time = arrival date:
-    var computedTripDuration = GeoBase.tripDurationFromLocalDates(
-      "20160606_1627",
-      "NCE",
-      "20160606_1627",
-      "NCE")
+    var computedTripDuration =
+      GeoBase.tripDurationFromLocalDates("20160606_1627", "NCE", "20160606_1627", "NCE")
     assert(computedTripDuration === Success(0d))
 
     // 2: Within same time zone:
-    computedTripDuration = GeoBase.tripDurationFromLocalDates(
-      "20160606_1627",
-      "NCE",
-      "20160606_1757",
-      "CDG")
+    computedTripDuration =
+      GeoBase.tripDurationFromLocalDates("20160606_1627", "NCE", "20160606_1757", "CDG")
     assert(computedTripDuration === Success(1.5d))
 
     // 3: With a different time zone:
-    computedTripDuration = GeoBase.tripDurationFromLocalDates(
-      "20160606_1627",
-      "CDG",
-      "20160606_1757",
-      "JFK")
+    computedTripDuration =
+      GeoBase.tripDurationFromLocalDates("20160606_1627", "CDG", "20160606_1757", "JFK")
     assert(computedTripDuration === Success(7.5d))
 
     // 4: With a different time zone and a change of date:
-    computedTripDuration = GeoBase.tripDurationFromLocalDates(
-      "20160606_2327",
-      "CDG",
-      "20160607_0057",
-      "JFK")
+    computedTripDuration =
+      GeoBase.tripDurationFromLocalDates("20160606_2327", "CDG", "20160607_0057", "JFK")
     assert(computedTripDuration === Success(7.5d))
 
     // 5: With an invalid origin city/airport:
     var exceptionThrown = intercept[GeoBaseException] {
       GeoBase
-        .tripDurationFromLocalDates(
-          "20160606_1627",
-          "...",
-          "20160606_1757",
-          "CDG")
+        .tripDurationFromLocalDates("20160606_1627", "...", "20160606_1757", "CDG")
         .get
     }
     assert(exceptionThrown.getMessage === "Unknown location \"...\"")
@@ -444,11 +411,7 @@ class GeoBaseTest extends FunSuite with SharedSparkContext {
     // 6: A negative trip duration:
     exceptionThrown = intercept[GeoBaseException] {
       GeoBase
-        .tripDurationFromLocalDates(
-          "20160607_0057",
-          "JFK",
-          "20160606_2327",
-          "CDG")
+        .tripDurationFromLocalDates("20160607_0057", "JFK", "20160606_2327", "CDG")
         .get
     }
     val expectedMessage =
@@ -457,12 +420,8 @@ class GeoBaseTest extends FunSuite with SharedSparkContext {
     assert(exceptionThrown.getMessage === expectedMessage)
 
     // 7: The trip duration in minutes:
-    computedTripDuration = GeoBase.tripDurationFromLocalDates(
-      "20160606_1627",
-      "CDG",
-      "20160606_1757",
-      "JFK",
-      unit = MINUTES)
+    computedTripDuration = GeoBase
+      .tripDurationFromLocalDates("20160606_1627", "CDG", "20160606_1757", "JFK", unit = MINUTES)
     assert(computedTripDuration === Success(450d))
 
     // 8: With a specific format:
@@ -481,7 +440,7 @@ class GeoBaseTest extends FunSuite with SharedSparkContext {
       "2016-06-06T17:57",
       "JFK",
       format = "yyyy-MM-dd'T'HH:mm",
-      unit = MINUTES)
+      unit   = MINUTES)
     assert(computedTripDuration === Success(450d))
   }
 
@@ -532,12 +491,13 @@ class GeoBaseTest extends FunSuite with SharedSparkContext {
     assert("CDG".nearbyAirports(50) === Success(expectedAirports))
   }
 
-  test("Check everything is Serializable") {
+  test("Check everything is Serializable for Spark") {
 
     val geoBaseBr = sc.broadcast(GeoBase)
 
     val airports = sc.parallelize(Array("ORY", "GAT"), 2)
-    val cities = airports.map(airport => geoBaseBr.value.city(airport))
+    val cities   = airports.map(airport => geoBaseBr.value.city(airport))
+
     assert(cities.collect === Array(Success("PAR"), Success("GAT")))
   }
 }

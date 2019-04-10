@@ -15,19 +15,15 @@ private[geobase] final case class Airline(
     airlineName: String
 ) {
 
-  def country: Try[String] = countryCode match {
-    case "" =>
-      Failure(
-        GeoBaseException(
-          "No country available for airline \"" + airlineCode + "\""))
-    case _ => Success(countryCode)
-  }
+  def country: Try[String] =
+    countryCode match {
+      case "" => Failure(GeoBaseException(s"""No country available for airline "$airlineCode""""))
+      case _  => Success(countryCode)
+    }
 
-  def name: Try[String] = airlineName match {
-    case "" =>
-      Failure(
-        GeoBaseException(
-          "No name available for airline \"" + airlineCode + "\""))
-    case _ => Success(airlineName)
-  }
+  def name: Try[String] =
+    airlineName match {
+      case "" => Failure(GeoBaseException(s"""No name available for airline "$airlineCode""""))
+      case _  => Success(airlineName)
+    }
 }

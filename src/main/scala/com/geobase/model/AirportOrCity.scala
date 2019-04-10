@@ -8,16 +8,15 @@ import scala.util.{Try, Success, Failure}
 
 /** A geographical point such as an airport or a city.
   *
-  * All dimensions in the constructor are given as String. This, in order to
-  * throw exceptions on missing or wrong values during casts when methods are
-  * effectively called and not when reading the data file.
+  * All dimensions in the constructor are given as `String`s, in order to throw exceptions on
+  * missing or wrong values during casts when methods are effectively called and not when reading
+  * the data file.
   *
   * @author Xavier Guihot
   * @since 2017-01
   *
   * @param iataCode the airport or city iata code
-  * @param cityCode the city code for this iataCode (only useful when the iata
-  * code is an airport).
+  * @param cityCode the city code for this iataCode (only useful when the iata code is an airport)
   * @param countryCode the country code for this iataCode
   * @param rawLatitude the latitude for this iataCode
   * @param rawLongitude the longitude for this iataCode
@@ -39,43 +38,31 @@ private[geobase] final case class AirportOrCity(
   def city: Try[String] = cities.map { case city :: _ => city }
 
   def cities: Try[List[String]] = cityCode.length match {
-
     case 3 => Success(List(cityCode))
-
     case x if x >= 3 =>
       cityCode.split("\\,", -1).toList.filter(_.length == 3) match {
-        case Nil =>
-          Failure(
-            GeoBaseException(
-              "No city available for airport \"" + iataCode + "\""))
+        case Nil    => Failure(GeoBaseException(s"""No city available for airport "$iataCode""""))
         case cities => Success(cities)
       }
-
-    case _ =>
-      Failure(
-        GeoBaseException("No city available for airport \"" + iataCode + "\""))
+    case _ => Failure(GeoBaseException(s"""No city available for airport "$iataCode""""))
   }
 
-  def country: Try[String] = extract(countryCode, "country")
+  def country: Try[String]  = extract(countryCode, "country")
   def timeZone: Try[String] = extract(rawTimeZone, "time zone")
 
-  def latitude: Try[Double] = extractCoordinate(rawLatitude, "latitude")
+  def latitude: Try[Double]  = extractCoordinate(rawLatitude, "latitude")
   def longitude: Try[Double] = extractCoordinate(rawLongitude, "longitude")
 
-  private def extract(field: String, name: String): Try[String] = field match {
-    case "" =>
-      Failure(
-        GeoBaseException(
-          "No " + name + " available for location \"" + iataCode + "\""))
-    case _ => Success(field)
-  }
+  private def extract(field: String, name: String): Try[String] =
+    field match {
+      case "" => Failure(GeoBaseException(s"""No $name available for location "$iataCode""""))
+      case _  => Success(field)
+    }
 
   private def extractCoordinate(field: String, name: String): Try[Double] =
     Try(field.toDouble) match {
       case Success(coordinate) => Success(coordinate / 180d * Pi)
       case Failure(_) =>
-        Failure(
-          GeoBaseException(
-            "No " + name + " available for location \"" + iataCode + "\""))
+        Failure(GeoBaseException(s"""No $name available for location "$iataCode""""))
     }
 }

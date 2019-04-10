@@ -21,8 +21,7 @@ class AirlineTest extends FunSuite {
     val exceptionThrown = intercept[GeoBaseException] {
       Airline("AF", "", "Air France").country.get
     }
-    assert(
-      exceptionThrown.getMessage === "No country available for airline \"AF\"")
+    assert(exceptionThrown.getMessage === "No country available for airline \"AF\"")
   }
 
   test("Airline to name") {
@@ -33,7 +32,6 @@ class AirlineTest extends FunSuite {
     val exceptionThrown = intercept[GeoBaseException] {
       Airline("AH", "DZ", "").name.get
     }
-    assert(
-      exceptionThrown.getMessage === "No name available for airline \"AH\"")
+    assert(exceptionThrown.getMessage === "No name available for airline \"AH\"")
   }
 }

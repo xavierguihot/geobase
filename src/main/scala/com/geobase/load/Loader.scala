@@ -74,19 +74,21 @@ private[geobase] object Loader {
 
     println("GeoBase: Loading airlines")
 
+    // Since during the parsing of the csv file providing the mapping airline code to airline name,
+    // we choose the first name amongst the list of possible names, we might not always choose the
+    // most appropriate name. Thus this list of custom exceptions:
+    val forcedAirlineNames = List(Airline("LH", "DE", "Lufthansa"))
+
     // Airline code to airline name:
     val airlineNames =
       Source
         .fromURL(getClass.getResource("/optd_airlines.csv"))
         .getLines
         .drop(1) // Remove the header
-        .map { line =>
-          val splitLine = line.split("\\^", -1)
-
-          val airlineCode = splitLine(5)
-          val airlineName = splitLine(7)
-
-          Airline(airlineCode, "", airlineName)
+        .map(_.split("\\^", -1))
+        .collect {
+          case Array(_, _, _, _, _, code, _, name, _*) if code.nonEmpty && name.nonEmpty =>
+            Airline(code, "", name)
         }
         .toList
 
@@ -96,17 +98,11 @@ private[geobase] object Loader {
         .fromURL(getClass.getResource("/airlines.csv"))
         .getLines
         .drop(1) // Remove the header
-        .map { line =>
-          val splitLine = line.split("\\^", -1)
-
-          val airlineCode = splitLine(0)
-          val countryCode = splitLine(1)
-
-          Airline(airlineCode, countryCode, "")
-        }
+        .map(_.split("\\^", -1))
+        .map { case Array(code, country) => Airline(code, country, "") }
         .toList
 
-    (airlineNames ::: airlineCountries)
+    (forcedAirlineNames ::: airlineNames ::: airlineCountries)
       .groupBy(_.airlineCode)
       .mapValues { airlines =>
         val code    = airlines.head.airlineCode

@@ -687,7 +687,7 @@ object GeoBase extends Serializable {
       * {{{
       * assert("CDG".nearbyAirports(50) == Success(List("LBG", "ORY", "VIY", "POX")))
       * assert("CDG".nearbyAirports(36) == Success(List("LBG", "ORY")))
-      * assert("~#?".nearbyAirports(36)) == Failure(GeoBaseException: Unknown location \"~#?\""))
+      * assert("~#?".nearbyAirports(36) == Failure(GeoBaseException: Unknown location \"~#?\""))
       * }}}
       *
       * @param radius the maximum distance (in km) for which an airport is considered close

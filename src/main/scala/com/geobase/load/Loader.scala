@@ -107,17 +107,12 @@ private[geobase] object Loader {
         .toList
 
     (airlineNames ::: airlineCountries)
-      .groupBy { case Airline(code, _, _) => code }
-      .mapValues {
-        // Only airline name or country available:
-        case List(airline) => airline
-        // Both country and at least one name available (when an airline has several names, we take
-        // the first one):
-        case (Airline(code, "", name) :: _) :+ Airline(_, country, "") =>
-          Airline(code, country, name)
-        // No information on the country, but several names available:
-        case Airline(code, "", name) :: _ =>
-          Airline(code, "", name)
+      .groupBy(_.airlineCode)
+      .mapValues { airlines =>
+        val code    = airlines.head.airlineCode
+        val name    = airlines.find(_.airlineName.nonEmpty).fold("")(_.airlineName)
+        val country = airlines.find(_.countryCode.nonEmpty).fold("")(_.countryCode)
+        Airline(code, country, name)
       }
       .map(identity) // Serialization
   }

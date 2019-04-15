@@ -27,8 +27,7 @@ class AirportOrCityTest extends FunSuite {
     val exceptionThrown = intercept[GeoBaseException] {
       AirportOrCity("ORY", "", "", "", "", "", "").city.get
     }
-    assert(
-      exceptionThrown.getMessage === "No city available for airport \"ORY\"")
+    assert(exceptionThrown.getMessage === "No city available for airport \"ORY\"")
   }
 
   test("Airport to cities") {
@@ -45,8 +44,7 @@ class AirportOrCityTest extends FunSuite {
     val exceptionThrown = intercept[GeoBaseException] {
       AirportOrCity("ORY", "", "", "", "", "", "").cities.get
     }
-    assert(
-      exceptionThrown.getMessage === "No city available for airport \"ORY\"")
+    assert(exceptionThrown.getMessage === "No city available for airport \"ORY\"")
 
     // Shared airport between cities, but with an empty city:
     cities = AirportOrCity("AZA", "PHX,MSC,", "", "", "", "", "").cities
@@ -65,8 +63,7 @@ class AirportOrCityTest extends FunSuite {
     val exceptionThrown = intercept[GeoBaseException] {
       AirportOrCity("ORY", "", "", "", "", "", "").country.get
     }
-    assert(
-      exceptionThrown.getMessage === "No country available for location \"ORY\"")
+    assert(exceptionThrown.getMessage === "No country available for location \"ORY\"")
   }
 
   test("Location to time zone") {
@@ -79,8 +76,7 @@ class AirportOrCityTest extends FunSuite {
     val exceptionThrown = intercept[GeoBaseException] {
       AirportOrCity("ORY", "", "", "", "", "", "").timeZone.get
     }
-    assert(
-      exceptionThrown.getMessage === "No time zone available for location \"ORY\"")
+    assert(exceptionThrown.getMessage === "No time zone available for location \"ORY\"")
   }
 
   test("Location to latitude/longitude") {
@@ -94,12 +90,10 @@ class AirportOrCityTest extends FunSuite {
     val exceptionThrownLat = intercept[GeoBaseException] {
       AirportOrCity("ORY", "", "", "", "", "", "").latitude.get
     }
-    assert(
-      exceptionThrownLat.getMessage === "No latitude available for location \"ORY\"")
+    assert(exceptionThrownLat.getMessage === "No latitude available for location \"ORY\"")
     val exceptionThrownLon = intercept[GeoBaseException] {
       AirportOrCity("ORY", "", "", "", "", "", "").longitude.get
     }
-    assert(
-      exceptionThrownLon.getMessage === "No longitude available for location \"ORY\"")
+    assert(exceptionThrownLon.getMessage === "No longitude available for location \"ORY\"")
   }
 }

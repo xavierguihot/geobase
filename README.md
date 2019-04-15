@@ -1,5 +1,5 @@
 
-# GeoBase [![Build Status](https://travis-ci.org/xavierguihot/geobase.svg?branch=master)](https://travis-ci.org/xavierguihot/geobase) [![Coverage Status](https://coveralls.io/repos/github/xavierguihot/geobase/badge.svg?branch=master)](https://coveralls.io/github/xavierguihot/geobase?branch=master) [![Release](https://jitpack.io/v/xavierguihot/geobase.svg)](https://jitpack.io/#xavierguihot/geobase) ![](https://img.shields.io/github/downloads/xavierguihot/geobase/total.svg)
+# GeoBase [![Build Status](https://travis-ci.org/xavierguihot/geobase.svg?branch=master)](https://travis-ci.org/xavierguihot/geobase) [![Coverage Status](https://coveralls.io/repos/github/xavierguihot/geobase/badge.svg?branch=master)](https://coveralls.io/github/xavierguihot/geobase?branch=master) [![Release](https://jitpack.io/v/xavierguihot/geobase.svg)](https://jitpack.io/#xavierguihot/geobase) [![Scaladoc](https://img.shields.io/badge/scaladoc-passing-blue.svg)](http://xavierguihot.com/geobase/#com.geobase.GeoBase$) ![](https://img.shields.io/github/downloads/xavierguihot/geobase/total.svg)
 
 
 ## Overview
